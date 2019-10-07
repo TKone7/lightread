@@ -7,7 +7,7 @@ Authors, artists, composers or researchers working on producing content of any k
 ### 3 Platform operators
 ### (4 Lightning Network participants)
 
-
+![class diagram describing participants](resources/participants.png)
 
 ## Minimum Requirements
 
