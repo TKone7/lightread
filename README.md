@@ -1,5 +1,5 @@
 # lightread
-Online publishing platform where users can reward content providers with micro-bitcoin payments. The idea behind is to allow readers to direclty reward content providers.
+Online publishing platform where users can reward content providers with micro-bitcoin payments. The main goal is, that content consuments are able to directly reward content providers.
 
 Jump to the [requirements](requirements.md).
 
