@@ -30,3 +30,9 @@ Authors, artists, composers or researchers working on producing content of any k
 |1|The platform shall show the information of the Lightning Node in order for other participants to open channels with. |4|
 |2|Content providers should have the ability to examine their revenue streams per content from a statistical aspect|1|
 |3|The platform shall allow a producer to publish media files (audios, videos, images).|1|
+
+## Requirements according to MoSCoW
+### Must-haves
+### Should-haves
+### Could-haves
+### Won't- and Would-haves
