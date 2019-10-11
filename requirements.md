@@ -1,9 +1,12 @@
 # Requirements
 
 ## Actors
+### 0 User
+Someone who signed up on the platform.
 ### 1 Publisher (the ones that provide content)
-Authors, artists, composers or researchers working on producing content of any kind that can be shared online.
+A user that provides content of any kind on the platform. These could be, for instance, authors, artists, composers, or researchers.
 ### 2 Consumers (the ones that consume content)
+platform visitors, publisher
 ### 3 Platform operators
 ### (4 Lightning Network participants)
 
