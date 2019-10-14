@@ -21,3 +21,12 @@ With the Lightning Network payments get very cheap and therefore even allow for 
 Solutions for end-users to use the Lightning wallets in their every-day life will get easier in the future as new engineers and UX specialist optimize the user experience.
 
 On the platform consumers will have the ability to pay content producers for their work or even tip on a donation basis for producers that offer their work for free. Additionally, users can sign up for supporting certain producers on a subscription base (every week / month) allowing the producers to count on a more steady income.
+
+## Lightning Network
+The Lightning Network is a protocol that builds a second layer on top of the Bitcoin blockchain. It allows to make transaction in bitcoin that do not need to be recorded by every participant in the peer-to-per network. This is achieved by so-called 'bi-directional payment channels' which are established between Lightning Network participants. The transactions happen off-chain but the participant can settle their open channels at all times and get their money back on the base chain.
+
+Further reading:
+- [Overview](https://lightning.network/)
+- [Easily explained](https://letstalkbitcoin.com/blog/post/the-lightning-network-elidhdicacs)
+- [Lightning Network Explorer (ACINQ)](https://explorer.acinq.co/)
+- [BOLT specification](https://github.com/lightningnetwork/lightning-rfc/blob/master/00-introduction.md)
