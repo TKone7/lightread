@@ -76,3 +76,7 @@ section.cms-boxes .cms-boxes-items:hover {
   cursor: pointer;
 }
 
+a.tile:hover {
+  text-decoration: initial;
+}
+

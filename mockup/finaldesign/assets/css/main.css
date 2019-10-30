@@ -128,3 +128,8 @@ div {
   }
 }
 
+.btn-light {
+  border-color: #000000;
+  margin-right: 10px;
+}
+
