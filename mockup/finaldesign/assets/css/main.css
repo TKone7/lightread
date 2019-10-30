@@ -72,6 +72,14 @@ header.masthead .overlay {
   font-family: Aldrich,sans-serif;
 }
 
+#mainNav .lrlogo-index {
+  color: hsla(0,0%,100%,.8);
+}
+
+.lrlogo-index {
+  color: #ffffff;
+}
+
 #mainNav .navbar-nav > li.nav-item > a {
   font-weight: 600;
 }
@@ -89,5 +97,34 @@ header.masthead .overlay {
 
 div {
   position: relative;
+}
+
+.profile-title {
+  font-weight: normal;
+  margin-top: 40px;
+}
+
+.earning-value {
+  text-align: right;
+  display: block;
+}
+
+.earning-title {
+  display: block;
+  text-align: left;
+  float: left;
+}
+
+.earning-hr {
+  margin-top: 0rem;
+  margin-bottom: 1rem;
+  border: 0;
+  border-top: 1px solid #13364c;
+}
+
+@media only screen and (min-width:992px) {
+  .lrlogo {
+    color: hsla(0,0%,100%,.8);
+  }
 }
 
