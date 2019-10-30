@@ -1,0 +1,79 @@
+ section.cms-boxes .cms-boxes-outer {
+    text-align: left;
+    margin-bottom: 6px;
+    padding: 0 3px;
+}
+section.cms-boxes .cms-boxes-outer .cms-boxes-items {
+    height: 350px;
+    display: table;
+    width: 100%;
+}
+section.cms-boxes .cms-features {
+    background-color: #b70457;
+    background-size: cover;
+}
+section.cms-boxes .boxes-align {
+    display: table-cell;
+    vertical-align: middle;
+}
+section.cms-boxes .small-box, section.cms-boxes .large-box {
+    max-width: 350px;
+    margin: 0 auto;
+    text-align: center;
+}
+section.cms-boxes .cms-boxes-items h3 {
+    font-size: 35px;
+    color: #fff;
+    font-weight: 400;
+    line-height: 37px;
+    text-align: center;
+    margin: 20px 0 10px;
+    text-transform: uppercase;
+}
+section.cms-boxes .cms-boxes-outer .cms-boxes-items p {
+    color: #fff;
+}
+section.cms-boxes .boxes-align {
+    display: table-cell;
+    vertical-align: middle;
+}
+section.cms-boxes .cms-boxes-outer .cms-boxes-items {
+    height: 350px;
+    display: table;
+    width: 100%;
+}
+section.cms-boxes .cms-features {
+    background-color: #b70457;
+    background-size: cover;
+}
+section.cms-boxes .cms-boxes-outer .cms-boxes-items {
+    height: 350px;
+    display: table;
+    width: 100%;
+}
+section.cms-boxes .cms-security {
+    background-color: #0489b7;
+}
+section.cms-boxes .cms-security, section.cms-boxes .cms-documentation {
+    background-color: rgb(66, 16, 88);
+}
+section.cms-boxes .cms-scalability {
+    background: url(images/scalability.jpg) 0 0 no-repeat;
+    background-size: cover;
+}
+section.cms-boxes .cms-boxes-outer {
+    text-align: left;
+    margin-bottom: 6px;
+    padding: 0 3px;
+}
+section.cms-boxes .cms-built {
+    background: url(images/customer-service.jpg) 0 0 no-repeat;
+    background-size: cover;
+}
+section.cms-boxes .cms-security, section.cms-boxes .cms-documentation {
+    background-color: rgb(66, 16, 88);
+}
+section.cms-boxes .cms-boxes-items:hover {
+  opacity: .2;
+  cursor: pointer;
+}
