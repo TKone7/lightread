@@ -1,0 +1,82 @@
+section.cms-boxes .small-box, section.cms-boxes .large-box {
+  max-width: 200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+section.cms-boxes .cms-boxes-outer .cms-boxes-items {
+  height: 200px;
+  display: table;
+  width: 100%;
+}
+
+section.cms-boxes .cms-boxes-outer {
+  text-align: left;
+  margin-bottom: 6px;
+  padding: 0 3px;
+}
+
+section.cms-boxes .boxes-align {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+section.cms-boxes .cms-boxes-items h3 {
+  font-size: 26px;
+  color: #fff;
+  font-weight: 400;
+  line-height: 37px;
+  text-align: center;
+  margin: 20px 0 10px;
+  text-transform: uppercase;
+}
+
+section.cms-boxes .cms-boxes-outer .cms-boxes-items p {
+  color: #fff;
+}
+
+section.cms-boxes .boxes-align {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+section.cms-boxes .cms-security {
+  background-color: #0489b7;
+}
+
+section.cms-boxes .cms-scalability {
+  background: url(images/scalability.jpg) 0 0 no-repeat;
+  background-size: cover;
+}
+
+section.cms-boxes .cms-boxes-outer {
+  text-align: left;
+  margin-bottom: 6px;
+  padding: 0 3px;
+}
+
+section.cms-boxes .cms-built {
+  background: url(../img/rb.jpeg) 0 0 no-repeat;
+  background-size: cover;
+}
+
+section.cms-boxes .cms-purple {
+  /*background-color: rgb(18,86,136);*/
+  background-image: linear-gradient(to bottom right, #122f43, #2489db);
+}
+
+section.cms-boxes .cms-pink {
+  /*background-color: #4a2316;*/
+  background-image: linear-gradient(to bottom right, #752d05, #a63e03);
+  background-size: cover;
+}
+
+section.cms-boxes .cms-boxes-items:hover {
+  opacity: .82;
+  cursor: pointer;
+}
+
+a.tile:hover {
+  text-decoration: initial;
+}
+

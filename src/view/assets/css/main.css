@@ -1,0 +1,135 @@
+@media only screen and (min-width:768px) {
+  .post-preview > a > .post-title {
+    font-size: 32px;
+    font-weight: normal;
+  }
+}
+
+.post-preview > a > .post-title {
+  font-size: 32;
+  font-weight: normal;
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+header.masthead .overlayarticle {
+  opacity: .5;
+}
+
+header.masthead .overlay {
+  opacity: .7;
+  background-color: #000000;
+}
+
+#login .nav-link {
+  border: solid;
+  border-width: 1px;
+  background-color: rgba(238,182,167,0.08);
+}
+
+#mainNav.index {
+  padding: .5rem 1rem;
+  background-image: linear-gradient(to bottom right, #0b161d, #05283e);
+  margin-bottom: 200px;
+}
+
+.articlerow {
+  margin-top: 80px;
+}
+
+#mainNav.is-fixed {
+  border-bottom: 1px solid #13364c;
+  background-image: none;
+}
+
+.fa-inverse {
+  color: black;
+}
+
+.githubicon {
+  line-height: inherit;
+  position: absolute;
+  left: 15%;
+  top: 17%;
+  margin: auto;
+  text-align: center;
+  border-radius: 10px;
+  width: 70%;
+}
+
+.githubicon_rb {
+  line-height: inherit;
+  position: absolute;
+  left: 6%;
+  top: 5%;
+  margin: auto;
+  text-align: center;
+  border-radius: 100px;
+  width: 88%;
+}
+
+.lrlogo {
+  font-family: Aldrich,sans-serif;
+}
+
+#mainNav .lrlogo-index {
+  color: hsla(0,0%,100%,.8);
+}
+
+.lrlogo-index {
+  color: #ffffff;
+}
+
+#mainNav .navbar-nav > li.nav-item > a {
+  font-weight: 600;
+}
+
+.hiding {
+  background: linear-gradient(to top, rgb(255,255,255), rgba(255,255,255,0));
+  bottom: 0;
+  height: 80px;
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  width: 100%;
+  display: block;
+}
+
+div {
+  position: relative;
+}
+
+.profile-title {
+  font-weight: normal;
+  margin-top: 40px;
+}
+
+.earning-value {
+  text-align: right;
+  display: block;
+}
+
+.earning-title {
+  display: block;
+  text-align: left;
+  float: left;
+}
+
+.earning-hr {
+  margin-top: 0rem;
+  margin-bottom: 1rem;
+  border: 0;
+  border-top: 1px solid #13364c;
+}
+
+@media only screen and (min-width:992px) {
+  .lrlogo {
+    color: hsla(0,0%,100%,.8);
+  }
+}
+
+.btn-light {
+  border-color: #000000;
+  margin-right: 10px;
+}
+
