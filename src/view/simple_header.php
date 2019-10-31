@@ -35,7 +35,7 @@
 
 <body>
     <nav class="navbar navbar-light navbar-expand-lg fixed-top index" id="mainNav">
-        <div class="container"><a class="navbar-brand lrlogo lrlogo-index" href="index.html">light<i class="fa fa-flash" style="color: #ffc81e;"></i>read</a><button data-toggle="collapse" data-target="#navbarResponsive" class="navbar-toggler" aria-controls="navbarResponsive"
+        <div class="container"><a class="navbar-brand lrlogo lrlogo-index" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/">light<i class="fa fa-flash" style="color: #ffc81e;"></i>read</a><button data-toggle="collapse" data-target="#navbarResponsive" class="navbar-toggler" aria-controls="navbarResponsive"
                 aria-expanded="false" aria-label="Toggle navigation"><i class="fa fa-bars"></i></button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="nav navbar-nav ml-auto">
