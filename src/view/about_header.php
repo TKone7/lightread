@@ -1,3 +1,15 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: tobias
+ * Date: 30.10.2019
+ * Time:
+ */
+$title;
+$subtitle;
+// if lightread (application name) is part of the title, it should be replaced by special format
+$title = str_replace("lightread", "<strong>light</strong><i class=\"fa fa-flash\" style=\"color: #ffc81e;\"></i>read", $title);
+?>
 <!DOCTYPE html>
 <html>
 
@@ -30,10 +42,10 @@
                                                                                                                                                     aria-label="Toggle navigation"><i class="fa fa-bars"></i></button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="nav navbar-nav ml-auto">
-                <li class="nav-item" role="presentation"><a class="nav-link" href="index.html">Home</a></li>
-                <li class="nav-item" role="presentation"><a class="nav-link" href="about.html">About</a></li>
-                <li class="nav-item" role="presentation"><a class="nav-link" href="category.html">Category</a></li>
-                <li class="nav-item" role="presentation" id="login"><a class="nav-link" href="login.html">Login</a></li>
+                <li class="nav-item" role="presentation"><a class="nav-link" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/">Home</a></li>
+                <li class="nav-item" role="presentation"><a class="nav-link" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/about">About</a></li>
+                <li class="nav-item" role="presentation"><a class="nav-link" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/category">Category</a></li>
+                <li class="nav-item" role="presentation" id="login"><a class="nav-link" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/login">Login</a></li>
             </ul>
         </div>
     </div>
@@ -44,8 +56,10 @@
         <div class="row">
             <div class="col-md-10 col-lg-8 mx-auto">
                 <div class="site-heading">
-                    <h1 class="lrlogo"><strong>About</strong><br><strong>light</strong><i class="fa fa-flash" style="color: #ffc81e;"></i>read</h1><span class="subheading">This is how it works</span></div>
+                    <h1 class="lrlogo"><strong><?php echo $title ?></strong></h1><span class="subheading"><?php echo $subtitle ?></strong></span></div>
             </div>
         </div>
     </div>
 </header>
+
+<!--<br><strong>light</strong><i class="fa fa-flash" style="color: #ffc81e;"></i>read -->

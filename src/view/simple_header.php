@@ -1,5 +1,11 @@
-
-
+<?php
+/**
+ * Created by PhpStorm.
+ * User: tobias
+ * Date: 30.10.2019
+ * Time:
+ */
+?>
 <!DOCTYPE html>
 <html>
 
@@ -33,10 +39,10 @@
                 aria-expanded="false" aria-label="Toggle navigation"><i class="fa fa-bars"></i></button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="nav navbar-nav ml-auto">
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="index.html">Home</a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="about.html">About</a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="category.html">Category</a></li>
-                    <li class="nav-item" role="presentation" id="login"><a class="nav-link" href="login.html">Login</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/">Home</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/about">About</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/category">Category</a></li>
+                    <li class="nav-item" role="presentation" id="login"><a class="nav-link" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/login">Login</a></li>
                 </ul>
             </div>
         </div>
