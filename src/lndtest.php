@@ -36,9 +36,20 @@ echo $reply->getIdentityPubkey() . "\n";
 echo $reply->getAlias() ."\n";
 echo $reply->getBlockHeight() ."\n";
 
-$inv = new Lnrpc\Invoice(['memo' => 'this is freaking awesome', 'value' => 8554]);
+$chain_array = $reply->getChains();
+$itr = $chain_array->getIterator();
+
+// Use iterator to traverse Array
+while($itr->valid()) {
+    echo $itr->key().' => '.$itr->current()->getNetwork() .$itr->current()->getChain()."\n";
+
+    $itr->next();
+}
+
+//print $rf.count();
+/*$inv = new Lnrpc\Invoice(['memo' => 'this is freaking awesome', 'value' => 8554]);
 list($reply, $status) = $client->AddInvoice($inv)->wait();
-var_dump($reply);
+var_dump($reply);*/
 
 $listinvreq = new \Lnrpc\ListInvoiceRequest();
 list($reply, $status) = $client->ListInvoices($listinvreq)->wait();

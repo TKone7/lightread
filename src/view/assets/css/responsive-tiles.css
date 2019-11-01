@@ -35,11 +35,6 @@ section.cms-boxes .cms-boxes-outer .cms-boxes-items p {
   color: #fff;
 }
 
-section.cms-boxes .boxes-align {
-  display: table-cell;
-  vertical-align: middle;
-}
-
 section.cms-boxes .cms-security {
   background-color: #0489b7;
 }
@@ -56,7 +51,7 @@ section.cms-boxes .cms-boxes-outer {
 }
 
 section.cms-boxes .cms-built {
-  background: url(../img/rb.jpeg) 0 0 no-repeat;
+  background: url(../../assets/img/rb.jpeg) 0 0 no-repeat;
   background-size: cover;
 }
 
