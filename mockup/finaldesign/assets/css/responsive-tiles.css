@@ -35,11 +35,6 @@ section.cms-boxes .cms-boxes-outer .cms-boxes-items p {
   color: #fff;
 }
 
-section.cms-boxes .boxes-align {
-  display: table-cell;
-  vertical-align: middle;
-}
-
 section.cms-boxes .cms-security {
   background-color: #0489b7;
 }

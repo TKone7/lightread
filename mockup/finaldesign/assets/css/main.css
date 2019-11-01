@@ -133,3 +133,15 @@ div {
   margin-right: 10px;
 }
 
+.progress {
+  background-color: #ff7918;
+}
+
+.progress.progress-pending {
+  background-color: rgb(176,176,176);
+}
+
+.progress-bar.progress-pending {
+  background-color: rgb(124,124,124);
+}
+
