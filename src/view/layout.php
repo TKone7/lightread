@@ -6,8 +6,6 @@
  * Time: 17:55
  */
 
-function layoutSetContent($content){
-    require_once("simple_header.php");
-    require_once($content);
-    require_once("footer.php");
-}
+echo $this->header;
+echo $this->content;
+echo $this->footer;
