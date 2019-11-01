@@ -9,7 +9,6 @@ $title;
 $subtitle;
 // if lightread (application name) is part of the title, it should be replaced by special format
 $title = str_replace("lightread", "<strong>light</strong><i class=\"fa fa-flash\" style=\"color: #ffc81e;\"></i>read", $title);
-isset($this->headerheight) ? $headerheight = $this->headerheight : $headerheight = 0;
 ?>
 <!DOCTYPE html>
 <html>

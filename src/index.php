@@ -10,7 +10,7 @@
 require dirname(__FILE__).'/../vendor/autoload.php';
 require_once("config/Autoloader.php");
 
-
+use config\Config;
 use Lnrpc\LightningClient;
 use view\TemplateView;
 use view\LayoutRendering;
@@ -36,20 +36,17 @@ Router::route("GET", "/login",  function () {
 
 });
 Router::route("GET", "/node",  function () {
-    // @todo These lines will be outsourced in a configuration file
-    //$lndIp = 'localhost:10003';
-    $lndIp = '10.10.10.41:10009';
+    // @todo later outsource the whole node gRPC client configuration
     putenv('GRPC_SSL_CIPHER_SUITES=HIGH+ECDSA');
-    //$sslCert = file_get_contents('/home/tobias/.lnd/tls.cert');
-    //$macaroon = file_get_contents('/home/tobias/gocode/dev/charlie/data/chain/bitcoin/regtest/admin.macaroon');
-    $sslCert = file_get_contents('/home/tobias/Lnd/tls.cert');
-    $macaroon = file_get_contents('/home/tobias/Lnd/data/chain/bitcoin/mainnet/admin.macaroon');
+    $lndIp = Config::get("lndmain.ip");
+    $ssl = file_get_contents(Config::get("lndmain.ssl"));
+    $macaroon = file_get_contents(Config::get("lndmain.macaroon"));
     $metadataCallback = function ($metadata) use ($macaroon) {
         return ['macaroon' => [bin2hex($macaroon)]];
     };
     try{
         $client = new LightningClient($lndIp, [
-            'credentials' => Grpc\ChannelCredentials::createSsl($sslCert),
+            'credentials' => Grpc\ChannelCredentials::createSsl($ssl),
             'update_metadata' => $metadataCallback
         ]);
     } catch (Exception $e) {
@@ -58,10 +55,9 @@ Router::route("GET", "/node",  function () {
     }
     $getInfoRequest = new Lnrpc\GetInfoRequest();
     list($reply, $status) = $client->GetInfo($getInfoRequest)->wait();
-
-    $node_template = new TemplateView("node.php");
-    $node_template->getinforesponse = $reply;
-    LayoutRendering::headerLayout($node_template,"Your Node","See if it's healthy");
+    $node_content = new TemplateView("node.php");
+    $node_content->getinforesponse = $reply;
+    LayoutRendering::headerLayout($node_content,"Your Node","See if it's healthy");
 });
 
 try {
@@ -72,3 +68,4 @@ try {
 
 }
 
+echo Config::get("lndmain.ssl");
