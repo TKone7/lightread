@@ -38,9 +38,9 @@ Router::route("GET", "/login",  function () {
 Router::route("GET", "/node",  function () {
     // @todo later outsource the whole node gRPC client configuration
     putenv('GRPC_SSL_CIPHER_SUITES=HIGH+ECDSA');
-    $lndIp = Config::get("lndmain.ip");
-    $ssl = file_get_contents(Config::get("lndmain.ssl"));
-    $macaroon = file_get_contents(Config::get("lndmain.macaroon"));
+    $lndIp = Config::get("lndbob.ip");
+    $ssl = file_get_contents(Config::get("lndbob.ssl"));
+    $macaroon = file_get_contents(Config::get("lndbob.macaroon"));
     $metadataCallback = function ($metadata) use ($macaroon) {
         return ['macaroon' => [bin2hex($macaroon)]];
     };
@@ -54,9 +54,22 @@ Router::route("GET", "/node",  function () {
         echo "something went wrong";
     }
     $getInfoRequest = new Lnrpc\GetInfoRequest();
+    $WalletbalanceRequest = new Lnrpc\WalletBalanceRequest();
+    $ChannelbalanceRequest = new Lnrpc\ChannelBalanceRequest();
+    $channelreq = new Lnrpc\ListChannelsRequest();
+    $pendchannelreq = new Lnrpc\PendingChannelsRequest();
     list($reply, $status) = $client->GetInfo($getInfoRequest)->wait();
+    list($wallet_bal, $status) = $client->WalletBalance($WalletbalanceRequest)->wait();
+    list($channel_bal, $status) = $client->ChannelBalance($ChannelbalanceRequest)->wait();
+    list($ListChannelsResp, $status) = $client->ListChannels($channelreq)->wait();
+    list($PendingChannelsResp, $status) = $client->PendingChannels($pendchannelreq)->wait();
+
     $node_content = new TemplateView("node.php");
     $node_content->getinforesponse = $reply;
+    $node_content->walletbalance = $wallet_bal;
+    $node_content->channelbalance = $channel_bal;
+    $node_content->ListChannelsResp = $ListChannelsResp;
+    $node_content->PendingChannelsResp = $PendingChannelsResp;
     LayoutRendering::headerLayout($node_content,"Your Node","See if it's healthy");
 });
 
