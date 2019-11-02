@@ -8,6 +8,7 @@
 
 use Lnrpc\GetInfoResponse;
 use view\TemplateView;
+use view\ChannelFormatter;
 $connected = isset($this->getinforesponse);
 isset($this->getinforesponse) ? $getinforesponse = $this->getinforesponse : $getinforesponse = new Lnrpc\GetInfoResponse();
 isset($this->walletbalance) ? $walletbalance = $this->walletbalance : $walletbalance = new Lnrpc\WalletBalanceResponse();
@@ -15,6 +16,7 @@ isset($this->channelbalance) ? $channelbalance = $this->channelbalance : $channe
 isset($this->ListChannelsResp) ? $ListChannelsResp = $this->ListChannelsResp : $ListChannelsResp = new Lnrpc\ListChannelsResponse();
 isset($this->PendingChannelsResp) ? $PendingChannelsResp = $this->PendingChannelsResp : $PendingChannelsResp = new Lnrpc\PendingChannelsResponse();
 // echo $getinforesponse->getIdentityPubkey();
+
 ?>
 
 <div class="container">
@@ -47,7 +49,7 @@ isset($this->PendingChannelsResp) ? $PendingChannelsResp = $this->PendingChannel
                     </label>
                     <span class="earning-title">Block height</span><label class="earning-value"><?php echo $getinforesponse->getBlockHeight(); ?></label>
                             <hr class="earning-hr"><span class="earning-title" style="float: none;font-weight: bold;">Balance</span>
-                    <span class="earning-title">Total wallet balance</span><label class="earning-value"><?php echo $walletbalance->getTotalBalance(); ?> sats</label>
+                    <span class="earning-title">Total wallet balance</span><label class="earning-value"><?php echo number_format($walletbalance->getTotalBalance(), 0, "." , " ") ; ?> sats</label>
                     <span class="earning-title">Total channel balance</span>  <label class="earning-value"><?php echo number_format($channelbalance->getBalance(), 0, "." , " " ); ?> sats</label>
                     <?php if ($channelbalance->getPendingOpenBalance()>0): ?>
                         <label class="earning-value">(pending <?php echo $channelbalance->getPendingOpenBalance(); ?> sats)</label>
@@ -67,74 +69,68 @@ isset($this->PendingChannelsResp) ? $PendingChannelsResp = $this->PendingChannel
                 <?php
                 $ChannelList = $ListChannelsResp->getChannels();
                 $itr = $ChannelList->getIterator();
-
                 // Use iterator to traverse Array
                 $itr->rewind();
+                $output = '';
                 while($itr->valid()) {
-
                     if ($itr->current()->getActive()):
-                        $local = $itr->current()->getLocalBalance();
-                        $total = $itr->current()->getCapacity();
-                        $localperc = (100/$total)*$local;
-                        ?>
-                        <span class="earning-title" style="float: none;font-weight: normal;font-size: 15px;">
-                        Channel Partner:&nbsp;<?php echo $itr->current()->getRemotePubkey(); ?><br>
-                        Channel-ID:&nbsp;<?php echo $itr->current()->getChanId(); ?> <br>
-                        Capacity: <?php echo $total; ?> sats (l:&nbsp;<?php echo $local; ?> | r:&nbsp;<?php echo $itr->current()->getRemoteBalance(); ?> | c:&nbsp;<?php echo $itr->current()->getCommitFee(); ?>)
-                        </span>
-
-                        <div class="progress" style="height: 22px;">
-                            <div class="progress-bar" aria-valuenow="<?php echo $localperc; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $localperc; ?>%;"><?php echo $localperc; ?>%</div>
-                        </div>
-                    <?php endif; ?>
-                <?php $itr->next();} ?>
-
+                        $output.= ChannelFormatter::formatChannel($itr->current());
+                    endif;
+                    $itr->next();
+                }
+                echo $output;
+                ?>
+                <hr class="earning-hr">
                 <span class="earning-title" style="float: none;font-weight: normal;">Inactive</span>
                 <?php
                 // Reset iterator to loop again
                 $itr->rewind();
+                $output = '';
                 while($itr->valid()) {
-                if (!($itr->current()->getActive())):
-                $local = $itr->current()->getLocalBalance();
-                $total = $itr->current()->getCapacity();
-                $localperc = (100/$total)*$local;
+                    if (!($itr->current()->getActive())):
+                        $output.= ChannelFormatter::formatChannel($itr->current());
+                    endif;
+                    $itr->next();
+                }
+                echo $output;
                 ?>
-                <span class="earning-title" style="float: none;font-weight: normal;font-size: 15px;">
-                        Channel Partner:&nbsp;<?php echo $itr->current()->getRemotePubkey(); ?><br>
-                        Channel-ID:&nbsp;<?php echo $itr->current()->getChanId(); ?> <br>
-                        Capacity: <?php echo $total; ?> sats (l:&nbsp;<?php echo $local; ?> | r:&nbsp;<?php echo $itr->current()->getRemoteBalance(); ?> | c:&nbsp;<?php echo $itr->current()->getCommitFee(); ?>)
-                        </span>
 
-                <div class="progress" style="height: 22px;">
-                    <div class="progress-bar" aria-valuenow="<?php echo $localperc; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $localperc; ?>%;"><?php echo $localperc; ?>%</div>
-                </div>
-                <?php endif; ?>
-                <?php $itr->next();} ?>
-
-
-                <span class="earning-title" style="float: none;font-weight: normal;">Pending</span>
                 <?php
                 $PendingOpen = $PendingChannelsResp->getPendingOpenChannels();
-
+                if (count($PendingOpen)>0):
+                ?>
+                    <hr class="earning-hr">
+                    <span class="earning-title" style="float: none;font-weight: normal;">Pending open</span>
+                <?php
+                endif;
                 $itr = $PendingOpen->getIterator();
+                // Use iterator to traverse Array
+                $itr->rewind();
+                $output = '';
+                while($itr->valid()) {
+                    $output.= ChannelFormatter::formatPendingChannel($itr->current()->getChannel());
+                    $itr->next();
+                }
+                echo $output;
+
+                $WaitingClose = $PendingChannelsResp->getWaitingCloseChannels();
+                if (count($WaitingClose)>0):
+                    ?>
+                    <hr class="earning-hr">
+                    <span class="earning-title" style="float: none;font-weight: normal;">Waiting close</span>
+                <?php
+                endif;
+                $itr = $WaitingClose->getIterator();
 
                 // Use iterator to traverse Array
                 $itr->rewind();
+                $output = '';
                 while($itr->valid()) {
-                        $local = $itr->current()->getChannel()->getLocalBalance();
-                        $total = $itr->current()->getChannel()->getCapacity();
-                        $localperc = (100/$total)*$local;
-                        ?>
-                        <span class="earning-title" style="float: none;font-weight: normal;font-size: 15px;">
-                        Channel Partner:&nbsp;<?php echo $itr->current()->getChannel()->getRemoteNodePub(); ?><br>
-                        Channel-ID:&nbsp;123 <br>
-                        Capacity: <?php echo $total; ?> sats (l:&nbsp;<?php echo $local; ?> | r:&nbsp;<?php echo $itr->current()->getChannel()->getRemoteBalance(); ?> | c:&nbsp;?)
-                        </span>
-
-                        <div class="progress" style="height: 22px;">
-                            <div class="progress-bar" aria-valuenow="<?php echo $localperc; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $localperc; ?>%;"><?php echo $localperc; ?>%</div>
-                        </div>
-                    <?php $itr->next();} ?>
+                    $output.= ChannelFormatter::formatPendingChannel($itr->current()->getChannel());
+                    $itr->next();
+                }
+                echo $output;
+                ?>
             </div>
         </div>
 </div>

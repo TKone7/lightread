@@ -12,12 +12,13 @@ use config\Config;
 use Lnrpc\AddInvoiceResponse;
 use Lnrpc\LightningClient;
 use GPBMetadata\Lnd;
+use view\ChannelFormatter;
 
 putenv('GRPC_SSL_CIPHER_SUITES=HIGH+ECDSA');
 
-$lndIp = Config::get("lndmain.ip");
-$ssl = file_get_contents(Config::get("lndmain.ssl"));
-$macaroon = file_get_contents(Config::get("lndmain.macaroon"));
+$lndIp = Config::get("lndbob.ip");
+$ssl = file_get_contents(Config::get("lndbob.ssl"));
+$macaroon = file_get_contents(Config::get("lndbob.macaroon"));
 /*
 $lndIp = 'localhost:10003';
 $ssl = file_get_contents('/home/tobias/.lnd/tls.cert');
@@ -58,20 +59,26 @@ echo $wallet->getTotalBalance();
 list($reply, $status) = $client->AddInvoice($inv)->wait();
 var_dump($reply);*/
 
-$channelreq = new Lnrpc\ListChannelsRequest();
-list($channels, $status) = $client->ListChannels($channelreq)->wait();
-$channellist = $channels->getChannels();
-$itr = $channellist->getIterator();
+$pendchannelreq = new Lnrpc\PendingChannelsRequest();
+list($PendingChannelsResp, $status) = $client->PendingChannels($pendchannelreq)->wait();
+$WaitingClose = $PendingChannelsResp->getWaitingCloseChannels();
+$itr = $WaitingClose->getIterator();
+$itr->rewind();
 
-// Use iterator to traverse Array
+
+$output = '';
+echo "size: ". count($WaitingClose);
 while($itr->valid()) {
-    echo $itr->key().' => '. " id " .$itr->current()->getChanId() . " capa: ".$itr->current()->getCapacity() ."\n";
-
+    echo "closechannel: ";
+    $output.= ChannelFormatter::formatPendingChannel($itr->current());
     $itr->next();
 }
+echo $output;
 
+/*
 $listinvreq = new \Lnrpc\ListInvoiceRequest();
 list($reply, $status) = $client->ListInvoices($listinvreq)->wait();
 $invoices = $reply->getInvoices();
 foreach ($invoices as $i)
     echo $i->getMemo() . " created " . $i->getCreationDate(). " state: " . $i->getState() . " value ". $i->getValue() ."\n";
+*/

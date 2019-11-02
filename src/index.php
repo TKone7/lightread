@@ -80,5 +80,3 @@ try {
     LayoutRendering::headerLayout(new TemplateView("404.php"),"404","page not found");
 
 }
-
-echo Config::get("lndmain.ssl");
