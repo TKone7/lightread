@@ -6,9 +6,7 @@
  * Time: 10:55
  */
 
-use Lnrpc\GetInfoResponse;
 use view\TemplateView;
-use view\ChannelFormatter;
 $connected = isset($this->getinforesponse);
 isset($this->getinforesponse) ? $getinforesponse = $this->getinforesponse : $getinforesponse = new Lnrpc\GetInfoResponse();
 isset($this->walletbalance) ? $walletbalance = $this->walletbalance : $walletbalance = new Lnrpc\WalletBalanceResponse();
@@ -61,9 +59,13 @@ isset($this->PendingChannelsResp) ? $PendingChannelsResp = $this->PendingChannel
 
                 <span class="earning-title">Pending channels</span><label class="earning-value"><?php echo $getinforesponse->getNumPendingChannels(); ?></label>
                 <span class="earning-title">Active channels</span><label class="earning-value"><?php echo $getinforesponse->getNumActiveChannels(); ?></label>
-                <span class="earning-title">Inactive channels</span><label class="earning-value"><?php echo $getinforesponse->getNumInactiveChannels(); ?></label>
+                <span class="earning-title">Inactive channels</span><label class="earning-value">
+                    <?php echo $getinforesponse->getNumInactiveChannels(); ?>
+                </label>
                     <hr class="earning-hr">
-                <span class="earning-title">Total channels</span><label class="earning-value"><?php echo $getinforesponse->getNumPendingChannels() + $getinforesponse->getNumActiveChannels() +$getinforesponse->getNumInactiveChannels(); ?></label>
+                <span class="earning-title">Total channels</span><label class="earning-value">
+                    <?php echo $getinforesponse->getNumPendingChannels() + $getinforesponse->getNumActiveChannels() +$getinforesponse->getNumInactiveChannels(); ?>
+                </label>
 
                 <span class="earning-title" style="float: none;font-weight: normal;">Active</span>
                 <?php
@@ -74,7 +76,9 @@ isset($this->PendingChannelsResp) ? $PendingChannelsResp = $this->PendingChannel
                 $output = '';
                 while($itr->valid()) {
                     if ($itr->current()->getActive()):
-                        $output.= ChannelFormatter::formatChannel($itr->current());
+                        $c = new TemplateView("templates/channel.php");
+                        $c->channel = $itr->current();
+                        $output.= $c->render();
                     endif;
                     $itr->next();
                 }
@@ -88,7 +92,9 @@ isset($this->PendingChannelsResp) ? $PendingChannelsResp = $this->PendingChannel
                 $output = '';
                 while($itr->valid()) {
                     if (!($itr->current()->getActive())):
-                        $output.= ChannelFormatter::formatChannel($itr->current());
+                        $c = new TemplateView("templates/channel.php");
+                        $c->channel = $itr->current();
+                        $output.= $c->render();
                     endif;
                     $itr->next();
                 }
@@ -108,7 +114,9 @@ isset($this->PendingChannelsResp) ? $PendingChannelsResp = $this->PendingChannel
                 $itr->rewind();
                 $output = '';
                 while($itr->valid()) {
-                    $output.= ChannelFormatter::formatPendingChannel($itr->current()->getChannel());
+                    $c = new TemplateView("templates/pendingchannel.php");
+                    $c->channel = $itr->current()->getChannel();
+                    $output.= $c->render();
                     $itr->next();
                 }
                 echo $output;
@@ -126,7 +134,9 @@ isset($this->PendingChannelsResp) ? $PendingChannelsResp = $this->PendingChannel
                 $itr->rewind();
                 $output = '';
                 while($itr->valid()) {
-                    $output.= ChannelFormatter::formatPendingChannel($itr->current()->getChannel());
+                    $c = new TemplateView("templates/pendingchannel.php");
+                    $c->channel = $itr->current()->getChannel();
+                    $output.= $c->render();
                     $itr->next();
                 }
                 echo $output;

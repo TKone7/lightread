@@ -4,7 +4,18 @@
  * User: tobias
  * Date: 02.11.19
  * Time: 12:01
- */?>
+ */
+
+isset($this->channel) ? $channel = $this->channel : $channel = new Lnrpc\PendingChannelsResponse\PendingChannel();
+
+$local = $channel->getLocalBalance();
+$remote = $channel->getRemoteBalance();
+$total = $channel->getCapacity();
+$localperc = (100/$total)*$local;
+$pubkey = $channel->getRemoteNodePub();
+$channelpoint = $channel->getChannelPoint();
+?>
+
 <span class="earning-title" style="float: none;font-weight: normal;font-size: 15px;">
     Channel Partner:&nbsp;<?php echo $pubkey; ?><br>
     Channel-Point:&nbsp;<?php echo $channelpoint; ?> <br>
