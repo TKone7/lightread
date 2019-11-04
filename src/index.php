@@ -54,6 +54,7 @@ Router::route("POST", "/preview",  function () {
     $subtitle = $_POST["subtitle"];
     $md = $_POST["editordata"];
     $Parsedown = new Parsedown();
+    $Parsedown->setSafeMode(true);
     $content = $Parsedown->text($md);
     $post = new TemplateView("post.php");
     $post->content = $content;
