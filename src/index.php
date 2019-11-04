@@ -36,6 +36,9 @@ Router::route("GET", "/login",  function () {
     LayoutRendering::headerLayout(new TemplateView("login.php"),"Login","Welcome back");
 
 });
+Router::route("GET", "/edit",  function () {
+    LayoutRendering::simpleLayout(new TemplateView("editor.php"));
+});
 Router::route("GET", "/node",  function () {
     // @todo later outsource the whole node gRPC client configuration
     $client = RpcClient::connect();

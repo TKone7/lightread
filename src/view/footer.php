@@ -20,6 +20,15 @@
         </div>
     </div>
 </footer>
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+<script>
+	new SimpleMDE({
+		element: document.getElementById("summernote"),
+		spellChecker: false,
+		autosafe: false,
+		autofocus: true,
+	});
+	</script>
 <script src="assets/js/jquery.min.js"></script>
 <script src="assets/bootstrap/js/bootstrap.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
