@@ -13,24 +13,9 @@ use Lnrpc\AddInvoiceResponse;
 use Lnrpc\LightningClient;
 use GPBMetadata\Lnd;
 use view\ChannelFormatter;
+use rpcclient\RpcClient;
 
-putenv('GRPC_SSL_CIPHER_SUITES=HIGH+ECDSA');
-
-$lndIp = Config::get("lndbob.ip");
-$ssl = file_get_contents(Config::get("lndbob.ssl"));
-$macaroon = file_get_contents(Config::get("lndbob.macaroon"));
-/*
-$lndIp = 'localhost:10003';
-$ssl = file_get_contents('/home/tobias/.lnd/tls.cert');
-$macaroon = file_get_contents('/home/tobias/gocode/dev/charlie/data/chain/bitcoin/regtest/admin.macaroon');*/
-$metadataCallback = function ($metadata) use ($macaroon) {
-    return ['macaroon' => [bin2hex($macaroon)]];
-};
-
-$client = new LightningClient($lndIp, [
-    'credentials' => Grpc\ChannelCredentials::createSsl($ssl),
-    'update_metadata' => $metadataCallback
-]);
+$client = RpcClient::connect();
 
 
 var_dump($client);

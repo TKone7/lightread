@@ -16,6 +16,7 @@ use view\TemplateView;
 use view\LayoutRendering;
 use router\Router;
 use http\HTTPException;
+use rpcclient\RpcClient;
 
 ini_set( 'session.cookie_httponly', 1 );
 session_start();
@@ -37,22 +38,7 @@ Router::route("GET", "/login",  function () {
 });
 Router::route("GET", "/node",  function () {
     // @todo later outsource the whole node gRPC client configuration
-    putenv('GRPC_SSL_CIPHER_SUITES=HIGH+ECDSA');
-    $lndIp = Config::get("lndbob.ip");
-    $ssl = file_get_contents(Config::get("lndbob.ssl"));
-    $macaroon = file_get_contents(Config::get("lndbob.macaroon"));
-    $metadataCallback = function ($metadata) use ($macaroon) {
-        return ['macaroon' => [bin2hex($macaroon)]];
-    };
-    try{
-        $client = new LightningClient($lndIp, [
-            'credentials' => Grpc\ChannelCredentials::createSsl($ssl),
-            'update_metadata' => $metadataCallback
-        ]);
-    } catch (Exception $e) {
-        throw new Exception($e->getMessage());
-        echo "something went wrong";
-    }
+    $client = RpcClient::connect();
     $getInfoRequest = new Lnrpc\GetInfoRequest();
     $WalletbalanceRequest = new Lnrpc\WalletBalanceRequest();
     $ChannelbalanceRequest = new Lnrpc\ChannelBalanceRequest();
