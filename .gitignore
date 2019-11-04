@@ -1,4 +1,4 @@
 .idea
 log.txt
 /dir1
-.env
+config.env
