@@ -5,15 +5,18 @@
  * Date: 30.10.2019
  * Time:
  */
+
+use view\TemplateView;
+
+
 ?>
 <!DOCTYPE html>
 <html>
 
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Home - lightread</title>
+    <title><?php echo TemplateView::noHTML($title); ?></title>
     <link rel="icon" type="image/png" sizes="32x33" href="assets/img/lightread.png">
     <link rel="icon" type="image/png" sizes="16x16" href="assets/img/lightread16.png">
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
@@ -37,16 +40,16 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-light navbar-expand-lg fixed-top index" id="mainNav">
-        <div class="container"><a class="navbar-brand lrlogo lrlogo-index" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/">light<i class="fa fa-flash" style="color: #ffc81e;"></i>read</a><button data-toggle="collapse" data-target="#navbarResponsive" class="navbar-toggler" aria-controls="navbarResponsive"
-                aria-expanded="false" aria-label="Toggle navigation"><i class="fa fa-bars"></i></button>
-            <div class="collapse navbar-collapse" id="navbarResponsive">
-                <ul class="nav navbar-nav ml-auto">
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/">Home</a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/about">About</a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/category">Category</a></li>
-                    <li class="nav-item" role="presentation" id="login"><a class="nav-link" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/login">Login</a></li>
-                </ul>
-            </div>
+<nav class="navbar navbar-light navbar-expand-lg fixed-top <?php echo ($this->simple) ? "index" : "" ?>" id="mainNav">
+    <div class="container"><a class="navbar-brand lrlogo <?php echo ($this->simple) ? "lrlogo-index" : "" ?>" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/">light<i class="fa fa-flash" style="color: #ffc81e;"></i>read</a><button data-toggle="collapse" data-target="#navbarResponsive" class="navbar-toggler" aria-controls="navbarResponsive" aria-expanded="false"
+                                                                                                                                                    aria-label="Toggle navigation"><i class="fa fa-bars"></i></button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="nav navbar-nav ml-auto">
+                <li class="nav-item" role="presentation"><a class="nav-link" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/">Home</a></li>
+                <li class="nav-item" role="presentation"><a class="nav-link" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/about">About</a></li>
+                <li class="nav-item" role="presentation"><a class="nav-link" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/category">Category</a></li>
+                <li class="nav-item" role="presentation" id="login"><a class="nav-link" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/login">Login</a></li>
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>

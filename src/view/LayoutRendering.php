@@ -14,23 +14,35 @@ use view\TemplateView;
 class LayoutRendering
 {
     public static function simpleLayout(TemplateView $content){
-        $header = new TemplateView('simple_header.php');
-        $footer = new TemplateView('footer.php');
-        self::LayoutRender($header, $content, $footer);
+        $navigation = new TemplateView('navigation.php');
+        $navigation->simple = true;
+        self::LayoutRender($navigation, $content);
     }
     public static function headerLayout(TemplateView $content, $title = Null, $subtitle = Null){
+        $navigation = new TemplateView('navigation.php');
         $header = new TemplateView('header.php');
         // set the tile if they are specified
         $header->title = $title;
         $header->subtitle = $subtitle;
-        $footer = new TemplateView('footer.php');
-        self::LayoutRender($header, $content, $footer);
+        self::LayoutRender($navigation, $content, $header);
     }
-    private static function LayoutRender(TemplateView $header, TemplateView $content, TemplateView $footer){
+    public static function postLayout(TemplateView $content, $title, $subtitle, $author){
+        $navigation = new TemplateView('navigation.php');
+        $header = new TemplateView('post_header.php');
+        // set the tile if they are specified
+        $header->title = $title;
+        $header->subtitle = $subtitle;
+        $header->author = $author;
+        self::LayoutRender($navigation, $content, $header);
+    }
+    private static function LayoutRender(TemplateView $navigation, TemplateView $content, TemplateView $header=Null){
         $page = new TemplateView('layout.php');
-        $page->header = $header->render();
+        $page->navigation = $navigation->render();
+        if (isset($header)){
+            $page->header = $header->render();
+        }
         $page->content = $content->render();
-        $page->footer = $footer->render();
+        $page->footer = (new TemplateView('footer.php'))->render();
         echo $page->render();
     }
 

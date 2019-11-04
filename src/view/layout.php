@@ -6,6 +6,7 @@
  * Time: 17:55
  */
 
+echo $this->navigation;
 echo $this->header;
 echo $this->content;
 echo $this->footer;

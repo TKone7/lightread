@@ -32,6 +32,10 @@ Router::route("GET", "/category",  function () {
     LayoutRendering::headerLayout(new TemplateView("category.php"),"Category","Find what you are looking for");
 
 });
+Router::route("GET", "/article",  function () {
+    LayoutRendering::postLayout(new TemplateView("post.php"),"I believe every human has a finite number of heartbeats.","Find what you are looking for", "Tobias Koller");
+
+});
 Router::route("GET", "/login",  function () {
     LayoutRendering::headerLayout(new TemplateView("login.php"),"Login","Welcome back");
 
