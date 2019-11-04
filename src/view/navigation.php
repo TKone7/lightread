@@ -48,7 +48,11 @@ use view\TemplateView;
                 <li class="nav-item" role="presentation"><a class="nav-link" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/">Home</a></li>
                 <li class="nav-item" role="presentation"><a class="nav-link" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/about">About</a></li>
                 <li class="nav-item" role="presentation"><a class="nav-link" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/category">Category</a></li>
-                <li class="nav-item" role="presentation" id="login"><a class="nav-link" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/login">Login</a></li>
+                <?php if (!isset($_SESSION["mail"])): ?>
+                    <li class="nav-item" role="presentation" id="login"><a class="nav-link" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/login">Login</a></li>
+                <?php else: ?>
+                    <li class="nav-item post-subtitle" role="presentation" id="login"><a class="nav-link" id="login" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/profile"><i class="fa fa-user-circle-o" style="font-size: 16px;vertical-align: middle;"></i>&nbsp;<?php echo $_SESSION["mail"]; ?></a></li>
+                <?php endif; ?>
             </ul>
         </div>
     </div>

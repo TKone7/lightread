@@ -17,6 +17,7 @@ use view\LayoutRendering;
 use router\Router;
 use http\HTTPException;
 use rpcclient\RpcClient;
+use parsedown\Parsedown;
 
 ini_set( 'session.cookie_httponly', 1 );
 session_start();
@@ -40,8 +41,23 @@ Router::route("GET", "/login",  function () {
     LayoutRendering::headerLayout(new TemplateView("login.php"),"Login","Welcome back");
 
 });
+Router::route("GET", "/logout",  function () {
+    session_destroy();
+    Router::redirect("/login");
+
+});
 Router::route("GET", "/edit",  function () {
     LayoutRendering::simpleLayout(new TemplateView("editor.php"));
+});
+Router::route("POST", "/preview",  function () {
+    $title = $_POST["title"];
+    $subtitle = $_POST["subtitle"];
+    $md = $_POST["editordata"];
+    $Parsedown = new Parsedown();
+    $content = $Parsedown->text($md);
+    $post = new TemplateView("post.php");
+    $post->content = $content;
+    LayoutRendering::postLayout($post,$title, $subtitle, "Tobias Koller");
 });
 Router::route("GET", "/node",  function () {
     // @todo later outsource the whole node gRPC client configuration
