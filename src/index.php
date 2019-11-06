@@ -10,8 +10,6 @@
 require dirname(__FILE__).'/../vendor/autoload.php';
 require_once("config/Autoloader.php");
 
-use config\Config;
-use Lnrpc\LightningClient;
 use view\TemplateView;
 use view\LayoutRendering;
 use router\Router;
@@ -34,7 +32,9 @@ Router::route("GET", "/category",  function () {
 
 });
 Router::route("GET", "/article",  function () {
-    LayoutRendering::postLayout(new TemplateView("post.php"),"I believe every human has a finite number of heartbeats.","Find what you are looking for", "Tobias Koller");
+    $post = new TemplateView("post.php");
+    $post->content = "This is just an article";
+    LayoutRendering::postLayout($post,"I believe every human has a finite number of heartbeats.","Find what you are looking for", "Tobias Koller");
 
 });
 Router::route("GET", "/login",  function () {
@@ -61,7 +61,6 @@ Router::route("POST", "/preview",  function () {
     LayoutRendering::postLayout($post,$title, $subtitle, "Tobias Koller");
 });
 Router::route("GET", "/node",  function () {
-    // @todo later outsource the whole node gRPC client configuration
     $client = RpcClient::connect();
     $getInfoRequest = new Lnrpc\GetInfoRequest();
     $WalletbalanceRequest = new Lnrpc\WalletBalanceRequest();
