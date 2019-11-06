@@ -35,9 +35,30 @@ Router::route("GET", "/article",  function () {
     $post = new TemplateView("post.php");
     $post->content = "This is just an article";
     LayoutRendering::postLayout($post,"I believe every human has a finite number of heartbeats.","Find what you are looking for", "Tobias Koller");
-
+});
+Router::route("GET", "/pay",  function () {
+    $post = new TemplateView("post-secured.php");
+    LayoutRendering::postLayout($post,"I believe every human has a finite number of heartbeats.","Find what you are looking for", "Tobias Koller");
+});
+Router::route("POST", "/pay",  function () {
+    $post = new TemplateView("post-secured.php");
+    $client = RpcClient::connect();
+    $inv = new Lnrpc\Invoice();
+    $inv->setMemo("This is automatically generated");
+    $inv->setValue(1999);
+    list($inv_response, $status) = $client->AddInvoice($inv)->wait();
+    $post->paymentrequest = $inv_response->getPaymentRequest();
+    LayoutRendering::postLayout($post,"I believe every human has a finite number of heartbeats.","Find what you are looking for", "Tobias Koller");
 });
 Router::route("GET", "/login",  function () {
+    if (isset($_SESSION["mail"])):
+        $subtitle = $_SESSION["mail"];
+    endif;
+    LayoutRendering::headerLayout(new TemplateView("login.php"),"Login","Welcome back ".$subtitle);
+
+});
+Router::route("POST", "/login",  function () {
+    $_SESSION["mail"] = $_POST["email"];
     LayoutRendering::headerLayout(new TemplateView("login.php"),"Login","Welcome back");
 
 });
