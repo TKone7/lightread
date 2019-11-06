@@ -3,42 +3,50 @@
 ## Actors
 ### 0 User
 Someone who signed up on the platform and hence has an account.
-### 2 Publisher (the ones that provide content)
-A user that provides content of any kind on the platform. These could be, for instance, authors, artists, composers, or researchers.
-### 3 Consumers (the ones that consume content)
-Either a visitor with no account or an user, that consume the content on the platform.
-### 4 Platform operators
-Administrators that are able to see insights about the platform's activities.
-### 5 Lightning Network Participant
+### 1 Consumer
+A user that consumes the content on the platform but did not publish any content so far. Hence, Consumers are not able to earn Satoshis. Once they start publishing content, they become a Publisher. Reader serves as a synonym for this type of user.
+### 2 Publisher
+A user that consumes and provides content in form of articles on the platform and hence is able to earn Satoshis. Consumer specific requirements are also applicable to Publisher. Author serves as a synonym for this type of user.
+### 3 Operator
+Administrators that are able to see insights about the platform's activities and Lightning node.
+### 4 Lightning Network Participant
 Other Lightning node administrators who are interested in opening channels with our platform's Lightning node.
 
 
 ![class diagram describing participants](resources/participants.png)
 
 ## Minimum Requirements
-
 |O#|  Description | Participating Actor |   
 |---|---|---|
-|M0|The platform shall allow visitors to become an user by creating an account.||
-|M1|The platform shall allow users to set up their profile, including enter some descriptive text about themselves and upload a profile picture. |1|
-|M2|The platform shall allow publishers to publish written content by means of a markdown editor.|1|
-|M3|Publishers should have the option to incorporate simple media such as images or links in their markdown articles.|1|
-|M4|Publishers shall have the option to offer their content for free and just rely on donations, or to restrict access to the content until the consumer payed a certain price for it.|1|
-|M5|Visiting customers shall be able to read and download content on the platform and pay for premium content via the Lightning Network.|2|     
-|M5|Visiting customers shall be able tip small amounts via the Lightning Network to any producer of content.|2|
-|M7|Visitors shall have the option to browse and pay for content on private basis without authentication, but have the option to store their purchases over the duration of their browser session by creating an account.|2|
-|M8|Content producers shall see their current balance of received payments in their login and withdraw a specific amount to their own controlled lightning wallet.|1|
-|M9|Platform providers shall be offered a dashboard to manage user accounts and see transactional data.|3|
+|M01|The platform shall allow visitors to become an User by creating an account.|0|
+|M02|The platform shall allow Users to set up their profile, including enter some descriptive text about themselves and upload a profile picture. |0|
+|M02|The platform shall allow Publishers to publish written content by means of a markdown editor.|2|
+|M03|Publishers should have the option to incorporate simple media such as images or links in their markdown articles.|2|
+|M04|Publishers shall have the option to offer their content for free and just rely on donations (free content).|2|
+|M05|Publishers shall be able to restrict the access to the full content until the consumer paid a predefined fee for it (paid content). The fee can be set by the publisher and will be represented in amount of Satoshis.|2|
+|M06|Consumers shall be able to read free content.|1|
+|M07|Consumers shall be able to read paid content after they paid the indicated fee via the Lightning Network.|1|
+|M08|Independent of free or paid content, Consumers shall be able to donate Satoshis to the content's Publisher using the Lightning Network|1|
+|M09|The platform shall allow Consumers to re-access paid content without paying again.|1|
+|M10|Publishers shall be able to see their current balance of received payments on their personal profile page.|2|
+|M11|Publishers shall be able to withdraw a specific amount to their own controlled Lightning wallet.|2|
+|M12|Operators shall be able to manage user accounts.|3|
+|M13|Operators shall be able to overview Lightning transactions.|3|
+
 
 ## Optional Requirements
 |O#|  Description | Participating Actor |   
 |---|---|---|
-|O1|The platform shall show the information of the Lightning Node in order for other participants to open channels with. |4|
-|O2|Content providers should have the ability to examine their revenue streams per content from a statistical aspect|1|
-|O3|The platform shall allow a producer to publish media files (audios, videos, images).|1|
+|O01|The platform shall show the information of the Lightning Node in order for other participants to open channels with. |4|
+|O02|Publisher should have the ability to examine the views and revenue per content over time.|1|
+|O03|Publisher shall be able to publish audio files or video clips.|1|
+|O11|Visitors shall be able to access paid content once they paid the correspondent fee without being logged in or without having a login. In this case, purchases shall be stored in the visitor's cookies.|??|
+
 
 ## Requirements according to MoSCoW
 ### Must-haves
 ### Should-haves
 ### Could-haves
+- Ability to sign up without using an e-mail address.
 ### Won't- and Would-haves
+- Directly sending Satoshis to a Publisher. Every transaction has to refer to a specific content.
