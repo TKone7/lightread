@@ -27,11 +27,20 @@ PRIMARY KEY(fld_SCON_ID));
 
 
 
+CREATE TABLE tbl_Category (
+  fld_CATE_ID SERIAL  NOT NULL ,
+  fld_CATE_Name VARCHAR(255)      ,
+PRIMARY KEY(fld_CATE_ID));
+
+
+
+
 CREATE TABLE tbl_User (
   fld_USER_ID SERIAL  NOT NULL ,
   fld_USER_Email VARCHAR(255)    ,
   fld_USER_PWhash VARCHAR(255)    ,
   fld_USER_CreationPIT TIMESTAMP    ,
+  fld_USER_Verified BOOL    ,
   fld_USER_FirstName VARCHAR(255)    ,
   fld_USER_LastName VARCHAR(255)    ,
   fld_USER_NickName VARCHAR(255)    ,
@@ -43,11 +52,6 @@ PRIMARY KEY(fld_USER_ID));
 
 
 
-
-
-
-
-
 CREATE TABLE tbl_StatusInvoice (
   fld_SINV_ID SERIAL  NOT NULL ,
   fld_SINV_Key VARCHAR(255)    ,
@@ -56,11 +60,18 @@ PRIMARY KEY(fld_SINV_ID));
 
 
 
-
 CREATE TABLE tbl_Keyword (
   fld_KEYW_ID SERIAL  NOT NULL ,
+  fld_CATE_ID INT    ,
   fld_KEYW_Name VARCHAR(255)      ,
-PRIMARY KEY(fld_KEYW_ID));
+PRIMARY KEY(fld_KEYW_ID)  ,
+  FOREIGN KEY(fld_CATE_ID)
+    REFERENCES tbl_Category(fld_CATE_ID));
+
+CREATE INDEX tbl_Keyword_FKIndex1 ON tbl_Keyword (fld_CATE_ID);
+
+
+CREATE INDEX IFK_groups ON tbl_Keyword (fld_CATE_ID);
 
 
 
@@ -206,5 +217,3 @@ CREATE INDEX tbl_ContentKeyword_FKIndex2 ON tbl_ContentKeyword (fld_KEYW_ID);
 
 CREATE INDEX IFK_has ON tbl_ContentKeyword (fld_CONT_ID);
 CREATE INDEX IFK_describes ON tbl_ContentKeyword (fld_KEYW_ID);
-
-
