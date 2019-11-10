@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>14</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>252</x>
+      <y>112</y>
+      <w>336</w>
+      <h>504</h>
+    </coordinates>
+    <panel_attributes>*User*
+--
+/Attributes/
+- id: int
+- firstname: String
+- lastname: String
+- nickname: String
+- description: String
+--
+/Constructors/
++ User(nID)
++ User(cEmail, cPWhash) 
+--
+/Static Functions/
+--
+/Object Functions/
++ getID(): int
++ getFirstName(): String
++ setFirstName(c)
++ getLastName(): String
++ setLastName(c)
++ getNickName(): String
++ setNickName(c)
++ getPicture(): blob
++ setPicture(blob)
++ isVerified(): bool
++ getPaidContent(): List
++ getDonatedContent(): List
++ getPublishedContent(): List
+
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>224</x>
+      <y>700</y>
+      <w>308</w>
+      <h>182</h>
+    </coordinates>
+    <panel_attributes>*Logger*
+--
+/Attributes/
+--
+/Constructors/
+--
+/Static Functions/
++ log(cMsg)
++ log(nID, cIDField, cMsg)
+--
+/Object Functions/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>868</x>
+      <y>168</y>
+      <w>378</w>
+      <h>420</h>
+    </coordinates>
+    <panel_attributes>/Invoice/
+--
+/Attributes/
+- id: int
+- rhash: String
+- payreq: String
+- memo: String
+- sats: int
+- creationdate: Date
+- settledate: Date
+- expiry: int
+- purpose: enum
+--
+/Constructors/
++ Invoice(cAddress, nStats, cMemo)
+--
+/Static Functions/
+--
+/Object Functions/
++ getHash(): String
++ getMemo(): String
++ getSats(): int
++ isSettled(): bool
++ isExpired(): bool
++ getStatus(): String
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>672</x>
+      <y>700</y>
+      <w>308</w>
+      <h>266</h>
+    </coordinates>
+    <panel_attributes>*Payment*
+--
+/Attributes/
+- CONT_ID: int
+- USER_ID: int
+- purpose: enum
+--
+/Constructors/
++ Payment(CONT_ID, ePurpose, 
+          nSats)
++ Payment(CONT_ID, USER_ID, 
+          Purpose, nSats)
+--
+/Static Functions/
+--
+/Object Functions/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>924</x>
+      <y>574</y>
+      <w>140</w>
+      <h>154</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>80.0;10.0;10.0;90.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1022</x>
+      <y>700</y>
+      <w>350</w>
+      <h>182</h>
+    </coordinates>
+    <panel_attributes>*Withdrawl*
+--
+/Attributes/
+- USER_ID: int
+--
+/Constructors/
++ Withdrawl(USER_ID, cAddress, 
+            nSats, cMemo)
+--
+/Static Functions/
+--
+/Object Functions/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1050</x>
+      <y>574</y>
+      <w>70</w>
+      <h>154</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;30.0;90.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1428</x>
+      <y>70</y>
+      <w>406</w>
+      <h>504</h>
+    </coordinates>
+    <panel_attributes>*Content*
+--
+/Attributes/
+- id: int
+- title: String
+- subtitle: String
+- body: String
+- creationdate: Date
+- keywords: List
+--
+/Constructors/
++ Content(nID)
++ Content(USER_ID, ACCC, SCON, 
+          cTitle, cSubtitle, cBody,
+          nSats, KeywordList)
+--
+/Static Functions/
+--
+/Object Functions/
++ getRevenue(): int
++ getRevenue(purpose): int
++ getViews: int
++ getViewsByCountry: List
++ getHTML: String
+
+
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1428</x>
+      <y>616</y>
+      <w>406</w>
+      <h>504</h>
+    </coordinates>
+    <panel_attributes>*ContentManager*
+--
+/Attributes/
+- Articles: List
+--
+/Constructors/
++ ContentManager()
++ ContentManager(cKeyword)
++ ContentManager(cCategory)
+--
+/Static Functions/
+--
+/Object Functions/
++ getRevenue(): int
++ getRevenue(purpose): int
++ getViews: int
++ getViewsByCountry: List
+
+
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
