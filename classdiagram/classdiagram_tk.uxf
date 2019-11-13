@@ -1,0 +1,226 @@
+<diagram program="umletino" version="14.3.0"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>600</x><y>0</y><w>240</w><h>360</h></coordinates><panel_attributes>*User*
+--
+/Attributes/
+- id: int
+- firstname: String
+- lastname: String
+- nickname: String
+- description: String
+- role : enum
+--
+/Constructors/
++ User(nID)
++ User(cEmail, cPWhash) 
+--
+/Static Functions/
+--
+/Object Functions/
++ getID(): int
++ getFirstName(): String
++ setFirstName(c)
++ getLastName(): String
++ setLastName(c)
++ getNickName(): String
++ setNickName(c)
++ getPicture(): blob
++ setPicture(blob)
++ isVerified(): bool
+
+
+
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>600</x><y>520</y><w>220</w><h>130</h></coordinates><panel_attributes>*Logger*
+--
+/Attributes/
+--
+/Constructors/
+--
+/Static Functions/
++ log(cMsg)
++ log(nID, cIDField, cMsg)
+--
+/Object Functions/</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>980</x><y>10</y><w>270</w><h>370</h></coordinates><panel_attributes>/Invoice/
+--
+/Attributes/
+- id: int
+- rhash: String
+- payreq: String
+- memo: String
+- sats: int
+- creationdate: Date
+- settledate: Date
+- expiry: int
+- purpose: enum
+--
+/Constructors/
++ Invoice(cAddress, nStats, cMemo)
+--
+/Static Functions/
+--
+/Object Functions/
++ getRHash(): String
++ getPayreq(): String
++ getMemo(): String
++ getSats(): int
++ isSettled(): bool
++ isExpired(): bool
++ getStatus(): String
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>840</x><y>460</y><w>220</w><h>230</h></coordinates><panel_attributes>*Payment*
+--
+/Attributes/
+- content: int
+- payer: int
+--
+/Constructors/
++ Payment(content, ePurpose, 
+          nSats)
++ Payment(content, payer, 
+          Purpose, nSats)
+--
+/Static Functions/
+--
+/Object Functions/
++generateInvoice()</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1020</x><y>370</y><w>100</w><h>110</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>80;10;10;90</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1090</x><y>460</y><w>250</w><h>130</h></coordinates><panel_attributes>*Withdrawal*
+--
+/Attributes/
+- receiver: int
+--
+/Constructors/
++ Withdrawl(USER_ID, payreq)
+--
+/Static Functions/
+--
+/Object Functions/
++ </panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1110</x><y>370</y><w>50</w><h>110</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;30;90</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1340</x><y>10</y><w>290</w><h>330</h></coordinates><panel_attributes>*Content*
+--
+/Attributes/
+- id: int
+- title: String
+- subtitle: String
+- body: String
+- creationdate: Date
+- keywords: List
+--
+/Constructors/
++ Content(nID)
++ Content(USER_ID, ACCC, SCON, 
+          cTitle, cSubtitle, cBody,
+          nSats, KeywordList)
+--
+/Static Functions/
+--
+/Object Functions/
++ getRevenue(): int
++ getRevenue(purpose): int
++ getViews: int
++ getViewsByCountry: List
+
+
+
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1470</x><y>680</y><w>290</w><h>360</h></coordinates><panel_attributes>*ContentManager*
+--
+/Attributes/
+- Articles: Content[]
+--
+/Constructors/
++ ContentManager(Content[])
+--
+/Static Functions/
+--
+/Object Functions/
++ getRevenue(): int
++ getRevenue(purpose): int
++ getViews: int
++ getViewsByCountry: List
+
++ getPaidContent(): Content[]
++ getDonatedContent(): Content[]
++ getPublishedContent(): Content[]
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>190</x><y>40</y><w>180</w><h>90</h></coordinates><panel_attributes>/AbstractClass : BasicDAO/
+--
+/Attributes/
+--
+#pdoInstance: PDO
+--
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>280</x><y>260</y><w>240</w><h>140</h></coordinates><panel_attributes>*UserDAO*
+--
+/Object Functions/
++ create(u: User): int
++ read(id: int): User
++ update(u: User): User
++ findByEmail(s: String): User
++ findByUsername(s: String): User
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>110</x><y>120</y><w>190</w><h>160</h></coordinates><panel_attributes>lt=&lt;&lt;-
+&lt;&lt;extends&gt;&gt;</panel_attributes><additional_attributes>170;10;10;140</additional_attributes></element><element><id>UMLClass</id><coordinates><x>0</x><y>260</y><w>240</w><h>140</h></coordinates><panel_attributes>*ContentDAO*
+--
+/Object Functions/
++ create(u: Content): int
++ read(id: int): Content
++ update(u: Content): Content
++ list(author_id: int, published bool): Array
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>260</x><y>120</y><w>40</w><h>380</h></coordinates><panel_attributes>lt=&lt;&lt;-
+</panel_attributes><additional_attributes>20;10;10;360</additional_attributes></element><element><id>UMLClass</id><coordinates><x>10</x><y>480</y><w>240</w><h>110</h></coordinates><panel_attributes>*PaymentDAO*
+--
+/Object Functions/
++ create(u: Payment): int
++ read(id: int): Payment
++ update(u: Payment): Payment
++ findByRHash(h: String): Payment</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>270</x><y>120</y><w>150</w><h>160</h></coordinates><panel_attributes>lt=&lt;&lt;-
+&lt;&lt;extends&gt;&gt;</panel_attributes><additional_attributes>10;10;130;140</additional_attributes></element><element><id>UMLClass</id><coordinates><x>260</x><y>480</y><w>240</w><h>110</h></coordinates><panel_attributes>*WithdrawalDAO*
+--
+/Object Functions/
++ create(u: Payment): int
++ read(id: int): Payment
++ update(u: Payment): Payment
++ findByRHash(h: String): Payment</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>230</x><y>120</y><w>70</w><h>380</h></coordinates><panel_attributes>lt=&lt;&lt;-
+</panel_attributes><additional_attributes>50;10;10;360</additional_attributes></element><element><id>UMLClass</id><coordinates><x>240</x><y>770</y><w>210</w><h>170</h></coordinates><panel_attributes>&lt;&lt;Interface&gt;&gt;
+AuthService
+--
++AUTH_TOKEN : int = 1
++RESET_TOKEN : int = 2
+--
++verifyUserEmail(email String, password String) : boolean
++verifyUserName(name String, password String) : boolean
++readUser() : User
++validateToken(token String) : boolean
++issueToken(type int, username string): String
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>240</x><y>1010</y><w>210</w><h>150</h></coordinates><panel_attributes>AuthServiceImpl
+--
+-instance AuthServiceImpl = null
+-currentUserId int
+--
++getInstance() : AuthServiceImpl
++getCurrentUserId() : int
+#__construct() 
+-__clone()
++verifyAuth() : boolean
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>330</x><y>930</y><w>30</w><h>100</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;80</additional_attributes></element><element><id>UMLClass</id><coordinates><x>510</x><y>770</y><w>210</w><h>170</h></coordinates><panel_attributes>&lt;&lt;Interface&gt;&gt;
+UserService
+--
++createUser(u User) : User
++readUser(id int) : User
++updateUser(u User) : User
++deleteUser(id int) : boolean
++findAllUser() : User[]</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>510</x><y>1020</y><w>210</w><h>70</h></coordinates><panel_attributes>UserServiceImpl
+--</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>610</x><y>930</y><w>30</w><h>110</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;90</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1090</x><y>770</y><w>290</w><h>120</h></coordinates><panel_attributes>&lt;&lt;Interface&gt;&gt;
+InvoiceService
+--
++createInvoice(i Invoice) : Invoice
++checkInvoice(id int) : Invoice
++getQRcode(id int) : Array[]
++findIncomplete() : Invoice[]</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>800</x><y>1020</y><w>210</w><h>70</h></coordinates><panel_attributes>ContentServiceImpl
+--</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>890</x><y>930</y><w>30</w><h>110</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;90</additional_attributes></element><element><id>UMLClass</id><coordinates><x>760</x><y>770</y><w>290</w><h>170</h></coordinates><panel_attributes>&lt;&lt;Interface&gt;&gt;
+ContentService
+--
++createContent(c Content) : Content
++readContent(id int) : Content
++updateContent(c Content) : Content
++deleteContent(id int) : boolean
++getAllContent() : ContentManager
++getContentKeyword(k String) : ContentManager
++getContentCat(c String) : ContentManager
++getContentAuth(a User) : ContentManager</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1090</x><y>1020</y><w>290</w><h>70</h></coordinates><panel_attributes>InvoiceServiceImpl
+--
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1220</x><y>880</y><w>30</w><h>160</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;140</additional_attributes></element></diagram>
