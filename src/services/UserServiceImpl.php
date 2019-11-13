@@ -6,7 +6,7 @@
  * Time: 13:05
  */
 
-namespace service;
+namespace services;
 
 
 use domain\User;
