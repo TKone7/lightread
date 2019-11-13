@@ -163,7 +163,7 @@ div {
   opacity: 1;
 }
 
-.overlay {
+.img-overlay {
   position: absolute;
   bottom: 0;
   background: rgb(0, 0, 0);

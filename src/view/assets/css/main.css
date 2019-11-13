@@ -145,3 +145,37 @@ div {
   background-color: rgb(124,124,124);
 }
 
+.profilepic_edit {
+  border-radius: 180px;
+  width: 178px;
+  margin-bottom: 20px;
+  display: block;
+}
+
+.cont {
+  position: relative;
+  width: 178px;
+  max-width: 300px;
+  margin: auto;
+}
+
+.cont:hover .overlay {
+  opacity: 1;
+}
+
+.img-overlay {
+  position: absolute;
+  bottom: 0;
+  background: rgb(0, 0, 0);
+  background: rgba(0, 0, 0, 0.4);
+  color: #f1f1f1;
+  width: 100%;
+  transition: .5s ease;
+  opacity: 0;
+  color: white;
+  font-size: 20px;
+  padding: 55px;
+  text-align: center;
+  border-radius: 180px;
+}
+
