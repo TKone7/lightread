@@ -10,12 +10,14 @@
 require dirname(__FILE__).'/../vendor/autoload.php';
 require_once("config/Autoloader.php");
 
+use service\UserServiceImpl;
 use view\TemplateView;
 use view\LayoutRendering;
 use router\Router;
 use http\HTTPException;
 use rpcclient\RpcClient;
 use parsedown\Parsedown;
+use domain\User;
 
 ini_set( 'session.cookie_httponly', 1 );
 session_start();
@@ -50,11 +52,21 @@ Router::route("POST", "/pay",  function () {
     $post->paymentrequest = $inv_response->getPaymentRequest();
     LayoutRendering::postLayout($post,"I believe every human has a finite number of heartbeats.","Find what you are looking for", "Tobias Koller");
 });
+Router::route("GET", "/register",  function () {
+    LayoutRendering::headerLayout(new TemplateView("register.php"),"Register","Create account");
+
+});
+Router::route("POST", "/register",  function () {
+    $nu = new User();
+    $nu->setUsername($_POST["username"]);
+    $nu->setEmail($_POST["email"]);
+    $nu->setPassword(password_hash($_POST["password"], PASSWORD_DEFAULT));
+    $res = (new UserServiceImpl())->createUser($nu);
+    LayoutRendering::headerLayout(new TemplateView("register.php"),"Success","Your ID: ".$res->getId());
+
+});
 Router::route("GET", "/login",  function () {
-    if (isset($_SESSION["mail"])):
-        $subtitle = $_SESSION["mail"];
-    endif;
-    LayoutRendering::headerLayout(new TemplateView("login.php"),"Login","Welcome back ".$subtitle);
+    LayoutRendering::headerLayout(new TemplateView("login.php"),"Login","Welcome back");
 
 });
 Router::route("POST", "/login",  function () {
