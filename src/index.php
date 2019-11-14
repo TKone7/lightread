@@ -114,21 +114,38 @@ Router::route_auth("GET", "/edit-profile", $authFunction, function () {
     LayoutRendering::simpleLayout($content);
 });
 Router::route_auth("POST", "/edit-profile", $authFunction, function () {
-
-    $authservice = AuthServiceImpl::getInstance();
-    $content = new TemplateView("profile.php");
-    $content->user=$authservice->readUser();
-    LayoutRendering::simpleLayout($content);
+    $user = new User();
+    $user->setId($_POST["id"]);
+    $user->setUsername($_POST["username"]);
+    $user->setEmail($_POST["email"]);
+    $user->setFirstname($_POST["firstname"]);
+    $user->setLastname($_POST["lastname"]);
+    $user->setPassword(password_hash($_POST["password"], PASSWORD_DEFAULT));
+    $res = (new UserServiceImpl())->updateUser($user);
+    Router::redirect("/profile");
 });
 Router::route_auth("GET", "/logout", $softauthFunction, function () {
     session_destroy();
     Router::redirect("/login");
 
 });
-Router::route_auth("GET", "/edit", $softauthFunction, function () {
+Router::route_auth("GET", "/add", $authFunction, function () {
     LayoutRendering::simpleLayout(new TemplateView("editor.php"));
 });
-Router::route_auth("POST", "/preview", $softauthFunction, function () {
+Router::route_auth("POST", "/edit", $authFunction, function () {
+    // retrieve content
+    LayoutRendering::simpleLayout(new TemplateView("editor.php"));
+});
+Router::route_auth("POST", "/publish", $authFunction, function () {
+    $title = $_POST["title"];
+    $subtitle = $_POST["subtitle"];
+    $md = $_POST["editordata"];
+    $Parsedown = new Parsedown();
+    $Parsedown->setSafeMode(true);
+    $content = $Parsedown->text($md);
+    LayoutRendering::simpleLayout(new TemplateView("editor.php"));
+});
+Router::route_auth("POST", "/preview", $authFunction, function () {
     $title = $_POST["title"];
     $subtitle = $_POST["subtitle"];
     $md = $_POST["editordata"];
@@ -139,7 +156,7 @@ Router::route_auth("POST", "/preview", $softauthFunction, function () {
     $post->content = $content;
     LayoutRendering::postLayout($post,$title, $subtitle, "Tobias Koller");
 });
-Router::route_auth("GET", "/node", $softauthFunction, function () {
+Router::route_auth("GET", "/node", $authFunction, function () {
     $client = RpcClient::connect();
     $getInfoRequest = new Lnrpc\GetInfoRequest();
     $WalletbalanceRequest = new Lnrpc\WalletBalanceRequest();

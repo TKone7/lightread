@@ -15,6 +15,8 @@ isset($this->user) ? $user = $this->user : $user = new User();
         <div class="col-md-10 col-lg-8 mx-auto">
             <h1>Edit Profile</h1>
             <form method="post" action="edit-profile">
+                <input type="hidden" name="id" value="<?php echo $user->getId(); ?>">
+
                 <div class="text-center clearfix cont"><img class="profilepic_edit" src="assets/img/rb.jpeg">
                     <div class="img-overlay"><label>Edit picture</label></div>
                 </div><table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">

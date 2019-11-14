@@ -55,4 +55,12 @@ interface AuthService
      * @ReturnType User
      */
     public function readUser();
+
+    /**
+     * @access public
+     * @return int
+     * @ReturnType int
+     */
+    public function getCurrentUserId();
+
 }

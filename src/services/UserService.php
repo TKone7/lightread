@@ -14,4 +14,6 @@ interface UserService
 {
     public function createUser(User $user);
 
+    public function updateUser(User $user);
+
 }

@@ -11,13 +11,25 @@ namespace services;
 
 use domain\User;
 use dao\UserDAO;
+use http\HTTPException;
+use http\HTTPStatusCode;
 
-class UserServiceImpl
+class UserServiceImpl implements UserService
 {
     public function createUser(User $user) {
         $userdao = new UserDAO();
         return $userdao->create($user);
-            $customerDAO = new CustomerDAO();
     }
 
+    public function updateUser(User $user)
+    {
+        $userdao = new UserDAO();
+        if($user->getId()==(AuthServiceImpl::getInstance())->getCurrentUserId()){
+            if(!is_null($user->getPassword())){
+                $userdao->updatePassword($user);
+            }
+            return $userdao->update($user);
+        }
+        throw new HTTPException(HTTPStatusCode::HTTP_401_UNAUTHORIZED);
+    }
 }

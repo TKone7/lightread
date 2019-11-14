@@ -16,14 +16,14 @@ class UserDAO extends BasicDAO
     {
         $stmt = $this->pdoInstance->prepare('
         INSERT INTO tbl_user (fld_user_firstname, fld_user_lastname,fld_user_email, fld_user_pwhash, fld_user_nickname,fld_user_locked, fld_user_creationpit)
-          SELECT :firstname,:lastname,:email,:password,:user,:locked,:creation
+          SELECT :firstname,:lastname,:email,:password,:username,:locked,:creation
         WHERE NOT EXISTS (
         SELECT fld_user_nickname FROM tbl_user WHERE fld_user_nickname = :usercheck or fld_user_email = :emailcheck
         );');
         $stmt->bindValue(':firstname', $user->getFirstname());
         $stmt->bindValue(':lastname', $user->getLastname());
         $stmt->bindValue(':email', $user->getEmail());
-        $stmt->bindValue(':user', $user->getUsername());
+        $stmt->bindValue(':username', $user->getUsername());
         $stmt->bindValue(':usercheck', $user->getUsername());
         $stmt->bindValue(':emailcheck', $user->getEmail());
         $stmt->bindValue(':password', $user->getPassword());
@@ -32,6 +32,26 @@ class UserDAO extends BasicDAO
         $stmt->bindValue(':locked', 0);
         $stmt->execute();
         return $this->read($this->pdoInstance->lastInsertId());
+    }
+    public function update(User $user){
+        $stmt = $this->pdoInstance->prepare('
+        UPDATE tbl_user set fld_user_firstname = :firstname, fld_user_lastname = :lastname, fld_user_email = :email, fld_user_nickname=:username
+         where 	fld_user_id	 = :id;');
+        $stmt->bindValue(':id', $user->getId());
+        $stmt->bindValue(':firstname', $user->getFirstname());
+        $stmt->bindValue(':lastname', $user->getLastname());
+        $stmt->bindValue(':email', $user->getEmail());
+        $stmt->bindValue(':username', $user->getUsername());
+        $stmt->execute();
+        return $this->read($user->getId());
+    }
+    public function updatePassword(User $user){
+        $stmt = $this->pdoInstance->prepare('
+        UPDATE tbl_user set fld_user_pwhash = :password
+         where 	fld_user_id	 = :id;');
+        $stmt->bindValue(':id', $user->getId());
+        $stmt->bindValue(':password', $user->getPassword());
+        $stmt->execute();
     }
     public function read($userid){
         $stmt = $this->pdoInstance->prepare('

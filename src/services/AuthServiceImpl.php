@@ -90,4 +90,14 @@ class AuthServiceImpl implements AuthService
         throw new HTTPException(HTTPStatusCode::HTTP_401_UNAUTHORIZED);
 
     }
+
+    /**
+     * @access public
+     * @return int
+     * @ReturnType int
+     */
+    public function getCurrentUserId()
+    {
+        return $this->currentUserId;
+    }
 }
