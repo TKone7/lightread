@@ -159,7 +159,7 @@ div {
   margin: auto;
 }
 
-.cont:hover .overlay {
+.cont:hover .img-overlay {
   opacity: 1;
 }
 

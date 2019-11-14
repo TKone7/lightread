@@ -34,9 +34,7 @@ $authFunction = function () {
 };
 $softauthFunction = function () {
     if (isset($_SESSION["userLogin"])) {
-        if(AuthServiceImpl::getInstance()->validateToken($_SESSION["userLogin"]["token"])) {
-            return true;
-        }
+        AuthServiceImpl::getInstance()->validateToken($_SESSION["userLogin"]["token"]);
     }
     return true;
 };
@@ -108,7 +106,19 @@ Router::route_auth("GET", "/profile", $authFunction, function () {
     $content = new TemplateView("profile.php");
     $content->user=$authservice->readUser();
     LayoutRendering::simpleLayout($content);
+});
+Router::route_auth("GET", "/edit-profile", $authFunction, function () {
+    $authservice = AuthServiceImpl::getInstance();
+    $content = new TemplateView("edit-profile.php");
+    $content->user=$authservice->readUser();
+    LayoutRendering::simpleLayout($content);
+});
+Router::route_auth("POST", "/edit-profile", $authFunction, function () {
 
+    $authservice = AuthServiceImpl::getInstance();
+    $content = new TemplateView("profile.php");
+    $content->user=$authservice->readUser();
+    LayoutRendering::simpleLayout($content);
 });
 Router::route_auth("GET", "/logout", $softauthFunction, function () {
     session_destroy();
