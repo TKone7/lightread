@@ -9,7 +9,6 @@
 namespace controller;
 
 
-use dao\ContentDAO;
 use domain\Access;
 use domain\Content;
 use domain\Status;
@@ -53,8 +52,7 @@ class ContentController
     }
     public function showContent(){
         $id = $_GET["id"];
-        $contdao = new ContentDAO();
-        $content = $contdao->read($id);
+        $content = ContentServiceImpl::getInstance()->readContent($id);
         $post = new TemplateView("post.php");
 
         if (!is_null($content)){
@@ -74,8 +72,7 @@ class ContentController
         $editor = new TemplateView("editor.php");
 
         if(isset($id)){
-            $contdao = new ContentDAO();
-            $content = $contdao->read($id);
+            $content = ContentServiceImpl::getInstance()->editContent($id);
             if (!is_null($content)){
                 $editor->content=$content;
             }else {

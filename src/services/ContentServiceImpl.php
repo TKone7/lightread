@@ -51,6 +51,22 @@ class ContentServiceImpl implements ContentService
         }
         throw new HTTPException(HTTPStatusCode::HTTP_401_UNAUTHORIZED);
     }
+    public function editContent($content_id)
+    {
+        $auth = AuthServiceImpl::getInstance();
+        $contdao = new ContentDAO();
+        $content = $contdao->read($content_id);
+        if($auth->verifyAuth()     AND  $content->getAuthor()->getId()==$auth->getCurrentUserId()){
+            return $content;
+        }
+        throw new HTTPException(HTTPStatusCode::HTTP_401_UNAUTHORIZED);
+    }
+    public function readContent($content_id)
+    {
+        $contdao = new ContentDAO();
+        $content = $contdao->read($content_id);
+        return $content;
+    }
 
     public function getContentMgr(array $keyword = NULL, array $category = NULL, array $author = NULL): ContentManager
     {

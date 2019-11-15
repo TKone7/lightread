@@ -18,5 +18,9 @@ interface ContentService
 
     public function updateContent(Content $content);
 
+    public function editContent($content_id);
+
+    public function readContent($content_id);
+
     public function getContentMgr(array $keyword = NULL, array $category = NULL, array $author = NULL ) : ContentManager;
 }
