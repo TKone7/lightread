@@ -217,3 +217,10 @@ CREATE INDEX tbl_ContentKeyword_FKIndex2 ON tbl_ContentKeyword (fld_KEYW_ID);
 
 CREATE INDEX IFK_has ON tbl_ContentKeyword (fld_CONT_ID);
 CREATE INDEX IFK_describes ON tbl_ContentKeyword (fld_KEYW_ID);
+
+insert into public.tbl_accesscontraint (fld_accc_key,fld_accc_name) values ('FREE', 'these articles are free');
+insert into public.tbl_accesscontraint (fld_accc_key,fld_accc_name) values ('PAID', 'these articles must be paid for');
+
+insert into public.tbl_statuscontent (fld_scon_key, fld_scon_name) values ('DRAFT', 'not visible by others');
+insert into public.tbl_statuscontent (fld_scon_key, fld_scon_name) values ('PUBLISHED','published for everyone');
+insert into public.tbl_statuscontent (fld_scon_key, fld_scon_name) values ('DELETED','marked as deleted');
