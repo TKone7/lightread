@@ -12,10 +12,7 @@ require_once("config/Autoloader.php");
 
 use controller\ContentController;
 use dao\ContentDAO;
-use domain\Access;
-use domain\Content;
 use domain\Status;
-use services\ContentServiceImpl;
 use services\UserServiceImpl;
 use services\AuthServiceImpl;
 use view\TemplateView;
@@ -23,7 +20,6 @@ use view\LayoutRendering;
 use router\Router;
 use http\HTTPException;
 use rpcclient\RpcClient;
-use parsedown\Parsedown;
 use domain\User;
 
 ini_set( 'session.cookie_httponly', 1 );
@@ -57,23 +53,7 @@ Router::route_auth("GET", "/category", $softauthFunction, function () {
 
 });
 Router::route_auth("GET", "/article", $softauthFunction, function () {
-    $id = $_GET["id"];
-    //$mode = filter_input(INPUT_GET, 'preview', FILTER_VALIDATE_BOOLEAN);
-
-    $contdao = new ContentDAO();
-    $content = $contdao->read($id);
-    $post = new TemplateView("post.php");
-
-    if (!is_null($content)){
-        $Parsedown = new Parsedown();
-        $Parsedown->setSafeMode(true);
-        $body = $Parsedown->text($content->getBody());
-        $post->content = $body;
-        LayoutRendering::postLayout($post,$content->getTitle(), $content->getSubtitle(), $content->getAuthor()->getFirstname() . " " . $content->getAuthor()->getLastname());
-    }else{
-        Router::redirect("/article-not-found");
-    }
-
+    (new ContentController())->showContent();
 });
 Router::route_auth("GET", "/pay", $softauthFunction, function () {
     $post = new TemplateView("post-secured.php");
@@ -152,22 +132,7 @@ Router::route_auth("GET", "/logout", $softauthFunction, function () {
 
 
 Router::route_auth("GET", "/edit", $authFunction, function () {
-    // retrieve content
-    $id = $_GET["id"];
-    $editor = new TemplateView("editor.php");
-
-    if(isset($id)){
-        $contdao = new ContentDAO();
-        $content = $contdao->read($id);
-        if (!is_null($content)){
-            $editor->content=$content;
-        }else {
-            Router::redirect("/article-not-found");
-        }
-    }
-    LayoutRendering::simpleLayout($editor);
-
-
+    (new ContentController())->editContent();
 });
 Router::route_auth("POST", "/publish", $authFunction, function () {
     (new ContentController())->store(Status::PUBLISHED());

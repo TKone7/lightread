@@ -9,11 +9,15 @@
 namespace controller;
 
 
+use dao\ContentDAO;
 use domain\Access;
 use domain\Content;
 use domain\Status;
+use parsedown\Parsedown;
 use router\Router;
 use services\ContentServiceImpl;
+use view\LayoutRendering;
+use view\TemplateView;
 
 class ContentController
 {
@@ -45,6 +49,40 @@ class ContentController
         }
 
         Router::redirect("/article?id=" . $res->getId());
+
+    }
+    public function showContent(){
+        $id = $_GET["id"];
+        $contdao = new ContentDAO();
+        $content = $contdao->read($id);
+        $post = new TemplateView("post.php");
+
+        if (!is_null($content)){
+            $Parsedown = new Parsedown();
+            $Parsedown->setSafeMode(true);
+            $body = $Parsedown->text($content->getBody());
+            $post->content = $body;
+            LayoutRendering::postLayout($post,$content->getTitle(), $content->getSubtitle(), $content->getAuthor()->getFirstname() . " " . $content->getAuthor()->getLastname());
+        }else{
+            Router::redirect("/article-not-found");
+        }
+
+    }
+    public function editContent(){
+        // retrieve content
+        $id = $_GET["id"];
+        $editor = new TemplateView("editor.php");
+
+        if(isset($id)){
+            $contdao = new ContentDAO();
+            $content = $contdao->read($id);
+            if (!is_null($content)){
+                $editor->content=$content;
+            }else {
+                Router::redirect("/article-not-found");
+            }
+        }
+        LayoutRendering::simpleLayout($editor);
 
     }
 
