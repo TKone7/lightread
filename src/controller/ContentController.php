@@ -37,7 +37,7 @@ class ContentController
             $cont->setPrice(0);
         }
 
-        $contsvc = new ContentServiceImpl();
+        $contsvc = ContentServiceImpl::getInstance();
         if($id>0){
             // update
             $cont->setId($id);
@@ -62,7 +62,7 @@ class ContentController
             $Parsedown->setSafeMode(true);
             $body = $Parsedown->text($content->getBody());
             $post->content = $body;
-            LayoutRendering::postLayout($post,$content->getTitle(), $content->getSubtitle(), $content->getAuthor()->getFirstname() . " " . $content->getAuthor()->getLastname(),$content->getCreationDate());
+            LayoutRendering::postLayout($post,$content->getTitle(), $content->getSubtitle(), $content->getAuthor()->getFullName(),$content->getCreationDate());
         }else{
             Router::redirect("/article-not-found");
         }

@@ -29,10 +29,13 @@ class ContentManager
     }
     public function getContent(Status $status = NULL, Access $access = NULL) : array
     {
-        return $this->articles;
-    }
-    public function getSize(){
-        return sizeof($this->articles);
+        $filtered = [];
+        foreach ($this->articles as $article) {
+            if($article->getStatus()==($status??$article->getStatus()) AND
+                $article->getAccess()==($access??$article->getAccess()))
+                $filtered[] = $article;
+        }
+        return $filtered;
     }
 
     public function getRevenue(Purpose $purpose = NULL){

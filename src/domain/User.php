@@ -87,6 +87,9 @@ class User
         $this->lastname = $lastname;
     }
 
+    public function getFullName(){
+        return ltrim(rtrim($this->getFirstname() . " " . $this->getLastname()," ")," ");
+    }
     /**
      * @return mixed
      */

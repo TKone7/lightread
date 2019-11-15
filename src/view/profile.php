@@ -6,11 +6,10 @@
  * Time:
  */
 
+use domain\Access;
 use domain\ContentManager;
-use domain\Purpose;
-use domain\Status;
 use domain\User;
-use Lnrpc\PendingChannelsResponse_ForceClosedChannel;
+use Google\Protobuf\NullValue;
 
 isset($this->user) ? $user = $this->user : $user = new User();
 isset($this->mgr) ? $mgr = $this->mgr : $mgr = new ContentManager();
@@ -22,7 +21,7 @@ isset($this->mgr) ? $mgr = $this->mgr : $mgr = new ContentManager();
             <h3 class="profile-title">Your profile</h3>
             <div>
                 <span class="earning-title">Name</span>
-                <label class="earning-value"><?php echo $user->getFirstname() . " " . $user->getLastname() ?></label>
+                <label class="earning-value"><?php echo $user->getFullName() ?></label>
                 <span class="earning-title">Nickname</span>
                 <label class="earning-value"><?php echo $user->getUsername() ?></label>
                 <span class="earning-title">E-Mail</span>
@@ -45,7 +44,8 @@ isset($this->mgr) ? $mgr = $this->mgr : $mgr = new ContentManager();
                 </thead>
                 <tbody>
                 <?php
-                foreach ($mgr->getContent() as $item) { ?>
+                $articles=$mgr->getContent();
+                foreach ($articles as $item) { ?>
 
                     <tr>
                     <td><a href="<?php echo $GLOBALS["ROOT_URL"] . "/edit?id=" . $item->getId(); ?>"><?php echo $item->getTitle(); ?></a></td>
@@ -57,8 +57,7 @@ isset($this->mgr) ? $mgr = $this->mgr : $mgr = new ContentManager();
 
                     <?php
                 }
-                if($mgr->getSize()==0): ?>
-
+                if(sizeof($articles)==0): ?>
                     <tr>
                         <td>No Articles</td>
                         <td></td>

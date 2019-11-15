@@ -43,7 +43,10 @@ $softauthFunction = function () {
 };
 
 Router::route_auth("GET", "/", $softauthFunction, function () {
-    LayoutRendering::simpleLayout(new TemplateView("home.php"));
+    $home = new TemplateView("home.php");
+    $mgr = ContentServiceImpl::getInstance()->getContentMgr();
+    $home->mgr=$mgr;
+    LayoutRendering::simpleLayout($home);
 
 });
 Router::route_auth("GET", "/about", $softauthFunction, function () {
@@ -106,7 +109,7 @@ Router::route_auth("GET", "/profile", $authFunction, function () {
     $authservice = AuthServiceImpl::getInstance();
     $content = new TemplateView("profile.php");
     $user = $authservice->readUser();
-    $mgr = (new ContentServiceImpl)->getContentMgr(NULL, NULL,array($user));
+    $mgr = (ContentServiceImpl::getInstance())->getContentMgr(NULL, NULL,array($user));
     $content->user=$user;
     $content->mgr=$mgr;
     LayoutRendering::simpleLayout($content);

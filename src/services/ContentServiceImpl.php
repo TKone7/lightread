@@ -17,6 +17,18 @@ use http\HTTPStatusCode;
 
 class ContentServiceImpl implements ContentService
 {
+    private static $instance = NULL;
+
+    protected function __construct()
+    {
+    }
+
+    public static function getInstance(){
+        if(!isset(self::$instance)){
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
 
     public function createContent(Content $content)
     {
