@@ -18,9 +18,9 @@
                             <textarea class="form-control" id="summernote" name="editordata" placeholder="Your story...." style="min-height:200px"></textarea>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="formCheck-1"><label class="form-check-label" for="formCheck-1">Paid article?</label>
+                            <input name="paid" class="form-check-input" type="checkbox" id="formCheck-1"><label class="form-check-label" for="formCheck-1">Paid article?</label>
                         </div>
-                        <input class="form-control" type="text" placeholder="Price (in Satoshi)" style="margin-bottom:10px;width:25%">
+                        <input name="price" class="form-control" type="number" placeholder="Price (in Satoshi)" style="margin-bottom:10px;width:25%">
                         <div class="form-group">
                             <button formaction="<?php echo $GLOBALS["ROOT_URL"]; ?>/preview" class="btn btn-light" type="submit">Preview</button>
                             <button class="btn btn-primary" type="submit">Publish</button>

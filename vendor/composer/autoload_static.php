@@ -7,6 +7,10 @@ namespace Composer\Autoload;
 class ComposerStaticInitdb0900b87f14f9a371a29f87b24abc77
 {
     public static $prefixLengthsPsr4 = array (
+        'M' => 
+        array (
+            'MyCLabs\\Enum\\' => 13,
+        ),
         'G' => 
         array (
             'Grpc\\' => 5,
@@ -16,6 +20,10 @@ class ComposerStaticInitdb0900b87f14f9a371a29f87b24abc77
     );
 
     public static $prefixDirsPsr4 = array (
+        'MyCLabs\\Enum\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/myclabs/php-enum/src',
+        ),
         'Grpc\\' => 
         array (
             0 => __DIR__ . '/..' . '/grpc/grpc/src/lib',

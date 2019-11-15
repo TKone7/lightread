@@ -10,6 +10,10 @@
 require dirname(__FILE__).'/../vendor/autoload.php';
 require_once("config/Autoloader.php");
 
+use dao\ContentDAO;
+use domain\Access;
+use domain\Content;
+use domain\Status;
 use services\UserServiceImpl;
 use services\AuthServiceImpl;
 use view\TemplateView;
@@ -137,13 +141,31 @@ Router::route_auth("POST", "/edit", $authFunction, function () {
     LayoutRendering::simpleLayout(new TemplateView("editor.php"));
 });
 Router::route_auth("POST", "/publish", $authFunction, function () {
-    $title = $_POST["title"];
-    $subtitle = $_POST["subtitle"];
-    $md = $_POST["editordata"];
+    $cont = new Content();
+    $cont->setTitle($_POST["title"]);
+    $cont->setSubtitle($_POST["subtitle"]);
+    $cont->setBody($_POST["editordata"]);
+    $cont->setAuthor((AuthServiceImpl::getInstance())->readUser());
+    $cont->setStatus(Status::DRAFT());
+    $sat = filter_input(INPUT_POST, 'price', FILTER_VALIDATE_INT);
+    if($_POST["paid"]=="on" AND $sat>0){
+        $cont->setAccess(Access::PAID());
+        $cont->setPrice($sat);
+    }else{
+        $cont->setAccess(Access::FREE());
+        $cont->setPrice(0);
+    }
+
+    $contdao = new ContentDAO();
+    $res = $contdao->create($cont);
+
+    $post = new TemplateView("post.php");
     $Parsedown = new Parsedown();
     $Parsedown->setSafeMode(true);
-    $content = $Parsedown->text($md);
-    LayoutRendering::simpleLayout(new TemplateView("editor.php"));
+    $content = $Parsedown->text($res->getBody());
+    $post->content = $content;
+    LayoutRendering::postLayout($post,$res->getTitle(), $res->getSubtitle(), $res->getAuthor()->getFirstname() . " " . $res->getAuthor()->getLastname());
+
 });
 Router::route_auth("POST", "/preview", $authFunction, function () {
     $title = $_POST["title"];
@@ -154,6 +176,7 @@ Router::route_auth("POST", "/preview", $authFunction, function () {
     $content = $Parsedown->text($md);
     $post = new TemplateView("post.php");
     $post->content = $content;
+
     LayoutRendering::postLayout($post,$title, $subtitle, "Tobias Koller");
 });
 Router::route_auth("GET", "/node", $authFunction, function () {

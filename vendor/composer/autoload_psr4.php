@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'MyCLabs\\Enum\\' => array($vendorDir . '/myclabs/php-enum/src'),
     'Grpc\\' => array($vendorDir . '/grpc/grpc/src/lib'),
     'Google\\Protobuf\\' => array($vendorDir . '/google/protobuf/src/Google/Protobuf'),
     'GPBMetadata\\Google\\Protobuf\\' => array($vendorDir . '/google/protobuf/src/GPBMetadata/Google/Protobuf'),
