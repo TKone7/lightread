@@ -10,10 +10,12 @@
 require dirname(__FILE__).'/../vendor/autoload.php';
 require_once("config/Autoloader.php");
 
+use controller\ContentController;
 use dao\ContentDAO;
 use domain\Access;
 use domain\Content;
 use domain\Status;
+use services\ContentServiceImpl;
 use services\UserServiceImpl;
 use services\AuthServiceImpl;
 use view\TemplateView;
@@ -44,7 +46,7 @@ $softauthFunction = function () {
 };
 
 Router::route_auth("GET", "/", $softauthFunction, function () {
-    LayoutRendering::simpleLayout(new TemplateView("article.php"));
+    LayoutRendering::simpleLayout(new TemplateView("home.php"));
 
 });
 Router::route_auth("GET", "/about", $softauthFunction, function () {
@@ -55,9 +57,23 @@ Router::route_auth("GET", "/category", $softauthFunction, function () {
 
 });
 Router::route_auth("GET", "/article", $softauthFunction, function () {
+    $id = $_GET["id"];
+    //$mode = filter_input(INPUT_GET, 'preview', FILTER_VALIDATE_BOOLEAN);
+
+    $contdao = new ContentDAO();
+    $content = $contdao->read($id);
     $post = new TemplateView("post.php");
-    $post->content = "This is just an article";
-    LayoutRendering::postLayout($post,"I believe every human has a finite number of heartbeats.","Find what you are looking for", "Tobias Koller");
+
+    if (!is_null($content)){
+        $Parsedown = new Parsedown();
+        $Parsedown->setSafeMode(true);
+        $body = $Parsedown->text($content->getBody());
+        $post->content = $body;
+        LayoutRendering::postLayout($post,$content->getTitle(), $content->getSubtitle(), $content->getAuthor()->getFirstname() . " " . $content->getAuthor()->getLastname());
+    }else{
+        Router::redirect("/article-not-found");
+    }
+
 });
 Router::route_auth("GET", "/pay", $softauthFunction, function () {
     $post = new TemplateView("post-secured.php");
@@ -133,51 +149,33 @@ Router::route_auth("GET", "/logout", $softauthFunction, function () {
     Router::redirect("/login");
 
 });
-Router::route_auth("GET", "/add", $authFunction, function () {
-    LayoutRendering::simpleLayout(new TemplateView("editor.php"));
-});
-Router::route_auth("POST", "/edit", $authFunction, function () {
+
+
+Router::route_auth("GET", "/edit", $authFunction, function () {
     // retrieve content
-    LayoutRendering::simpleLayout(new TemplateView("editor.php"));
+    $id = $_GET["id"];
+    $editor = new TemplateView("editor.php");
+
+    if(isset($id)){
+        $contdao = new ContentDAO();
+        $content = $contdao->read($id);
+        if (!is_null($content)){
+            $editor->content=$content;
+        }else {
+            Router::redirect("/article-not-found");
+        }
+    }
+    LayoutRendering::simpleLayout($editor);
+
+
 });
 Router::route_auth("POST", "/publish", $authFunction, function () {
-    $cont = new Content();
-    $cont->setTitle($_POST["title"]);
-    $cont->setSubtitle($_POST["subtitle"]);
-    $cont->setBody($_POST["editordata"]);
-    $cont->setAuthor((AuthServiceImpl::getInstance())->readUser());
-    $cont->setStatus(Status::DRAFT());
-    $sat = filter_input(INPUT_POST, 'price', FILTER_VALIDATE_INT);
-    if($_POST["paid"]=="on" AND $sat>0){
-        $cont->setAccess(Access::PAID());
-        $cont->setPrice($sat);
-    }else{
-        $cont->setAccess(Access::FREE());
-        $cont->setPrice(0);
-    }
-
-    $contdao = new ContentDAO();
-    $res = $contdao->create($cont);
-
-    $post = new TemplateView("post.php");
-    $Parsedown = new Parsedown();
-    $Parsedown->setSafeMode(true);
-    $content = $Parsedown->text($res->getBody());
-    $post->content = $content;
-    LayoutRendering::postLayout($post,$res->getTitle(), $res->getSubtitle(), $res->getAuthor()->getFirstname() . " " . $res->getAuthor()->getLastname());
-
+    (new ContentController())->store(Status::PUBLISHED());
 });
-Router::route_auth("POST", "/preview", $authFunction, function () {
-    $title = $_POST["title"];
-    $subtitle = $_POST["subtitle"];
-    $md = $_POST["editordata"];
-    $Parsedown = new Parsedown();
-    $Parsedown->setSafeMode(true);
-    $content = $Parsedown->text($md);
-    $post = new TemplateView("post.php");
-    $post->content = $content;
 
-    LayoutRendering::postLayout($post,$title, $subtitle, "Tobias Koller");
+Router::route_auth("POST", "/preview", $authFunction, function () {
+    (new ContentController())->store(Status::DRAFT());
+
 });
 Router::route_auth("GET", "/node", $authFunction, function () {
     $client = RpcClient::connect();

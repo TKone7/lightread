@@ -44,6 +44,30 @@ class ContentDAO extends BasicDAO
         }
         return null;
     }
+    public function update(Content $content){
+        $stmt = $this->pdoInstance->prepare('
+        UPDATE tbl_content set 
+        fld_user_id=:user_id,
+        fld_cont_title=:title,
+        fld_cont_subtitle=:subtitle,
+        fld_cont_body=:body,
+        fld_cont_satoshis=:sats,
+        fld_accc_id=:access,
+        fld_scon_id=:status
+        where fld_cont_id=:id');
+        $stmt->bindValue(':id', $content->getId());
+
+        $stmt->bindValue(':user_id', $content->getAuthor()->getId());
+        $stmt->bindValue(':title', $content->getTitle());
+        $stmt->bindValue(':subtitle', $content->getSubtitle());
+        $stmt->bindValue(':body', $content->getBody());
+        $stmt->bindValue(':sats', $content->getPrice());
+        $stmt->bindValue(':access', $this->readAccessId($content->getAccess()->getKey())['fld_accc_id']);
+        $stmt->bindValue(':status', $this->readStatusId($content->getStatus()->getKey())['fld_scon_id']);
+        $stmt->execute();
+        return $this->read($content->getId());
+
+    }
 
     private function readStatusId($key){
         $stmt = $this->pdoInstance->prepare('
@@ -65,6 +89,7 @@ class ContentDAO extends BasicDAO
         }
         return null;
     }
+
 
 
 }

@@ -28,7 +28,7 @@ isset($this->user) ? $user = $this->user : $user = new User();
                 <button class="btn btn-primary" onclick="window.location.href='<?php echo $GLOBALS["ROOT_URL"]; ?>/edit-profile'">Edit profile / Change password</button>
                 <button class="btn btn-light" onclick="window.location.href='<?php echo $GLOBALS["ROOT_URL"]; ?>/logout'">Logout</button>
             </div>
-            <h3 class="profile-title">Your articles -&nbsp;<a href="<?php echo $GLOBALS["ROOT_URL"]; ?>/add"><i class="icon ion-android-add-circle"></i></a></h3><table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
+            <h3 class="profile-title">Your articles -&nbsp;<a href="<?php echo $GLOBALS["ROOT_URL"]; ?>/edit"><i class="icon ion-android-add-circle"></i></a></h3><table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
                 <thead>
                 <tr>
                     <th style="width:20%">Title</th>

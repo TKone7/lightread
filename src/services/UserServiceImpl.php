@@ -23,12 +23,14 @@ class UserServiceImpl implements UserService
 
     public function updateUser(User $user)
     {
-        $userdao = new UserDAO();
-        if($user->getId()==(AuthServiceImpl::getInstance())->getCurrentUserId()){
-            if(!is_null($user->getPassword())){
-                $userdao->updatePassword($user);
+        if(AuthServiceImpl::getInstance()->verifyAuth()){
+            $userdao = new UserDAO();
+            if($user->getId()==(AuthServiceImpl::getInstance())->getCurrentUserId()){
+                if(!is_null($user->getPassword())){
+                    $userdao->updatePassword($user);
+                }
+                return $userdao->update($user);
             }
-            return $userdao->update($user);
         }
         throw new HTTPException(HTTPStatusCode::HTTP_401_UNAUTHORIZED);
     }
