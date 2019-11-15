@@ -3,7 +3,8 @@
 "description": "gRPC example for PHP",
 "require": {
 "grpc/grpc": "^v1.3.0",
-"google/protobuf": "^v3.3.0"
+"google/protobuf": "^v3.3.0",
+"myclabs/php-enum": "^1.7.2"
 },
 "autoload": {
 "psr-4": {

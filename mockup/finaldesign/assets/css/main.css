@@ -159,11 +159,11 @@ div {
   margin: auto;
 }
 
-.cont:hover .overlay {
-  opacity: 1;
+.cont:hover .img-overlay {
+  opacity: 1;opacity
 }
 
-.overlay {
+.img-overlay {
   position: absolute;
   bottom: 0;
   background: rgb(0, 0, 0);

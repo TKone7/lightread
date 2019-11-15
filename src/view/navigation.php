@@ -6,9 +6,10 @@
  * Time:
  */
 
+use domain\User;
 use view\TemplateView;
-
-
+isset($this->user) ? $user = $this->user : $user = new User();
+// echo $user->getUsername();
 ?>
 <!DOCTYPE html>
 <html>
@@ -26,6 +27,7 @@ use view\TemplateView;
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cookie">
     <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
     <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/fonts/ionicons.min.css">
     <link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css">
     <link rel="stylesheet" href="assets/css/Contact-Form-Clean.css">
     <link rel="stylesheet" href="assets/css/Data-Table-1.css">
@@ -36,7 +38,9 @@ use view\TemplateView;
     <link rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="assets/css/Pretty-Footer.css">
     <link rel="stylesheet" href="assets/css/responsive-tiles.css">
+    <link rel="stylesheet" href="assets/css/tx-list.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
 </head>
 
 <body>
@@ -48,10 +52,14 @@ use view\TemplateView;
                 <li class="nav-item" role="presentation"><a class="nav-link" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/">Home</a></li>
                 <li class="nav-item" role="presentation"><a class="nav-link" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/about">About</a></li>
                 <li class="nav-item" role="presentation"><a class="nav-link" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/category">Category</a></li>
-                <?php if (!isset($_SESSION["mail"])): ?>
+                <?php if (!($loggedin)): ?>
                     <li class="nav-item" role="presentation" id="login"><a class="nav-link" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/login">Login</a></li>
                 <?php else: ?>
-                    <li class="nav-item post-subtitle" role="presentation" id="login"><a class="nav-link" id="login" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/profile"><i class="fa fa-user-circle-o" style="font-size: 16px;vertical-align: middle;"></i>&nbsp;<?php echo $_SESSION["mail"]; ?></a></li>
+                    <li class="nav-item post-subtitle" role="presentation" id="login">
+                        <a class="nav-link" id="login" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/profile"><i class="fa fa-user-circle-o" style="font-size: 16px;vertical-align: middle;"></i>&nbsp;
+                            <?php echo $user->getUsername(); ?>
+                        </a>
+                    </li>
                 <?php endif; ?>
             </ul>
         </div>

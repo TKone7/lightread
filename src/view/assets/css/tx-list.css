@@ -1,0 +1,60 @@
+div.greyGridTable {
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+}
+
+.divTable.greyGridTable .divTableCell, .divTable.greyGridTable .divTableHead {
+  border: 1px solid #FFFFFF;
+  padding: 3px 4px;
+}
+
+.divTable.greyGridTable .divTableBody .divTableCell {
+  font-size: 16px;
+}
+
+.divTable.greyGridTable .divTableHeading {
+  border-bottom: 2px solid #888888;
+}
+
+.divTable.greyGridTable .divTableHeading .divTableHead {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333333;
+  text-align: left;
+}
+
+.greyGridTable .tableFootStyle {
+  /*font-size: 14px;*/
+}
+
+/*  DivTable.com  */
+
+.divTable {
+  display: table;
+}
+
+.divTableRow {
+  display: table-row;
+}
+
+.divTableHeading {
+  display: table-header-group;
+}
+
+.divTableCell, .divTableHead {
+  display: table-cell;
+}
+
+.divTableHeading {
+  display: table-header-group;
+}
+
+.divTableFoot {
+  display: table-footer-group;
+}
+
+.divTableBody {
+  display: table-row-group;
+}
+

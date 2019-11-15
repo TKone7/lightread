@@ -10,37 +10,60 @@
 require dirname(__FILE__).'/../vendor/autoload.php';
 require_once("config/Autoloader.php");
 
+use dao\ContentDAO;
+use domain\Access;
+use domain\Content;
+use domain\Status;
+use services\UserServiceImpl;
+use services\AuthServiceImpl;
 use view\TemplateView;
 use view\LayoutRendering;
 use router\Router;
 use http\HTTPException;
 use rpcclient\RpcClient;
 use parsedown\Parsedown;
+use domain\User;
 
 ini_set( 'session.cookie_httponly', 1 );
 session_start();
 
-Router::route("GET", "/",  function () {
+$authFunction = function () {
+    if (isset($_SESSION["userLogin"])) {
+        if(AuthServiceImpl::getInstance()->validateToken($_SESSION["userLogin"]["token"])) {
+            return true;
+        }
+    }
+    Router::redirect("/login");
+    return false;
+};
+$softauthFunction = function () {
+    if (isset($_SESSION["userLogin"])) {
+        AuthServiceImpl::getInstance()->validateToken($_SESSION["userLogin"]["token"]);
+    }
+    return true;
+};
+
+Router::route_auth("GET", "/", $softauthFunction, function () {
     LayoutRendering::simpleLayout(new TemplateView("article.php"));
 
 });
-Router::route("GET", "/about",  function () {
+Router::route_auth("GET", "/about", $softauthFunction, function () {
     LayoutRendering::headerLayout(new TemplateView("about.php"),"About </br> lightread","This is how it works");
 });
-Router::route("GET", "/category",  function () {
+Router::route_auth("GET", "/category", $softauthFunction, function () {
     LayoutRendering::headerLayout(new TemplateView("category.php"),"Category","Find what you are looking for");
 
 });
-Router::route("GET", "/article",  function () {
+Router::route_auth("GET", "/article", $softauthFunction, function () {
     $post = new TemplateView("post.php");
     $post->content = "This is just an article";
     LayoutRendering::postLayout($post,"I believe every human has a finite number of heartbeats.","Find what you are looking for", "Tobias Koller");
 });
-Router::route("GET", "/pay",  function () {
+Router::route_auth("GET", "/pay", $softauthFunction, function () {
     $post = new TemplateView("post-secured.php");
     LayoutRendering::postLayout($post,"I believe every human has a finite number of heartbeats.","Find what you are looking for", "Tobias Koller");
 });
-Router::route("POST", "/pay",  function () {
+Router::route_auth("POST", "/pay", $softauthFunction,  function () {
     $post = new TemplateView("post-secured.php");
     $client = RpcClient::connect();
     $inv = new Lnrpc\Invoice();
@@ -50,27 +73,101 @@ Router::route("POST", "/pay",  function () {
     $post->paymentrequest = $inv_response->getPaymentRequest();
     LayoutRendering::postLayout($post,"I believe every human has a finite number of heartbeats.","Find what you are looking for", "Tobias Koller");
 });
-Router::route("GET", "/login",  function () {
-    if (isset($_SESSION["mail"])):
-        $subtitle = $_SESSION["mail"];
-    endif;
-    LayoutRendering::headerLayout(new TemplateView("login.php"),"Login","Welcome back ".$subtitle);
+Router::route_auth("GET", "/register", $softauthFunction, function () {
+    if(!(AuthServiceImpl::getInstance()->verifyAuth())){
+        LayoutRendering::headerLayout(new TemplateView("register.php"),"Register","Create account");
+    }
+    Router::redirect("/profile");
 
 });
-Router::route("POST", "/login",  function () {
-    $_SESSION["mail"] = $_POST["email"];
-    LayoutRendering::headerLayout(new TemplateView("login.php"),"Login","Welcome back");
+Router::route_auth("POST", "/register", $softauthFunction, function () {
+    $nu = new User();
+    $nu->setUsername($_POST["username"]);
+    $nu->setEmail($_POST["email"]);
+    $nu->setPassword(password_hash($_POST["password"], PASSWORD_DEFAULT));
+    $res = (new UserServiceImpl())->createUser($nu);
+    LayoutRendering::headerLayout(new TemplateView("register.php"),"Success","Your ID: ".$res->getId());
+});
+Router::route_auth("GET", "/login", $softauthFunction, function () {
+    if(!(AuthServiceImpl::getInstance()->verifyAuth())) {
+        LayoutRendering::headerLayout(new TemplateView("login.php"), "Login", "Welcome back");
+    }
+    Router::redirect("/profile");
 
 });
-Router::route("GET", "/logout",  function () {
+Router::route_auth("POST", "/login", $softauthFunction, function () {
+    $authservice = AuthServiceImpl::getInstance();
+    if($authservice->verifyUser($_POST["email"], $_POST["password"])){
+        session_regenerate_id(true);
+        $_SESSION["userLogin"]["token"] = $authservice->issueToken();
+        Router::redirect("/profile");
+    }else {
+        LayoutRendering::headerLayout(new TemplateView("login.php"), "Login", "Welcome back");
+    }
+});
+Router::route_auth("GET", "/profile", $authFunction, function () {
+    $authservice = AuthServiceImpl::getInstance();
+    $content = new TemplateView("profile.php");
+    $content->user=$authservice->readUser();
+    LayoutRendering::simpleLayout($content);
+});
+Router::route_auth("GET", "/edit-profile", $authFunction, function () {
+    $authservice = AuthServiceImpl::getInstance();
+    $content = new TemplateView("edit-profile.php");
+    $content->user=$authservice->readUser();
+    LayoutRendering::simpleLayout($content);
+});
+Router::route_auth("POST", "/edit-profile", $authFunction, function () {
+    $user = new User();
+    $user->setId($_POST["id"]);
+    $user->setUsername($_POST["username"]);
+    $user->setEmail($_POST["email"]);
+    $user->setFirstname($_POST["firstname"]);
+    $user->setLastname($_POST["lastname"]);
+    $user->setPassword(password_hash($_POST["password"], PASSWORD_DEFAULT));
+    $res = (new UserServiceImpl())->updateUser($user);
+    Router::redirect("/profile");
+});
+Router::route_auth("GET", "/logout", $softauthFunction, function () {
     session_destroy();
     Router::redirect("/login");
 
 });
-Router::route("GET", "/edit",  function () {
+Router::route_auth("GET", "/add", $authFunction, function () {
     LayoutRendering::simpleLayout(new TemplateView("editor.php"));
 });
-Router::route("POST", "/preview",  function () {
+Router::route_auth("POST", "/edit", $authFunction, function () {
+    // retrieve content
+    LayoutRendering::simpleLayout(new TemplateView("editor.php"));
+});
+Router::route_auth("POST", "/publish", $authFunction, function () {
+    $cont = new Content();
+    $cont->setTitle($_POST["title"]);
+    $cont->setSubtitle($_POST["subtitle"]);
+    $cont->setBody($_POST["editordata"]);
+    $cont->setAuthor((AuthServiceImpl::getInstance())->readUser());
+    $cont->setStatus(Status::DRAFT());
+    $sat = filter_input(INPUT_POST, 'price', FILTER_VALIDATE_INT);
+    if($_POST["paid"]=="on" AND $sat>0){
+        $cont->setAccess(Access::PAID());
+        $cont->setPrice($sat);
+    }else{
+        $cont->setAccess(Access::FREE());
+        $cont->setPrice(0);
+    }
+
+    $contdao = new ContentDAO();
+    $res = $contdao->create($cont);
+
+    $post = new TemplateView("post.php");
+    $Parsedown = new Parsedown();
+    $Parsedown->setSafeMode(true);
+    $content = $Parsedown->text($res->getBody());
+    $post->content = $content;
+    LayoutRendering::postLayout($post,$res->getTitle(), $res->getSubtitle(), $res->getAuthor()->getFirstname() . " " . $res->getAuthor()->getLastname());
+
+});
+Router::route_auth("POST", "/preview", $authFunction, function () {
     $title = $_POST["title"];
     $subtitle = $_POST["subtitle"];
     $md = $_POST["editordata"];
@@ -79,9 +176,10 @@ Router::route("POST", "/preview",  function () {
     $content = $Parsedown->text($md);
     $post = new TemplateView("post.php");
     $post->content = $content;
+
     LayoutRendering::postLayout($post,$title, $subtitle, "Tobias Koller");
 });
-Router::route("GET", "/node",  function () {
+Router::route_auth("GET", "/node", $authFunction, function () {
     $client = RpcClient::connect();
     $getInfoRequest = new Lnrpc\GetInfoRequest();
     $WalletbalanceRequest = new Lnrpc\WalletBalanceRequest();

@@ -9,6 +9,7 @@
 namespace view;
 
 use Google\Protobuf\NullValue;
+use services\AuthServiceImpl;
 use view\TemplateView;
 
 class LayoutRendering
@@ -37,6 +38,12 @@ class LayoutRendering
     }
     private static function LayoutRender(TemplateView $navigation, TemplateView $content, TemplateView $header=Null){
         $page = new TemplateView('layout.php');
+
+        if(AuthServiceImpl::getInstance()->verifyAuth()){
+            $navigation->loggedin = true;
+            $navigation->user = AuthServiceImpl::getInstance()->readUser();
+        }
+
         $page->navigation = $navigation->render();
         if (isset($header)){
             $page->header = $header->render();
