@@ -14,6 +14,7 @@ use domain\Content;
 use domain\Status;
 use parsedown\Parsedown;
 use router\Router;
+use services\AuthServiceImpl;
 use services\ContentServiceImpl;
 use view\LayoutRendering;
 use view\TemplateView;
@@ -60,7 +61,8 @@ class ContentController
             $Parsedown->setSafeMode(true);
             $body = $Parsedown->text($content->getBody());
             $post->content = $body;
-            LayoutRendering::postLayout($post,$content->getTitle(), $content->getSubtitle(), $content->getAuthor()->getFullName(),$content->getCreationDate());
+            $allow = $content->getAuthor()->getId()==AuthServiceImpl::getInstance()->getCurrentUserId();
+            LayoutRendering::postLayout($post,$content->getTitle(), $content->getSubtitle(), $content->getAuthor()->getFullName(),$content->getCreationDate(),$allow, $content->getId());
         }else{
             Router::redirect("/article-not-found");
         }

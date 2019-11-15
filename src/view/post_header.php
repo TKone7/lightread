@@ -13,7 +13,13 @@
             <div class="col-md-10 col-lg-8 mx-auto">
                 <div class="post-heading">
                     <h1><?php echo $title ?></h1>
-                    <h2 class="subheading"><?php echo $subtitle ?></h2><span class="meta">Posted by&nbsp;<a href="#"><?php echo $author ?></a>&nbsp;on  <?php echo $date->format('F d, Y')?> </span></div>
+                    <h2 class="subheading"><?php echo $subtitle ?></h2>
+                    <span class="meta">Posted by&nbsp;<a href="#"><?php echo $author ?></a>&nbsp;on  <?php echo $date->format('F d, Y')?> </span>
+                    <?php if($edit): ?>
+                    <div style="margin-top: 20px"><button class="btn btn-light" onclick="window.location.href='<?php echo $GLOBALS["ROOT_URL"]; ?>/edit?id=<?php echo $id; ?>'">Edit article</button></div>
+                    <?php endif; ?>
+
+                </div>
             </div>
         </div>
     </div>
