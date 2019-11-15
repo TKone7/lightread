@@ -62,7 +62,7 @@ class ContentController
             $Parsedown->setSafeMode(true);
             $body = $Parsedown->text($content->getBody());
             $post->content = $body;
-            LayoutRendering::postLayout($post,$content->getTitle(), $content->getSubtitle(), $content->getAuthor()->getFirstname() . " " . $content->getAuthor()->getLastname());
+            LayoutRendering::postLayout($post,$content->getTitle(), $content->getSubtitle(), $content->getAuthor()->getFirstname() . " " . $content->getAuthor()->getLastname(),$content->getCreationDate());
         }else{
             Router::redirect("/article-not-found");
         }

@@ -9,6 +9,8 @@
 <div class="container">
     <div class="row articlerow">
         <div class="col-md-10 col-lg-8 mx-auto">
+test
+            <!--
             <div class="post-preview">
                 <a href="post-secured.html">
                     <h2 class="post-title">Man must explore, and this is exploration at its greatest</h2>
@@ -17,6 +19,7 @@
                 <p class="post-meta">Posted by&nbsp;<a href="#">Start Bootstrap on September 24, 2018</a><a class="text-right float-right justify-content-sm-end" href="#">$ 0.1&nbsp;<i class="fab fa-bitcoin"></i></a></p>
             </div>
             <hr>
+
             <div class="post-preview">
                 <a href="post-1.html">
                     <h2 class="post-title">I believe every human has a finite number of heartbeats. I don't intend to waste any of mine.</h2>
@@ -41,6 +44,7 @@
             </div>
             <hr>
             <div class="text-center clearfix"><button class="btn btn-primary" type="button">More Articles ...</button></div>
+            -->
         </div>
     </div>
 </div>

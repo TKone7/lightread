@@ -15,7 +15,7 @@ class AuthServiceImpl implements AuthService
     private static $instance = NULL;
     private $currentUserId;
 
-    public function getInstance(){
+    public static function getInstance(){
         if(!isset(self::$instance)){
             self::$instance = new self();
         }

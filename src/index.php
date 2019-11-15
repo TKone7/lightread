@@ -13,6 +13,7 @@ require_once("config/Autoloader.php");
 use controller\ContentController;
 use dao\ContentDAO;
 use domain\Status;
+use services\ContentServiceImpl;
 use services\UserServiceImpl;
 use services\AuthServiceImpl;
 use view\TemplateView;
@@ -104,7 +105,10 @@ Router::route_auth("POST", "/login", $softauthFunction, function () {
 Router::route_auth("GET", "/profile", $authFunction, function () {
     $authservice = AuthServiceImpl::getInstance();
     $content = new TemplateView("profile.php");
-    $content->user=$authservice->readUser();
+    $user = $authservice->readUser();
+    $mgr = (new ContentServiceImpl)->getContentMgr(NULL, NULL,array($user));
+    $content->user=$user;
+    $content->mgr=$mgr;
     LayoutRendering::simpleLayout($content);
 });
 Router::route_auth("GET", "/edit-profile", $authFunction, function () {
@@ -120,7 +124,8 @@ Router::route_auth("POST", "/edit-profile", $authFunction, function () {
     $user->setEmail($_POST["email"]);
     $user->setFirstname($_POST["firstname"]);
     $user->setLastname($_POST["lastname"]);
-    $user->setPassword(password_hash($_POST["password"], PASSWORD_DEFAULT));
+    if($_POST["password"] !== "")
+        $user->setPassword(password_hash($_POST["password"], PASSWORD_DEFAULT));
     $res = (new UserServiceImpl())->updateUser($user);
     Router::redirect("/profile");
 });

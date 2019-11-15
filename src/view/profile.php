@@ -6,9 +6,14 @@
  * Time:
  */
 
+use domain\ContentManager;
+use domain\Purpose;
+use domain\Status;
 use domain\User;
+use Lnrpc\PendingChannelsResponse_ForceClosedChannel;
 
 isset($this->user) ? $user = $this->user : $user = new User();
+isset($this->mgr) ? $mgr = $this->mgr : $mgr = new ContentManager();
 ?>
 <div class="container">
     <div class="row articlerow">
@@ -39,34 +44,39 @@ isset($this->user) ? $user = $this->user : $user = new User();
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td><a href="post.html">Man must explore, and this ...</a></td>
-                    <td>Published</td>
-                    <td>41</td>
-                    <td>12 000 sats</td>
-                    <td>2011/04/25</td>
-                </tr>
-                <tr>
-                    <td><a href="post-1.html">I believe every human has a finite numb...</a></td>
-                    <td>Published</td>
-                    <td>2</td>
-                    <td>45 sats</td>
-                    <td>2011/07/25</td>
-                </tr>
-                <tr>
-                    <td><a href="#">Some article</a></td>
-                    <td>Draft</td>
-                    <td>0</td>
-                    <td>0</td>
+                <?php
+                foreach ($mgr->getContent() as $item) { ?>
+
+                    <tr>
+                    <td><a href="<?php echo $GLOBALS["ROOT_URL"] . "/edit?id=" . $item->getId(); ?>"><?php echo $item->getTitle(); ?></a></td>
+                    <td><?php echo $item->getStatus()->getValue(); ?></td>
                     <td>-</td>
-                </tr>
+                    <td><?php echo $item->getRevenue(); ?> sats</td>
+                    <td><?php echo $item->getCreationDate()->format('d/m/Y'); ?></td>
+                    </tr>
+
+                    <?php
+                }
+                if($mgr->getSize()==0): ?>
+
+                    <tr>
+                        <td>No Articles</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                <?php endif; ?>
                 </tbody>
             </table>
             <h3 class="profile-title">Your earnings</h3>
             <p><strong>Lorem Ipsum</strong>&nbsp;is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to
                 make a type specimen book.</p>
             <div>
-                <hr class="earning-hr"><span class="earning-title">Earnings from donations</span><label class="earning-value">2 000 sats</label><span class="earning-title">Earnings from purchases</span><label class="earning-value">45 456 sats</label>
+                <hr class="earning-hr"><span class="earning-title">Earnings from donations</span>
+                <label class="earning-value">90 sats</label>
+                <span class="earning-title">Earnings from purchases</span>
+                <label class="earning-value">99 sats</label>
                 <hr class="earning-hr"><span class="earning-title">Total earning</span><label class="earning-value">47 456 sats</label><span class="earning-title">Total earning USD ($9,263.59 / BTC)</span><label class="earning-value">4.39 USD</label>
                 <hr class="earning-hr"><span class="earning-title">Withdrawals</span><label class="earning-value">- 10 000 sats</label>
                 <hr class="earning-hr"><span class="earning-title">Current balance</span><label class="earning-value">37 456 sats</label><span class="earning-title">Current balance USD ($9,263.59 / BTC)</span><label class="earning-value">3.47 USD</label>

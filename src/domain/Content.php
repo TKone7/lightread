@@ -215,6 +215,10 @@ class Content
         $this->keywords = $keywords;
     }
 
+    public function getRevenue(Purpose $purpose = NULL){
+        return rand(10,10000);
+    }
+
     public function __set($name, $value)
     {
         if ($name=='fld_cont_id'){
@@ -232,7 +236,7 @@ class Content
         }elseif ($name=='fld_cont_body'){
             $this->setBody($value);
         }elseif ($name=='fld_cont_creationpit'){
-            $this->setCreationDate($value);
+            $this->setCreationDate(date_create_from_format('Y-m-d H:i:s', $value));
         }elseif ($name=='fld_cont_satoshis'){
             $this->setPrice($value);
         }

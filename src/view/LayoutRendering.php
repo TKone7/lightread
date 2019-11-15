@@ -27,13 +27,14 @@ class LayoutRendering
         $header->subtitle = $subtitle;
         self::LayoutRender($navigation, $content, $header);
     }
-    public static function postLayout(TemplateView $content, $title, $subtitle, $author){
+    public static function postLayout(TemplateView $content, $title, $subtitle, $author, \DateTime $dateTime){
         $navigation = new TemplateView('navigation.php');
         $header = new TemplateView('post_header.php');
         // set the tile if they are specified
         $header->title = $title;
         $header->subtitle = $subtitle;
         $header->author = $author;
+        $header->date = $dateTime;
         self::LayoutRender($navigation, $content, $header);
     }
     private static function LayoutRender(TemplateView $navigation, TemplateView $content, TemplateView $header=Null){

@@ -68,6 +68,25 @@ class ContentDAO extends BasicDAO
         return $this->read($content->getId());
 
     }
+    public function filter($keyword = NULL, $category = NULL, $authors = NULL)
+    {
+        $basic = 'SELECT * from tbl_content c 
+            inner join tbl_accesscontraint a
+              on c.fld_accc_id = a.fld_accc_id
+            inner join tbl_statuscontent s
+              on c.fld_scon_id = s.fld_scon_id 
+              where 1=1';
+        if(!is_null($authors))
+            $basic .= ' AND c.fld_user_id in ('.rtrim($authors, ',').')';
+        $stmt = $this->pdoInstance->prepare($basic);
+
+        $stmt->execute();
+        if ($stmt->rowCount() > 0) {
+            return $stmt->fetchAll(\PDO::FETCH_CLASS, "domain\Content");
+        }
+        return null;
+
+    }
 
     private function readStatusId($key){
         $stmt = $this->pdoInstance->prepare('
