@@ -16,6 +16,18 @@ use http\HTTPStatusCode;
 
 class UserServiceImpl implements UserService
 {
+    private static $instance = NULL;
+
+    protected function __construct()
+    {
+    }
+
+    public static function getInstance(){
+        if(!isset(self::$instance)){
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
     public function createUser(User $user) {
         $userdao = new UserDAO();
         return $userdao->create($user);

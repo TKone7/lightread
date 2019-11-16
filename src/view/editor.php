@@ -21,7 +21,7 @@ $load = isset($this->content);
                         <input type="hidden" name="id" value="<?php echo $load ? $content->getId() : ""; ?>">
 
                         <div class="form-group">
-                            <input name="title" class="form-control" type="text" placeholder="Title" style="margin-bottom:10px" value="<?php echo $load ? $content->getTitle() : ""; ?>">
+                            <input name="title" class="form-control" type="text" placeholder="Title" style="margin-bottom:10px" value="<?php echo $load ? $content->getTitle() : ""; ?>" required>
                             <input name="subtitle" class="form-control" type="text" placeholder="Subtitle" style="margin-bottom:10px" value="<?php echo $load ? $content->getSubtitle() : ""; ?>">
                             <textarea class="form-control" id="summernote" name="editordata" placeholder="Your story...." style="min-height:200px"><?php echo $load ? $content->getBody() : ""; ?></textarea>
                         </div>

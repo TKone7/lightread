@@ -86,7 +86,7 @@ Router::route_auth("POST", "/register", $softauthFunction, function () {
         $nu->setEmail($_POST["email"]);
     }
     $nu->setPassword(password_hash($_POST["password"], PASSWORD_DEFAULT));
-    $res = (new UserServiceImpl())->createUser($nu);
+    $res = UserServiceImpl::getInstance()->createUser($nu);
     if(!(is_null($res->getId()))){
         LayoutRendering::headerLayout(new TemplateView("login.php"),"Success","Your ID: ".$res->getId());
     }
@@ -135,7 +135,7 @@ Router::route_auth("POST", "/edit-profile", $authFunction, function () {
     $user->setLastname(($_POST["lastname"]!=="")?$_POST["lastname"]:NULL);
     if($_POST["password"] !== "")
         $user->setPassword(password_hash($_POST["password"], PASSWORD_DEFAULT));
-    $res = (new UserServiceImpl())->updateUser($user);
+    $res = UserServiceImpl::getInstance()->updateUser($user);
     Router::redirect("/profile");
 });
 Router::route_auth("GET", "/logout", $softauthFunction, function () {
