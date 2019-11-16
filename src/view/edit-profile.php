@@ -23,22 +23,22 @@ isset($this->user) ? $user = $this->user : $user = new User();
 
                     <tr>
                         <td>Firstname</td>
-                        <td><input name="firstname" class="form-control" type="text" name="firstname" value="<?php echo $user->getFirstname() ?>" required></input></td>
+                        <td><input name="firstname" class="form-control" type="text" name="firstname" value="<?php echo $user->getFirstname() ?>" ></input></td>
 
                     </tr>
                     <tr>
                         <td>Lastname</td>
-                        <td><input name="lastname" class="form-control" type="text" name="lastname" value="<?php echo $user->getLastname() ?>" required></input></td>
+                        <td><input name="lastname" class="form-control" type="text" name="lastname" value="<?php echo $user->getLastname() ?>" ></input></td>
 
                     </tr>
                     <tr>
                         <td>Nickname</td>
-                        <td><input name="username" class="form-control" type="text" name="nickname" value="<?php echo $user->getUsername() ?>" required></input></td>
+                        <td><input name="username" class="form-control" type="text" name="nickname" value="<?php echo $user->getUsername() ?>" required disabled="true"></input></td>
 
                     </tr>
                     <tr>
                         <td>E-Mail</td>
-                        <td><input name="email" class="form-control" type="text" name="email" value="<?php echo $user->getEmail() ?>" required></input></td>
+                        <td><input name="email" class="form-control" type="email" name="email" value="<?php echo $user->getEmail() ?>" ></input></td>
 
                     </tr>
                     <tr>

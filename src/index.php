@@ -128,10 +128,11 @@ Router::route_auth("GET", "/edit-profile", $authFunction, function () {
 Router::route_auth("POST", "/edit-profile", $authFunction, function () {
     $user = new User();
     $user->setId($_POST["id"]);
-    $user->setUsername($_POST["username"]);
-    $user->setEmail($_POST["email"]);
-    $user->setFirstname($_POST["firstname"]);
-    $user->setLastname($_POST["lastname"]);
+    // cannot change username afterwards
+    // $user->setUsername($_POST["username"]);
+    $user->setEmail(($_POST["email"]!=="")?$_POST["email"]:NULL);
+    $user->setFirstname(($_POST["firstname"]!=="")?$_POST["firstname"]:NULL);
+    $user->setLastname(($_POST["lastname"]!=="")?$_POST["lastname"]:NULL);
     if($_POST["password"] !== "")
         $user->setPassword(password_hash($_POST["password"], PASSWORD_DEFAULT));
     $res = (new UserServiceImpl())->updateUser($user);
