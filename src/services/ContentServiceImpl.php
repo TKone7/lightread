@@ -61,7 +61,7 @@ class ContentServiceImpl implements ContentService
         }
         throw new HTTPException(HTTPStatusCode::HTTP_401_UNAUTHORIZED);
     }
-    public function readContent($content_id)
+    public function readContent($content_id) : Content
     {
         $contdao = new ContentDAO();
         $content = $contdao->read($content_id);
@@ -81,5 +81,48 @@ class ContentServiceImpl implements ContentService
         $contents = $contentdao->filter(NULL,NULL,$authorslist);
         $cm = new ContentManager($contents);
         return $cm;
+    }
+
+    public function trimHTML($html, $length){
+        $len = strlen($html);
+        $restr = $length;
+
+        $intag=false;
+        $closingtag=false;
+        $currenttag = "";
+        $stack = [];
+        for($i = 0; $i < $len; $i++){
+            if (!$intag AND $html[$i] == "<"){
+                $closingtag=false;
+                $intag=true;
+                $currenttag.=$html[$i];
+            }elseif ($intag){
+                if($html[$i]=="/"){
+                    $closingtag=true;
+                }
+                $currenttag.=$html[$i];
+
+            }
+            if($html[$i] == ">") {
+                $intag=false;
+                if($closingtag){
+                }else{
+                    $stack[] = $currenttag;
+                }
+                $currenttag="";
+            }
+            if($restr<=$i){
+                if($intag){
+                    $restr++;
+                }else{
+                    break;
+                }
+            }
+        }
+        $tags = "";
+        while (!empty($stack)){
+            $tags.= str_replace("<","</",array_pop($stack)) ;
+        }
+        return substr($html,0,$restr+1).$tags;
     }
 }

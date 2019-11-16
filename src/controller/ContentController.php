@@ -52,20 +52,40 @@ class ContentController
 
     }
     public function showContent(){
+        $restricted = false;
         $id = $_GET["id"];
         $content = ContentServiceImpl::getInstance()->readContent($id);
         $post = new TemplateView("post.php");
-
-        if (!is_null($content)){
-            $Parsedown = new Parsedown();
-            $Parsedown->setSafeMode(true);
-            $body = $Parsedown->text($content->getBody());
-            $post->content = $body;
-            $allow = $content->getAuthor()->getId()==AuthServiceImpl::getInstance()->getCurrentUserId();
-            LayoutRendering::postLayout($post,$content->getTitle(), $content->getSubtitle(), $content->getAuthor()->getFullName(),$content->getCreationDate(),$allow, $content->getId());
-        }else{
+        // show not found
+        if (is_null($content)) {
             Router::redirect("/article-not-found");
         }
+
+
+        if ($content->getAccess() == Access::PAID()){
+            $userhasalreadypaid = false;
+            $auth = AuthServiceImpl::getInstance();
+            $userisauthor = false;
+            if ($auth->verifyAuth()){
+                $userisauthor = $content->getAuthor()->getId() == $auth->readUser()->getId();
+            }
+            if (!$userhasalreadypaid and !$userisauthor){
+                $restricted = true;
+            }
+        }
+
+        $Parsedown = new Parsedown();
+        $Parsedown->setSafeMode(true);
+        $body = $Parsedown->text($content->getBody());
+        if($restricted){
+            $body =ContentServiceImpl::getInstance()->trimHTML($body,$_GET["len"]??300);
+        }
+        $post->content = $content;
+        $post->body = $body;
+        $post->restricted = $restricted;
+        $allow = $content->getAuthor()->getId()==AuthServiceImpl::getInstance()->getCurrentUserId();
+        LayoutRendering::postLayout($post,$content->getTitle(), $content->getSubtitle(), $content->getAuthor()->getFullName(),$content->getCreationDate(),$allow, $content->getId());
+
 
     }
     public function editContent(){

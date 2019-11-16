@@ -27,6 +27,10 @@ class AuthServiceImpl implements AuthService
         $user = $userdao->findByEmail($ref) ?? $username = $userdao->findByUser($ref);
         if(isset($user)){
             if(password_verify($password, $user->getPassword())){
+                if (password_needs_rehash($user->getPassword(), PASSWORD_DEFAULT)) {
+                    $user->setPassword(password_hash($password, PASSWORD_DEFAULT));
+                    $userdao->update($user);
+                }
                 $this->currentUserId = $user->getId();
                 return true;
             }

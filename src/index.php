@@ -11,6 +11,7 @@ require dirname(__FILE__).'/../vendor/autoload.php';
 require_once("config/Autoloader.php");
 
 use controller\ContentController;
+use controller\UserController;
 use dao\ContentDAO;
 use domain\Status;
 use services\ContentServiceImpl;
@@ -80,63 +81,25 @@ Router::route_auth("GET", "/register", $softauthFunction, function () {
     Router::redirect("/profile");
 });
 Router::route_auth("POST", "/register", $softauthFunction, function () {
-    $nu = new User();
-    $nu->setUsername($_POST["username"]);
-    if($_POST["email"] !==""){
-        $nu->setEmail($_POST["email"]);
-    }
-    $nu->setPassword(password_hash($_POST["password"], PASSWORD_DEFAULT));
-    $res = UserServiceImpl::getInstance()->createUser($nu);
-    if(!(is_null($res->getId()))){
-        LayoutRendering::headerLayout(new TemplateView("login.php"),"Success","Your ID: ".$res->getId());
-    }
-    Router::redirect("/");
-
+    (new UserController())->register();
 });
 Router::route_auth("GET", "/login", $softauthFunction, function () {
     if(!(AuthServiceImpl::getInstance()->verifyAuth())) {
         LayoutRendering::headerLayout(new TemplateView("login.php"), "Login", "Welcome back");
     }
     Router::redirect("/profile");
-
 });
 Router::route_auth("POST", "/login", $softauthFunction, function () {
-    $authservice = AuthServiceImpl::getInstance();
-    if($authservice->verifyUser($_POST["email"], $_POST["password"])){
-        session_regenerate_id(true);
-        $_SESSION["userLogin"]["token"] = $authservice->issueToken();
-        Router::redirect("/profile");
-    }else {
-        LayoutRendering::headerLayout(new TemplateView("login.php"), "Login", "Welcome back");
-    }
+    (new UserController())->login();
 });
 Router::route_auth("GET", "/profile", $authFunction, function () {
-    $authservice = AuthServiceImpl::getInstance();
-    $content = new TemplateView("profile.php");
-    $user = $authservice->readUser();
-    $mgr = (ContentServiceImpl::getInstance())->getContentMgr(NULL, NULL,array($user));
-    $content->user=$user;
-    $content->mgr=$mgr;
-    LayoutRendering::simpleLayout($content);
+    (new UserController())->showProfile();
 });
 Router::route_auth("GET", "/edit-profile", $authFunction, function () {
-    $authservice = AuthServiceImpl::getInstance();
-    $content = new TemplateView("edit-profile.php");
-    $content->user=$authservice->readUser();
-    LayoutRendering::simpleLayout($content);
+    (new UserController())->loadProfile();
 });
 Router::route_auth("POST", "/edit-profile", $authFunction, function () {
-    $user = new User();
-    $user->setId($_POST["id"]);
-    // cannot change username afterwards
-    // $user->setUsername($_POST["username"]);
-    $user->setEmail(($_POST["email"]!=="")?$_POST["email"]:NULL);
-    $user->setFirstname(($_POST["firstname"]!=="")?$_POST["firstname"]:NULL);
-    $user->setLastname(($_POST["lastname"]!=="")?$_POST["lastname"]:NULL);
-    if($_POST["password"] !== "")
-        $user->setPassword(password_hash($_POST["password"], PASSWORD_DEFAULT));
-    $res = UserServiceImpl::getInstance()->updateUser($user);
-    Router::redirect("/profile");
+    (new UserController())->editProfile();
 });
 Router::route_auth("GET", "/logout", $softauthFunction, function () {
     session_destroy();
