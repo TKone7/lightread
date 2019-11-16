@@ -31,4 +31,12 @@ class Config
             self::init();
         return self::$config[$key];
     }
+    private static function loadENV(){
+        if (isset($_ENV["DATABASE_URL"])) {
+            $dbopts = parse_url($_ENV["DATABASE_URL"]);
+            self::$config["database.dsn"] = "pgsql" . ":host=" . $dbopts["host"] . ";port=" . $dbopts["port"] . "; dbname=" . ltrim($dbopts["path"], '/') ;
+            self::$config["database.user"] = $dbopts["user"];
+            self::$config["database.password"] = $dbopts["pass"];
+        }
+    }
 }
