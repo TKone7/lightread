@@ -14,22 +14,30 @@ class UserDAO extends BasicDAO
 {
     public function create(User $user)
     {
-        $stmt = $this->pdoInstance->prepare('
+        $withemail= !is_null($user->getEmail());
+        $sqlstmt = '
         INSERT INTO tbl_user (fld_user_firstname, fld_user_lastname,fld_user_email, fld_user_pwhash, fld_user_nickname,fld_user_locked, fld_user_creationpit)
           SELECT :firstname,:lastname,:email,:password,:username,:locked,:creation
         WHERE NOT EXISTS (
-        SELECT fld_user_nickname FROM tbl_user WHERE fld_user_nickname = :usercheck or fld_user_email = :emailcheck
-        );');
+        SELECT fld_user_nickname FROM tbl_user WHERE fld_user_nickname = :usercheck';
+        if($withemail){
+            $sqlstmt .= ' or fld_user_email = :emailcheck';
+        }
+        $sqlstmt.=');';
+        $stmt = $this->pdoInstance->prepare($sqlstmt);
         $stmt->bindValue(':firstname', $user->getFirstname());
         $stmt->bindValue(':lastname', $user->getLastname());
-        $stmt->bindValue(':email', $user->getEmail());
         $stmt->bindValue(':username', $user->getUsername());
         $stmt->bindValue(':usercheck', $user->getUsername());
-        $stmt->bindValue(':emailcheck', $user->getEmail());
         $stmt->bindValue(':password', $user->getPassword());
         date_default_timezone_set('Europe/Zurich');
         $stmt->bindValue(':creation', $timestamp = date('Y-m-d H:i:s'));
         $stmt->bindValue(':locked', 0);
+        $stmt->bindValue(':email', $user->getEmail());
+
+        if($withemail){
+            $stmt->bindValue(':emailcheck', $user->getEmail());
+        }
         $stmt->execute();
         return $this->read($this->pdoInstance->lastInsertId());
     }
