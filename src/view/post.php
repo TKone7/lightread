@@ -25,10 +25,56 @@ isset($this->restricted)?$restricted=$this->restricted:$restricted=false;
                     <?php endif; ?>
                     </div>
                     <?php if($restricted): ?>
-                        <div class="text-center clearfix"><button class="btn btn-primary" type="button" data-target="#payinvoice" data-toggle="modal">Read on for <?php echo $content->getPrice(); ?> Sats (~?? cents)</button></div>
+                        <div class="text-center clearfix">
+                            <button id="btnpay" onclick="myFunc()" class="btn btn-primary" type="button" data-target="#payinvoice" data-toggle="modal">Read on for <?php echo $content->getPrice(); ?> Sats (~?? cents)</button>
+
+                        </div>
+                        <div id="output" style="display: none">
+                            <form action="<?php  echo $GLOBALS["ROOT_URL"]; ?>/checkinvoice" method="post">
+
+                                <input name="pay_req" type="text" id='response' readonly style="width: 100%;">
+                                <button onclick="checkPayment()" class="btn btn-primary" type="button" >check payment</button>
+                                <br>
+                                <input type="text" id="paid" value="...">
+                            </form>
+                        </div>
                     <?php endif; ?>
                     </div>
 
             </div>
         </div>
     </article>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        function checkPayment(){
+            var pay_req = $('#response').val();
+            $('#paid').val("wait, we check this...");
+
+            $.ajax({
+                type: 'POST',
+                url: '<?php  echo $GLOBALS["ROOT_URL"]; ?>/checkinvoice',
+                data: {ajax: 1,pay_req: pay_req},
+                success: function(response){
+                    $('#paid').val(response);
+                }
+            });
+        }
+        function myFunc(){
+            var name = $('#name').val();
+            $("#response").val("Please wait while invoice is generated...")
+            $.ajax({
+                type: 'POST',
+                url: '<?php  echo $GLOBALS["ROOT_URL"]; ?>/geninvoice',
+                data: {ajax: 1,content_id: <?php echo $content->getId(); ?>},
+                dataType: "json",
+                success: function(response){
+                    $('#response').val(response.payreq);
+                }
+            });
+            $("#output").show();
+            $("#btnpay").hide();
+
+
+        }
+
+    </script>

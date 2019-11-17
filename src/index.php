@@ -13,8 +13,14 @@ require_once("config/Autoloader.php");
 use controller\ContentController;
 use controller\UserController;
 use dao\ContentDAO;
+use domain\Content;
+use domain\InvPurpose;
+use domain\Payment;
 use domain\Status;
+use parsedown\Parsedown;
+use services\ContentService;
 use services\ContentServiceImpl;
+use services\InvoiceServiceImpl;
 use services\UserServiceImpl;
 use services\AuthServiceImpl;
 use view\TemplateView;
@@ -114,7 +120,55 @@ Router::route_auth("GET", "/edit", $authFunction, function () {
 Router::route_auth("POST", "/publish", $authFunction, function () {
     (new ContentController())->store(Status::PUBLISHED());
 });
+Router::route_auth("POST", "/checkinvoice", $softauthFunction, function () {
+    if( isset($_POST['ajax']) && isset($_POST['pay_req']) ){
+        $inv_svc = InvoiceServiceImpl::getInstance();
+        $pr = $inv_svc->decodePayReq($_POST["pay_req"]);
+        $paym = new Payment();
+        $paym->setRhash($pr->getPaymentHash());
+        if($inv_svc->checkPayment($paym)){
+            echo "paid";
+        }
+        else{
+            echo "not paid";
+        }
+        exit;
+    }
 
+    });
+
+Router::route_auth("POST", "/geninvoice", $softauthFunction, function () {
+    if( isset($_POST['ajax']) && isset($_POST['content_id']) ){
+        // get content
+        $content = ContentServiceImpl::getInstance()->readContent($_POST['content_id']);
+        // get user if any
+        $auth = AuthServiceImpl::getInstance();
+        if($auth->verifyAuth()){
+            $user = $auth->readUser();
+        }else {
+            $user=NULL;
+        }
+        $payment = new Payment();
+        $payment->setValue($content->getPrice());
+        $payment->setPurpose(InvPurpose::PAYMENT());
+        $payment->setPayer($user);
+        $payment->setContent($content);
+        $memo = "Payment for article: " . $content->getId() ;
+        if(!is_null($user)){
+            $memo .= " by user " . $user->getId();
+        }else{
+            $memo .= " by an anonymous user :-)";
+        }
+        $payment->setMemo($memo);
+        $payment = InvoiceServiceImpl::getInstance()->createPayment($payment);
+
+
+        $inv->payreq = $payment->getPayReq();
+        $myJSON = json_encode($inv);
+        echo $myJSON;
+        exit;
+    }
+});
 Router::route_auth("POST", "/preview", $authFunction, function () {
     (new ContentController())->store(Status::DRAFT());
 });
