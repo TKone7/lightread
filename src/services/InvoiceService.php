@@ -13,9 +13,13 @@ use domain\Payment;
 
 interface InvoiceService
 {
-    public function createPayment(Payment $payment);
+    public function createPayment(Payment $payment) : Payment;
 
-    public function checkPayment(Payment $payment) : bool ;
+    public function checkPayment($pay_req) : bool;
 
-    public function updatePayment();
+    public function getUpdateFromNode(Payment $payment) : Payment;
+
+    public function lookupInvoice($r_hash);
+
+    public function updatePayment(Payment $payment) : Payment;
 }

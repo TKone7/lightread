@@ -105,7 +105,7 @@ Router::route_auth("POST", "/edit-profile", $authFunction, function () {
 });
 Router::route_auth("GET", "/logout", $softauthFunction, function () {
     session_destroy();
-    Router::redirect("/login");
+    Router::redirect("/");
 });
 Router::route_auth("GET", "/article", $softauthFunction, function () {
     (new ContentController())->showContent();
@@ -119,10 +119,8 @@ Router::route_auth("POST", "/publish", $authFunction, function () {
 Router::route_auth("POST", "/checkinvoice", $softauthFunction, function () {
     if( isset($_POST['ajax']) && isset($_POST['pay_req']) ){
         $inv_svc = InvoiceServiceImpl::getInstance();
-        $pr = $inv_svc->decodePayReq($_POST["pay_req"]);
-        $paym = new Payment();
-        $paym->setRhash($pr->getPaymentHash());
-        if($inv_svc->checkPayment($paym)){
+
+        if($inv_svc->checkPayment($_POST["pay_req"])){
             echo "paid";
         }
         else{
@@ -158,7 +156,7 @@ Router::route_auth("POST", "/geninvoice", $softauthFunction, function () {
         $payment->setMemo($memo);
         $payment = InvoiceServiceImpl::getInstance()->createPayment($payment);
 
-
+        $inv->id = $payment->getId();
         $inv->payreq = $payment->getPayReq();
         $myJSON = json_encode($inv);
         echo $myJSON;

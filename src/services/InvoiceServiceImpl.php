@@ -9,14 +9,18 @@
 namespace services;
 
 
+use dao\ContentDAO;
 use dao\PaymentDAO;
+use domain\Content;
 use domain\InvStatus;
 use domain\Payment;
+use domain\User;
 use Lnrpc\Invoice;
 use \Lnrpc\PaymentHash;
 use Lnrpc\PayReq;
 use Lnrpc\PayReqString;
 use rpcclient\RpcClient;
+use DateTime;
 
 class InvoiceServiceImpl implements InvoiceService
 {
@@ -33,39 +37,64 @@ class InvoiceServiceImpl implements InvoiceService
         return self::$instance;
     }
 
-    public function createPayment(Payment $payment)
+    public function createPayment(Payment $payment) : Payment
     {
         $client = RpcClient::connect();
         $ln_inv = new Invoice(['memo' => $payment->getMemo(), 'value' => $payment->getValue()]);
         list($reply, $status) = $client->AddInvoice($ln_inv)->wait();
 
+        // set payment request from AddInvoice Response
         $payment->setPayReq($reply->getPaymentRequest());
         $rhash_hex = bin2hex($reply->getRHash());
+        // set payment hash from AddInvoice Response
         $payment->setRhash($rhash_hex);
 
+        // get additional information from generated invoice
+        $payment = $this->getUpdateFromNode($payment);
 
-        $reply = $this->lookupInvoice($payment->getRhash());
-
-        $payment->setCreationDate($reply->getCreationDate());
-        $payment->setExpiry($reply->getExpiry());
-        $payment->setSettleDate($reply->getSettleDate());
-        $s = Invoice\InvoiceState::name($reply->getState());
-        $payment->setStatus(InvStatus::$s());
         $pay_dao = new PaymentDAO();
-        $pay_dao->create($payment);
+        $payment = $pay_dao->create($payment);
         return $payment;
     }
 
-    public function checkPayment(Payment $payment) :bool
+    public function checkPayment($pay_req) :bool
     {
-        $reply = $this->lookupInvoice($payment->getRhash());
-        $s = Invoice\InvoiceState::name($reply->getState());
-        return (InvStatus::$s() == InvStatus::SETTLED());
+        $pay_dao = new PaymentDAO();
+        $payment = $pay_dao->findByPayReq($pay_req);
+        $payment = $this->getUpdateFromNode($payment);
+        //@todo check if payment objects are different and only perform update if so
+        $this->updatePayment($payment);
+        return ($payment->getStatus() == InvStatus::SETTLED());
     }
 
-    public function updatePayment()
+    public function getUpdateFromNode(Payment $payment) : Payment
     {
-        // TODO: Implement updatePayment() method.
+        $reply = $this->lookupInvoice($payment->getRhash());
+        $payment->setExpiry($reply->getExpiry());
+        $s = Invoice\InvoiceState::name($reply->getState());
+        $payment->setStatus(InvStatus::$s());
+
+        if($reply->getSettleDate()>0){
+            $settl_date = new DateTime();
+            $settl_date->setTimestamp($reply->getSettleDate());
+        }else{
+            $settl_date = NULL;
+        }
+        if($reply->getCreationDate()>0){
+            $creation_date = new DateTime();
+            $creation_date->setTimestamp($reply->getCreationDate());
+        }else{
+            $creation_date = NULL;
+        }
+        $payment->setSettleDate($settl_date);
+        $payment->setCreationDate($creation_date);
+        return $payment;
+    }
+    public function updatePayment(Payment $payment) : Payment
+    {
+        $pay_dao = new PaymentDAO();
+        $updated_payment = $pay_dao->update($payment);
+        return $updated_payment;
     }
     public function lookupInvoice($r_hash)
     {
@@ -74,11 +103,11 @@ class InvoiceServiceImpl implements InvoiceService
         list($reply, $status) = $client->LookupInvoice($ph)->wait();
         return $reply;
     }
-    public function decodePayReq($pay_req) : PayReq
+    public function userPaidContent(User $user, Content $content): bool
     {
-        $client = RpcClient::connect();
-        $prs = new PayReqString(['pay_req' => $pay_req]);
-        list($reply, $status) = $client->DecodePayReq($prs)->wait();
-        return $reply;
+        $pay_dao = new PaymentDAO();
+        return $pay_dao->paymentExists($user,$content);
+
     }
+
 }

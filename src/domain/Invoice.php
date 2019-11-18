@@ -214,26 +214,4 @@ class Invoice
         $this->purpose = $purpose;
     }
 
-    public function __set($name, $value)
-    {
-       /* if ($name=='fld_cont_id'){
-            $this->setId($value);
-        }elseif ($name=='fld_user_id'){
-            $this->setAuthor((new UserDAO)->read($value));
-        }elseif ($name=='fld_accc_key'){
-            $this->setAccess(Access::$value());
-        }elseif ($name=='fld_scon_key'){
-            $this->setStatus(Status::$value());
-        }elseif ($name=='fld_cont_title'){
-            $this->setTitle($value);
-        }elseif ($name=='fld_cont_subtitle'){
-            $this->setSubtitle($value);
-        }elseif ($name=='fld_cont_body'){
-            $this->setBody($value);
-        }elseif ($name=='fld_cont_creationpit'){
-            $this->setCreationDate(date_create_from_format('Y-m-d H:i:s', $value));
-        }elseif ($name=='fld_cont_satoshis'){
-            $this->setPrice($value);
-        }*/
-    }
 }

@@ -16,6 +16,7 @@ use parsedown\Parsedown;
 use router\Router;
 use services\AuthServiceImpl;
 use services\ContentServiceImpl;
+use services\InvoiceServiceImpl;
 use view\LayoutRendering;
 use view\TemplateView;
 
@@ -62,11 +63,12 @@ class ContentController
         }
 
         if ($content->getAccess() == Access::PAID()){
-            $userhasalreadypaid = false;
             $auth = AuthServiceImpl::getInstance();
+
             $userisauthor = false;
             if ($auth->verifyAuth()){
                 $userisauthor = $content->getAuthor()->getId() == $auth->readUser()->getId();
+                $userhasalreadypaid = InvoiceServiceImpl::getInstance()->userPaidContent($auth->readUser(),$content);
             }
             if (!$userhasalreadypaid and !$userisauthor){
                 $restricted = true;

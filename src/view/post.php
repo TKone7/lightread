@@ -55,7 +55,9 @@ isset($this->restricted)?$restricted=$this->restricted:$restricted=false;
                 data: {ajax: 1,pay_req: pay_req},
                 success: function(response){
                     $('#paid').text(response);
-                    window.location.reload();
+                    if (response=='paid'){
+                        window.location.reload();
+                    }
                 }
             });
         }
