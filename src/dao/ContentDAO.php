@@ -10,6 +10,7 @@ namespace dao;
 
 
 use domain\Content;
+use domain\Purpose;
 
 class ContentDAO extends BasicDAO
 {
@@ -68,6 +69,8 @@ class ContentDAO extends BasicDAO
         return $this->read($content->getId());
 
     }
+
+
     public function filter($keyword = NULL, $category = NULL, $authors = NULL)
     {
         $basic = 'SELECT * from tbl_content c 

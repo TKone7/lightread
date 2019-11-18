@@ -11,6 +11,7 @@ namespace domain;
 
 use dao\UserDAO;
 use parsedown\Parsedown;
+use services\ContentServiceImpl;
 
 class Content
 {
@@ -229,8 +230,9 @@ class Content
         $this->keywords = $keywords;
     }
 
-    public function getRevenue(Purpose $purpose = NULL){
-        return rand(10,10000);
+    public function getRevenue(Purpose $purpose = NULL)
+    {
+        return ContentServiceImpl::getInstance()->getTurnover($this, $purpose);
     }
 
     public function __set($name, $value)

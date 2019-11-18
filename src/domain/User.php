@@ -9,6 +9,8 @@
 namespace domain;
 
 
+use services\UserServiceImpl;
+
 class User
 {
     /**
@@ -152,6 +154,11 @@ class User
     public function setPassword($password)
     {
         $this->password = $password;
+    }
+
+    public function getTurnover(Purpose $purpose = NULL)
+    {
+        return UserServiceImpl::getInstance()->getTurnover($this, $purpose);
     }
 
     public function __set($name, $value)

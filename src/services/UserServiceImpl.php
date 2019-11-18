@@ -9,6 +9,8 @@
 namespace services;
 
 
+use dao\PaymentDAO;
+use domain\Purpose;
 use domain\User;
 use dao\UserDAO;
 use http\HTTPException;
@@ -45,5 +47,9 @@ class UserServiceImpl implements UserService
             }
         }
         throw new HTTPException(HTTPStatusCode::HTTP_401_UNAUTHORIZED);
+    }
+    public function getTurnover(User $user, Purpose $purpose = NULL){
+        $paym_dao = new PaymentDAO();
+        return $paym_dao->selectUserTurnover($user,$purpose);
     }
 }

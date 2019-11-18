@@ -10,8 +10,10 @@ namespace services;
 
 
 use dao\ContentDAO;
+use dao\PaymentDAO;
 use domain\Content;
 use domain\ContentManager;
+use domain\Purpose;
 use http\HTTPException;
 use http\HTTPStatusCode;
 
@@ -66,6 +68,10 @@ class ContentServiceImpl implements ContentService
         $contdao = new ContentDAO();
         $content = $contdao->read($content_id);
         return $content;
+    }
+    public function getTurnover(Content $content, Purpose $purpose = NULL){
+        $paym_dao = new PaymentDAO();
+        return $paym_dao->selectContentTurnover($content,$purpose);
     }
 
     public function getContentMgr(array $keyword = NULL, array $category = NULL, array $author = NULL): ContentManager

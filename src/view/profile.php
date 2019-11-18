@@ -8,6 +8,7 @@
 
 use domain\Access;
 use domain\ContentManager;
+use domain\Purpose;
 use domain\User;
 use Google\Protobuf\NullValue;
 
@@ -57,12 +58,21 @@ isset($this->mgr) ? $mgr = $this->mgr : $mgr = new ContentManager();
 
                     <?php
                 }
+
                 if(sizeof($articles)==0): ?>
                     <tr>
                         <td>No Articles</td>
                         <td></td>
                         <td></td>
                         <td></td>
+                        <td></td>
+                    </tr>
+                <?php else: ?>
+                    <tr>
+                        <td><b>Total</b></td>
+                        <td></td>
+                        <td></td>
+                        <td><?php echo $mgr->getRevenue(); ?> sats</td>
                         <td></td>
                     </tr>
                 <?php endif; ?>
@@ -73,10 +83,12 @@ isset($this->mgr) ? $mgr = $this->mgr : $mgr = new ContentManager();
                 make a type specimen book.</p>
             <div>
                 <hr class="earning-hr"><span class="earning-title">Earnings from donations</span>
-                <label class="earning-value">90 sats</label>
+                <label class="earning-value"><?php echo $user->getTurnover(Purpose::DONATION()); ?> sats</label>
                 <span class="earning-title">Earnings from purchases</span>
-                <label class="earning-value">99 sats</label>
-                <hr class="earning-hr"><span class="earning-title">Total earning</span><label class="earning-value">47 456 sats</label><span class="earning-title">Total earning USD ($9,263.59 / BTC)</span><label class="earning-value">4.39 USD</label>
+                <label class="earning-value"><?php echo $user->getTurnover(Purpose::READ()); ?> sats</label>
+                <hr class="earning-hr"><span class="earning-title">Total earning</span>
+                <label class="earning-value"><?php echo $user->getTurnover(); ?> sats</label>
+                <span class="earning-title">Total earning USD ($9,263.59 / BTC)</span><label class="earning-value">4.39 USD</label>
                 <hr class="earning-hr"><span class="earning-title">Withdrawals</span><label class="earning-value">- 10 000 sats</label>
                 <hr class="earning-hr"><span class="earning-title">Current balance</span><label class="earning-value">37 456 sats</label><span class="earning-title">Current balance USD ($9,263.59 / BTC)</span><label class="earning-value">3.47 USD</label>
                 <hr class="earning-hr">

@@ -129,7 +129,40 @@ class PaymentDAO extends BasicDAO
         return false;
 
     }
-
+    public function selectContentTurnover(Content $content, Purpose $purpose = NULL){
+        $basic ='SELECT sum(fld_invc_satoshis) from tbl_invoice 
+              where fld_cont_id=:cont_id AND fld_sinv_id=:sinv_id';
+        if(!is_null($purpose)){
+            $basic .= ' AND fld_purp_id=:purp_id';
+        }
+        $stmt = $this->pdoInstance->prepare($basic);
+        $stmt->bindValue(':cont_id', $content->getId());
+        $stmt->bindValue(':sinv_id', $this->readInvStatusId(InvStatus::SETTLED()->getKey()));
+        if(!is_null($purpose)){
+            $stmt->bindValue(':purp_id', $this->readPurposeId($purpose->getKey()));
+        }
+        $stmt->execute();
+        $res = $stmt->fetch(\PDO::FETCH_ASSOC)['sum'];
+        return $res ?? 0;
+    }
+    public function selectUserTurnover(User $user, Purpose $purpose = NULL){
+        $basic ='SELECT sum(inv.fld_invc_satoshis) from tbl_invoice inv 
+                inner join tbl_content c 
+                on c.fld_cont_id = inv.fld_cont_id
+              where c.fld_user_id=:user_id AND inv.fld_sinv_id=:sinv_id';
+        if(!is_null($purpose)){
+            $basic .= ' AND fld_purp_id=:purp_id';
+        }
+        $stmt = $this->pdoInstance->prepare($basic);
+        $stmt->bindValue(':user_id', $user->getId());
+        $stmt->bindValue(':sinv_id', $this->readInvStatusId(InvStatus::SETTLED()->getKey()));
+        if(!is_null($purpose)){
+            $stmt->bindValue(':purp_id', $this->readPurposeId($purpose->getKey()));
+        }
+        $stmt->execute();
+        $res = $stmt->fetch(\PDO::FETCH_ASSOC)['sum'];
+        return $res ?? 0;
+    }
     private function readInvStatusId($key){
         $stmt = $this->pdoInstance->prepare('
             SELECT * FROM tbl_statusinvoice WHERE fld_sinv_key = :key;');
