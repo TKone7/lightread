@@ -19,5 +19,7 @@ class Purpose extends Enum
 {
     const DONATION = 'donation';
     const READ = 'read';
+    const WITHDRAWAL = 'withdrawal';
+
 }
 

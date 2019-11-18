@@ -201,7 +201,7 @@ class Invoice
     /**
      * @return mixed
      */
-    public function getPurpose() : InvPurpose
+    public function getPurpose() : Purpose
     {
         return $this->purpose;
     }

@@ -9,6 +9,7 @@
 namespace services;
 
 
+use dao\PaymentDAO;
 use domain\InvStatus;
 use domain\Payment;
 use Lnrpc\Invoice;
@@ -50,6 +51,8 @@ class InvoiceServiceImpl implements InvoiceService
         $payment->setSettleDate($reply->getSettleDate());
         $s = Invoice\InvoiceState::name($reply->getState());
         $payment->setStatus(InvStatus::$s());
+        $pay_dao = new PaymentDAO();
+        $pay_dao->create($payment);
         return $payment;
     }
 

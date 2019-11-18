@@ -61,7 +61,6 @@ class ContentController
             Router::redirect("/article-not-found");
         }
 
-
         if ($content->getAccess() == Access::PAID()){
             $userhasalreadypaid = false;
             $auth = AuthServiceImpl::getInstance();
@@ -73,10 +72,7 @@ class ContentController
                 $restricted = true;
             }
         }
-
-        $Parsedown = new Parsedown();
-        $Parsedown->setSafeMode(true);
-        $body = $Parsedown->text($content->getBody());
+        $body = $content->getHTMLBody();
         if($restricted){
             $body =ContentServiceImpl::getInstance()->trimHTML($body,$_GET["len"]??300);
         }

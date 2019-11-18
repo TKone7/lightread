@@ -12,23 +12,19 @@ require_once("config/Autoloader.php");
 
 use controller\ContentController;
 use controller\UserController;
-use dao\ContentDAO;
-use domain\Content;
-use domain\InvPurpose;
+
 use domain\Payment;
+use domain\Purpose;
 use domain\Status;
-use parsedown\Parsedown;
-use services\ContentService;
+
 use services\ContentServiceImpl;
 use services\InvoiceServiceImpl;
-use services\UserServiceImpl;
 use services\AuthServiceImpl;
 use view\TemplateView;
 use view\LayoutRendering;
 use router\Router;
 use http\HTTPException;
 use rpcclient\RpcClient;
-use domain\User;
 
 ini_set( 'session.cookie_httponly', 1 );
 session_start();
@@ -150,7 +146,7 @@ Router::route_auth("POST", "/geninvoice", $softauthFunction, function () {
         }
         $payment = new Payment();
         $payment->setValue($content->getPrice());
-        $payment->setPurpose(InvPurpose::PAYMENT());
+        $payment->setPurpose(Purpose::READ());
         $payment->setPayer($user);
         $payment->setContent($content);
         $memo = "Payment for article: " . $content->getId() ;

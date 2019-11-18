@@ -10,6 +10,7 @@ namespace domain;
 
 
 use dao\UserDAO;
+use parsedown\Parsedown;
 
 class Content
 {
@@ -173,6 +174,19 @@ class Content
     public function getBody()
     {
         return $this->body;
+    }
+
+
+    /**
+     * @return mixed|string
+     */
+    public function getHTMLBody()
+    {
+        $Parsedown = new Parsedown();
+        $Parsedown->setSafeMode(true);
+        $body = $Parsedown->text($this->body);
+        $body = str_replace("<img ","<img style='width:100%' ",$body);
+        return $body;
     }
 
     /**
