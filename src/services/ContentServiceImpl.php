@@ -51,7 +51,7 @@ class ContentServiceImpl implements ContentService
         }
         throw new HTTPException(HTTPStatusCode::HTTP_401_UNAUTHORIZED);
     }
-    public function editContent($content_id)
+    public function editContent($content_id) : Content
     {
         $auth = AuthServiceImpl::getInstance();
         $contdao = new ContentDAO();
@@ -96,21 +96,23 @@ class ContentServiceImpl implements ContentService
                 $closingtag=false;
                 $intag=true;
                 $currenttag.=$html[$i];
+            }elseif($html[$i] == ">" AND $intag) {
+                $intag=false;
+                if($closingtag){
+                    array_pop($stack);
+                }else{
+                    $currenttag.=$html[$i];
+                    $stack[] = $currenttag;
+                }
+                $currenttag="";
             }elseif ($intag){
                 if($html[$i]=="/"){
                     $closingtag=true;
                 }
                 $currenttag.=$html[$i];
+            }
 
-            }
-            if($html[$i] == ">") {
-                $intag=false;
-                if($closingtag){
-                }else{
-                    $stack[] = $currenttag;
-                }
-                $currenttag="";
-            }
+
             if($restr<=$i){
                 if($intag){
                     $restr++;

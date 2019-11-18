@@ -30,13 +30,12 @@ isset($this->restricted)?$restricted=$this->restricted:$restricted=false;
 
                         </div>
                         <div id="output" style="display: none">
-                            <form action="<?php  echo $GLOBALS["ROOT_URL"]; ?>/checkinvoice" method="post">
-
+                            <div class="text-center clearfix">
                                 <input name="pay_req" type="text" id='response' readonly style="width: 100%;">
                                 <button onclick="checkPayment()" class="btn btn-primary" type="button" >check payment</button>
                                 <br>
-                                <input type="text" id="paid" value="...">
-                            </form>
+                                <span id="paid"></span>
+                            </div>
                         </div>
                     <?php endif; ?>
                     </div>
@@ -48,14 +47,15 @@ isset($this->restricted)?$restricted=$this->restricted:$restricted=false;
     <script>
         function checkPayment(){
             var pay_req = $('#response').val();
-            $('#paid').val("wait, we check this...");
+            $('#paid').text("hold on, we check your payment...");
 
             $.ajax({
                 type: 'POST',
                 url: '<?php  echo $GLOBALS["ROOT_URL"]; ?>/checkinvoice',
                 data: {ajax: 1,pay_req: pay_req},
                 success: function(response){
-                    $('#paid').val(response);
+                    $('#paid').text(response);
+                    window.location.reload();
                 }
             });
         }
