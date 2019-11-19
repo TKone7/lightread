@@ -11,7 +11,7 @@ namespace rpcclient;
 use config\Config;
 use dao\NodeDAO;
 use Lnrpc\LightningClient;
-use Grpc\ChannelCredentials;
+use \Grpc\ChannelCredentials;
 
 class RpcClient
 {
