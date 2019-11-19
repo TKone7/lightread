@@ -147,11 +147,11 @@ Router::route_auth("POST", "/geninvoice", $softauthFunction, function () {
         $payment->setPurpose(Purpose::READ());
         $payment->setPayer($user);
         $payment->setContent($content);
-        $memo = "Payment for article: " . $content->getId() ;
+        $memo = "Payment for article: '" . $content->getTitle() ;
         if(!is_null($user)){
-            $memo .= " by user " . $user->getId();
+            $memo .= "' by user " . $user->getFullName() . " ("  . $user->getId() . ")";
         }else{
-            $memo .= " by an anonymous user :-)";
+            $memo .= "' by an anonymous user :-)";
         }
         $payment->setMemo($memo);
         $payment = InvoiceServiceImpl::getInstance()->createPayment($payment);
