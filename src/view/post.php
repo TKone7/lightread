@@ -32,6 +32,7 @@ isset($this->restricted)?$restricted=$this->restricted:$restricted=false;
                         <div id="output" style="display: none">
                             <div class="text-center clearfix">
                                 <input name="pay_req" type="text" id='response' readonly style="width: 100%;">
+                                <div id="qr"></div>
                                 <button onclick="checkPayment()" class="btn btn-primary" type="button" >check payment</button>
                                 <br>
                                 <span id="paid"></span>
@@ -71,6 +72,7 @@ isset($this->restricted)?$restricted=$this->restricted:$restricted=false;
                 dataType: "json",
                 success: function(response){
                     $('#response').val(response.payreq);
+                    $("#qr").qrcode({render:'canvas',text: response.payreq});
                 }
             });
             $("#output").show();
