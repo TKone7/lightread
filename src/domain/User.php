@@ -90,6 +90,9 @@ class User
     }
 
     public function getFullName(){
+        if($this->firstname == "" and $this->lastname== ""){
+            return $this->username;
+        }
         return ltrim(rtrim($this->getFirstname() . " " . $this->getLastname()," ")," ");
     }
     /**
