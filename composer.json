@@ -1,14 +1,15 @@
 {
-"name": "grpc/grpc-demo",
-"description": "gRPC example for PHP",
-"require": {
-"grpc/grpc": "^v1.15.0",
-"google/protobuf": "^v3.3.0",
-"myclabs/php-enum": "^v1.7.2"
-},
-"autoload": {
-"psr-4": {
-"": "src/"
-}
-}
+  "name": "grpc/grpc-demo",
+  "description": "gRPC example for PHP",
+  "require": {
+    "ext-grpc": ">=0.1.0",
+    "grpc/grpc": "^v1.3.0",
+    "google/protobuf": "^v3.3.0",
+    "myclabs/php-enum": "^v1.7.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "": "src/"
+    }
+  }
 }

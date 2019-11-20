@@ -304,7 +304,7 @@ class LightningClient extends \Grpc\BaseStub {
     }
 
     /**
-     * * lncli: `subscribechannelevents`
+     * *
      * SubscribeChannelEvents creates a uni-directional stream from the server to
      * the client in which any updates relevant to the state of the channels are
      * sent over. Events include new active channels, inactive channels, and closed
@@ -371,6 +371,22 @@ class LightningClient extends \Grpc\BaseStub {
         return $this->_serverStreamRequest('/lnrpc.Lightning/OpenChannel',
         $argument,
         ['\Lnrpc\OpenStatusUpdate', 'decode'],
+        $metadata, $options);
+    }
+
+    /**
+     * *
+     * ChannelAcceptor dispatches a bi-directional streaming RPC in which
+     * OpenChannel requests are sent to the client and the client responds with
+     * a boolean that tells LND whether or not to accept the channel. This allows
+     * node operators to specify their own criteria for accepting inbound channels
+     * through a single persistent connection.
+     * @param array $metadata metadata
+     * @param array $options call options
+     */
+    public function ChannelAcceptor($metadata = [], $options = []) {
+        return $this->_bidiRequest('/lnrpc.Lightning/ChannelAcceptor',
+        ['\Lnrpc\ChannelAcceptRequest','decode'],
         $metadata, $options);
     }
 
