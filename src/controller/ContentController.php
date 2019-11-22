@@ -30,7 +30,7 @@ class ContentController
         $cont->setBody($_POST["editordata"]);
         $cont->setStatus($new_status);
         $sat = filter_input(INPUT_POST, 'price', FILTER_VALIDATE_INT);
-        if($_POST["paid"]=="on" AND $sat>0){
+        if($sat>0){
             $cont->setAccess(Access::PAID());
             $cont->setPrice($sat);
         }else{

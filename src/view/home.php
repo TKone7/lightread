@@ -26,7 +26,7 @@ isset($this->mgr) ? $mgr = $this->mgr : $mgr = new ContentManager();
                     </a>
                     <p class="post-meta">Posted by&nbsp;<?php echo $item->getAuthor()->getFullName(); ?> on <?php echo $item->getCreationDate()->format('F d, Y')?></a>
                         <?php if($item->getAccess() == Access::PAID()): ?>
-                        <a class="text-right float-right justify-content-sm-end" href="#"><?php echo $item->getPrice() ?> sats&nbsp;<i class="fab fa-bitcoin"></i></a>
+                        <a class="text-right float-right justify-content-sm-end" href="#"><?php echo $item->getPrice() ?> sats&nbsp;/&nbsp;<?php echo $item->getPriceFiat() ?>&nbsp;<i class="fab fa-bitcoin"></i></a>
                         <?php else: ?>
                         <a class="text-right float-right justify-content-sm-end" href="#">FREE&nbsp;<i class="fas fa-piggy-bank"></i></a>
                         <?php endif; ?>

@@ -12,6 +12,7 @@ namespace domain;
 use dao\UserDAO;
 use parsedown\Parsedown;
 use services\ContentServiceImpl;
+use services\MarketDataServiceImpl;
 
 class Content
 {
@@ -63,6 +64,12 @@ class Content
     public function getPrice()
     {
         return $this->price;
+    }
+
+    public function getPriceFiat()
+    {
+        $fiat = MarketDataServiceImpl::getInstance()->convertSatToUsd($this->price);
+        return $fiat['value'] . " " . $fiat['unit'];
     }
 
     /**

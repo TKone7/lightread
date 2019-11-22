@@ -123,10 +123,10 @@ Router::route_auth("POST", "/checkinvoice", $softauthFunction, function () {
         $inv_svc = InvoiceServiceImpl::getInstance();
 
         if($inv_svc->checkPayment($_POST["pay_req"])){
-            echo "paid";
+            echo "Status: payment successful";
         }
         else{
-            echo "not paid";
+            echo "Status: unpaid";
         }
         exit;
     }

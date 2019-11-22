@@ -31,11 +31,14 @@ class MarketDataServiceImpl implements MarketDataService
         $tolerance = Config::get('price.tolerance');
         // database access to check if cached is still valid : return
         $last_record = (new PriceDAO())->readLast($crypto,$fiat);
-        $now = new \DateTime('now', new \DateTimeZone(date_default_timezone_get()));
-        $last_time = date_create_from_format('Y-m-d H:i:s',$last_record['fld_price_update']);
-        $diff = $now->diff($last_time);
-        $min_diff = $diff->i;
-        if($min_diff > $tolerance){
+        if(!is_null($last_record)){
+            $now = new \DateTime('now', new \DateTimeZone(date_default_timezone_get()));
+            $last_time = date_create_from_format('Y-m-d H:i:s',$last_record['fld_price_update']);
+            $diff = $now->diff($last_time);
+            $min_diff = $diff->i;
+        }
+
+        if(is_null($last_record) || $min_diff > $tolerance){
             return $this->getFromApi($crypto,$fiat);
         }else{
             return floatval($last_record['fld_price_value']);
@@ -45,8 +48,8 @@ class MarketDataServiceImpl implements MarketDataService
     private function getFromApi($crypto,$fiat):float {
         // $crypto must be bitcoin
         $crypto_id = 1;
-        // $fiat must be CHF see ref: https://coinmarketcap.com/api/documentation/v1/#section/Standards-and-Conventions
-        $fiat_id = 2785;
+        // $fiat must be USD see ref: https://coinmarketcap.com/api/documentation/v1/#section/Standards-and-Conventions
+        $fiat_id = 2781;
         // do the actual request to CMC
         $url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest';
         $parameters = [
@@ -73,9 +76,9 @@ class MarketDataServiceImpl implements MarketDataService
         $arr = json_decode($response); // print json decoded response
         if($arr->status->error_code == 0){
             // OK
-            $chf_quote = $arr->data->{'1'}->quote->{'2785'};
-            $price = $chf_quote->price;
-            $last_updated = (new \DateTime('@' .strtotime($chf_quote->last_updated)))->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+            $usd_quote = $arr->data->{$crypto_id}->quote->{$fiat_id};
+            $price = $usd_quote->price;
+            $last_updated = (new \DateTime('@' .strtotime($usd_quote->last_updated)))->setTimezone(new \DateTimeZone(date_default_timezone_get()));
 
             // write new price to the database
             (new PriceDAO())->insert($price,$crypto,$fiat,$last_updated);
@@ -88,15 +91,26 @@ class MarketDataServiceImpl implements MarketDataService
         curl_close($curl); // Close request
     }
 
-    public function getPrice(bool $force_refresh = false, $crypto = 'BTC', $fiat = 'CHF'): float
+    public function getPrice(bool $force_refresh = false, $crypto = 'BTC', $fiat = 'USD'): float
     {
-        // @todo implement other currencies than BTC and CHF
-        if (!($crypto==='BTC' and $fiat==='CHF')) {
-            throw new \Exception('Currently only BTC and CHF are allowed, input was ' . $crypto . " and " . $fiat);
+        // @todo implement other currencies than BTC and USD
+        if (!($crypto==='BTC' and $fiat==='USD')) {
+            throw new \Exception('Currently only BTC and USD are allowed, input was ' . $crypto . " and " . $fiat);
         }
         if ($force_refresh){
             return $this->getFromApi($crypto,$fiat);
         }
         return $this->getPriceCached($crypto,$fiat);
+    }
+
+    public function convertSatToUsd($sat_val){
+        $price_btc = $this->getPrice();
+        $price_sat = $price_btc / self::SATS_PER_BTC;
+        $usd_val = $price_sat * $sat_val;
+        if($usd_val < 1){
+            return array("value" => (int)($usd_val * 100), "unit" => "cts.");
+        }else{
+            return array("value" => round($usd_val, 2), "unit" => "$");
+        }
     }
 }

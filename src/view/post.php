@@ -26,14 +26,17 @@ isset($this->restricted)?$restricted=$this->restricted:$restricted=false;
                     </div>
                     <?php if($restricted): ?>
                         <div class="text-center clearfix">
-                            <button id="btnpay" onclick="myFunc()" class="btn btn-primary" type="button" data-target="#payinvoice" data-toggle="modal">Read on for <?php echo $content->getPrice(); ?> Sats (~?? cents)</button>
+                            <button id="btnpay" onclick="myFunc()" class="btn btn-primary" type="button" data-target="#payinvoice" data-toggle="modal">Read on for <?php echo $content->getPrice(); ?> Sats (<?php echo $content->getPriceFiat(); ?>)</button>
 
                         </div>
                         <div id="output" style="display: none">
                             <div class="text-center clearfix">
                                 <input name="pay_req" type="text" id='response' readonly style="width: 100%;">
                                 <a id="wallet" href=""> <div id="qr"></div></a>
+                                <!--
+                                don't need button since we do polling
                                 <button onclick="checkPayment()" class="btn btn-primary" type="button" >check payment</button>
+                                -->
                                 <br>
                                 <span id="paid"></span>
                             </div>
@@ -46,7 +49,7 @@ isset($this->restricted)?$restricted=$this->restricted:$restricted=false;
     </article>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
-        function checkPayment(){
+            function checkPayment(){
             var pay_req = $('#response').val();
             $('#paid').text("hold on, we check your payment...");
 
@@ -56,14 +59,16 @@ isset($this->restricted)?$restricted=$this->restricted:$restricted=false;
                 data: {ajax: 1,pay_req: pay_req},
                 success: function(response){
                     $('#paid').text(response);
-                    if (response=='paid'){
+                    if (response=='Status: payment successful'){
                         window.location.reload();
                     }
                 }
             });
         }
+
         function myFunc(){
             var name = $('#name').val();
+            var pay_req = "";
             $("#response").val("Please wait while invoice is generated...")
             $.ajax({
                 type: 'POST',
@@ -71,13 +76,36 @@ isset($this->restricted)?$restricted=$this->restricted:$restricted=false;
                 data: {ajax: 1,content_id: <?php echo $content->getId(); ?>},
                 dataType: "json",
                 success: function(response){
+                    pay_req=response.payreq;
                     $('#response').val(response.payreq);
                     $('#wallet').attr("href", "lightning:" + response.payreq);
                     $("#qr").qrcode({render:'canvas',text: response.payreq});
+                    //$('#paid').text("Status: unpaid");
+                    // poll();
                 }
             });
             $("#output").show();
             $("#btnpay").hide();
+
+            // start
+            (function poll(){
+                setTimeout(function(){
+                    var pay_req = $('#response').val();
+                    $('#paid').text("start polling...");
+                    $.ajax({
+                        type: 'POST',
+                        url: '<?php  echo $GLOBALS["ROOT_URL"]; ?>/checkinvoice',
+                        data: {ajax: 1,pay_req: pay_req},
+                        success: function(response){
+                            $('#paid').text(response);
+                            if (response=='Status: payment successful'){
+                                window.location.reload();
+                            }
+                            poll();
+                        }
+                    });
+                }, 5000);
+            })();
 
 
         }
