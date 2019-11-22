@@ -10,6 +10,7 @@ namespace services;
 
 
 use config\Config;
+use dao\PriceDAO;
 
 class MarketDataServiceImpl implements MarketDataService
 {
@@ -18,7 +19,6 @@ class MarketDataServiceImpl implements MarketDataService
     protected function __construct()
     {
     }
-
     public static function getInstance(){
         if(!isset(self::$instance)){
             self::$instance = new self();
@@ -26,22 +26,32 @@ class MarketDataServiceImpl implements MarketDataService
         return self::$instance;
     }
 
-    private function getPriceCached():float{
-        //try chached first
+    private function getPriceCached($crypto,$fiat):float{
+        //try chached first. If it's within 15 min it's still ok.
+        $tolerance = Config::get('price.tolerance');
         // database access to check if cached is still valid : return
-
-        // if cached is unavailable / outdated, call the api
-        // getFromApi()
-        return $this->getFromApi();
+        $last_record = (new PriceDAO())->readLast($crypto,$fiat);
+        $now = new \DateTime('now', new \DateTimeZone(date_default_timezone_get()));
+        $last_time = date_create_from_format('Y-m-d H:i:s',$last_record['fld_price_update']);
+        $diff = $now->diff($last_time);
+        $min_diff = $diff->i;
+        if($min_diff > $tolerance){
+            return $this->getFromApi($crypto,$fiat);
+        }else{
+            return floatval($last_record['fld_price_value']);
+        }
     }
 
-    private function getFromApi():float {
+    private function getFromApi($crypto,$fiat):float {
+        // $crypto must be bitcoin
+        $crypto_id = 1;
+        // $fiat must be CHF see ref: https://coinmarketcap.com/api/documentation/v1/#section/Standards-and-Conventions
+        $fiat_id = 2785;
         // do the actual request to CMC
         $url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest';
         $parameters = [
-            'id' => '1', // 1 represents bitcoin
-            'convert_id' => '2785' // represents SCHF (Coin Market Cap ID) see ref: https://coinmarketcap.com/api/documentation/v1/#section/Standards-and-Conventions
-        ];
+            'id' => strval($crypto_id),
+            'convert_id' => strval($fiat_id)];
 
         $headers = [
             'Accepts: application/json',
@@ -68,16 +78,14 @@ class MarketDataServiceImpl implements MarketDataService
             $last_updated = (new \DateTime('@' .strtotime($chf_quote->last_updated)))->setTimezone(new \DateTimeZone(date_default_timezone_get()));
 
             // write new price to the database
+            (new PriceDAO())->insert($price,$crypto,$fiat,$last_updated);
 
-            // return double
             return $price;
         }else{
             //catch error
             print $arr->status->error_message;
         }
         curl_close($curl); // Close request
-
-        return 1;
     }
 
     public function getPrice(bool $force_refresh = false, $crypto = 'BTC', $fiat = 'CHF'): float
@@ -87,8 +95,8 @@ class MarketDataServiceImpl implements MarketDataService
             throw new \Exception('Currently only BTC and CHF are allowed, input was ' . $crypto . " and " . $fiat);
         }
         if ($force_refresh){
-            return $this->getFromApi();
+            return $this->getFromApi($crypto,$fiat);
         }
-        return $this->getPriceCached();
+        return $this->getPriceCached($crypto,$fiat);
     }
 }
