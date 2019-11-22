@@ -9,6 +9,8 @@
 
 require dirname(__FILE__).'/../vendor/autoload.php';
 require_once("config/Autoloader.php");
+// @todo should maybe not be hard-coded but be defined by the server config
+date_default_timezone_set("Europe/Zurich");
 
 use controller\ContentController;
 use controller\UserController;

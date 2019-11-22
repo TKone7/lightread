@@ -99,14 +99,12 @@ class InvoiceServiceImpl implements InvoiceService
 
 
         if($reply->getSettleDate()>0){
-            $settl_date = new DateTime();
-            $settl_date->setTimestamp($reply->getSettleDate());
+            $settl_date = (new DateTime('@' .$reply->getSettleDate()))->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         }else{
             $settl_date = NULL;
         }
         if($reply->getCreationDate()>0){
-            $creation_date = new DateTime();
-            $creation_date->setTimestamp($reply->getCreationDate());
+            $creation_date = (new DateTime('@' .$reply->getCreationDate()))->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         }else{
             $creation_date = NULL;
         }
