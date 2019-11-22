@@ -10,8 +10,8 @@ namespace rpcclient;
 
 use config\Config;
 use dao\NodeDAO;
+use Grpc\ChannelCredentials;
 use Lnrpc\LightningClient;
-use \Grpc\ChannelCredentials;
 
 class RpcClient
 {
@@ -21,17 +21,11 @@ class RpcClient
     protected function __construct($node)
     {
         putenv('GRPC_SSL_CIPHER_SUITES=HIGH+ECDSA');
-        if(!is_null(Config::get($node.".ip"))){
-            $lndIp = Config::get($node.".ip");
-            $ssl = file_get_contents(Config::get($node.".ssl"));
-            $macaroon = file_get_contents(Config::get($node.".macaroon"));
-        }else{
-            $nd = new NodeDAO();
-            $node = $nd->readActive();
-            $ssl = $node["fld_node_tls"];
-            $macaroon = hex2bin($node["fld_node_macaroon"]);
-            $lndIp = $node["fld_node_ip"];
-        }
+        $nd = new NodeDAO();
+        $node = $nd->readActive();
+        $ssl = $node["fld_node_tls"];
+        $macaroon = hex2bin($node["fld_node_macaroon"]);
+        $lndIp = $node["fld_node_ip"];
         $metadataCallback = function ($metadata) use ($macaroon) {
             return ['macaroon' => [bin2hex($macaroon)]];
         };

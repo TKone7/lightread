@@ -15,7 +15,9 @@ use domain\Content;
 use domain\InvStatus;
 use domain\Payment;
 use domain\User;
+use Google\Protobuf\Enum;
 use Lnrpc\Invoice;
+use Lnrpc\Invoice_InvoiceState;
 use \Lnrpc\PaymentHash;
 use Lnrpc\PayReq;
 use Lnrpc\PayReqString;
@@ -40,7 +42,9 @@ class InvoiceServiceImpl implements InvoiceService
     public function createPayment(Payment $payment) : Payment
     {
         $client = RpcClient::connect();
-        $ln_inv = new Invoice(['memo' => $payment->getMemo(), 'value' => $payment->getValue()]);
+        $ln_inv = new Invoice();
+        $ln_inv->setMemo($payment->getMemo());
+        $ln_inv->setValue($payment->getValue());
         list($reply, $status) = $client->AddInvoice($ln_inv)->wait();
 
         // set payment request from AddInvoice Response
@@ -71,8 +75,28 @@ class InvoiceServiceImpl implements InvoiceService
     {
         $reply = $this->lookupInvoice($payment->getRhash());
         $payment->setExpiry($reply->getExpiry());
-        $s = Invoice\InvoiceState::name($reply->getState());
-        $payment->setStatus(InvStatus::$s());
+        $s = $reply->getState();
+
+        //@todo ugly but not possible because of open issue https://github.com/grpc/grpc/issues/21081
+        switch ($s){
+            case Invoice_InvoiceState::OPEN: {
+                $payment->setStatus(InvStatus::OPEN());
+                break;
+            }
+            case Invoice_InvoiceState::SETTLED: {
+                $payment->setStatus(InvStatus::SETTLED());
+                break;
+            }
+            case Invoice_InvoiceState::CANCELED: {
+                $payment->setStatus(InvStatus::CANCELED());
+                break;
+            }
+            case Invoice_InvoiceState::ACCEPTED: {
+                $payment->setStatus(InvStatus::ACCEPTED());
+                break;
+            }
+        }
+
 
         if($reply->getSettleDate()>0){
             $settl_date = new DateTime();
@@ -99,7 +123,8 @@ class InvoiceServiceImpl implements InvoiceService
     public function lookupInvoice($r_hash)
     {
         $client = RpcClient::connect();
-        $ph = new PaymentHash(['r_hash_str' => $r_hash]);
+        $ph = new PaymentHash();
+        $ph->setRHashStr($r_hash);
         list($reply, $status) = $client->LookupInvoice($ph)->wait();
         return $reply;
     }

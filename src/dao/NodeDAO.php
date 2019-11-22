@@ -20,7 +20,7 @@ class NodeDAO extends BasicDAO
         $stmt->bindValue(':active', true);
 
         $stmt->execute();
-        return $this->read($this->pdoInstance->lastInsertId());
+        return $this->pdoInstance->lastInsertId();
     }
     public function readActive(){
         $stmt = $this->pdoInstance->prepare('
