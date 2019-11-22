@@ -38,5 +38,11 @@ class Config
             self::$config["database.user"] = $dbopts["user"];
             self::$config["database.password"] = $dbopts["pass"];
         }
+        if (isset($_ENV["APYKEY"])) {
+            self::$config["api.key"] = $_ENV["APYKEY"] ;
+        }
+        if (isset($_ENV["PRICETOLERANCE"])) {
+            self::$config["price.tolerance"] = $_ENV["PRICETOLERANCE"] ;
+        }
     }
 }
