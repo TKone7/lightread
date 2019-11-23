@@ -68,8 +68,8 @@ class Content
 
     public function getPriceFiat()
     {
-        $fiat = MarketDataServiceImpl::getInstance()->convertSatToUsd($this->price);
-        return $fiat['value'] . " " . $fiat['unit'];
+        $fiat = MarketDataServiceImpl::getInstance()->convertSatToUsdFormat($this->price);
+        return $fiat;
     }
 
     /**

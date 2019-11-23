@@ -107,10 +107,15 @@ class MarketDataServiceImpl implements MarketDataService
         $price_btc = $this->getPrice();
         $price_sat = $price_btc / self::SATS_PER_BTC;
         $usd_val = $price_sat * $sat_val;
+        return $usd_val;
+    }
+    public function convertSatToUsdFormat($sat_val): String
+    {
+        $usd_val = $this->convertSatToUsd($sat_val);
         if($usd_val < 1){
-            return array("value" => (int)($usd_val * 100), "unit" => "cts.");
+            return round($usd_val * 100) . " cts.";
         }else{
-            return array("value" => round($usd_val, 2), "unit" => "$");
+            return '$' . round($usd_val, 2);
         }
     }
 }

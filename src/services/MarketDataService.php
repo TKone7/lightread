@@ -15,4 +15,8 @@ interface MarketDataService
 
     public function getPrice(bool $force_refresh = false, $crypto = 'BTC', $fiat = 'CHF'):float ;
 
+    public function convertSatToUsd($sat_val);
+
+    public function convertSatToUsdFormat($sat_val): String;
+
 }

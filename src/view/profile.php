@@ -89,7 +89,7 @@ isset($this->mgr) ? $mgr = $this->mgr : $mgr = new ContentManager();
                 <label class="earning-value"><?php echo $user->getTurnover(Purpose::READ()); ?> sats</label>
                 <hr class="earning-hr"><span class="earning-title">Total earning</span>
                 <label class="earning-value"><?php echo $user->getTurnover(); ?> sats</label>
-                <span class="earning-title">Total earning USD (<?php echo MarketDataServiceImpl::getInstance()->getPrice(); ?> / BTC)</span><label class="earning-value"><?php $to_usd = MarketDataServiceImpl::getInstance()->convertSatToUsd($user->getTurnover()); echo $to_usd['value'] . ' ' . $to_usd['unit']; ?></label>
+                <span class="earning-title">Total earning USD (<?php echo MarketDataServiceImpl::getInstance()->getPrice(); ?> / BTC)</span><label class="earning-value"><?php echo MarketDataServiceImpl::getInstance()->convertSatToUsdFormat($user->getTurnover()); ?></label>
                 <hr class="earning-hr"><span class="earning-title">Withdrawals</span><label class="earning-value">- 10 000 sats</label>
                 <hr class="earning-hr"><span class="earning-title">Current balance</span><label class="earning-value">37 456 sats</label><span class="earning-title">Current balance USD ($9,263.59 / BTC)</span><label class="earning-value">3.47 USD</label>
                 <hr class="earning-hr">
