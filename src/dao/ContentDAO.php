@@ -78,7 +78,9 @@ class ContentDAO extends BasicDAO
               on c.fld_accc_id = a.fld_accc_id
             inner join tbl_statuscontent s
               on c.fld_scon_id = s.fld_scon_id 
-              where 1=1';
+            inner join tbl_user u 
+              on u.fld_user_id = c.fld_user_id
+              where 1=1 AND u.fld_user_verified';
         if(!is_null($authors))
             $basic .= ' AND c.fld_user_id in ('.rtrim($authors, ',').')';
         $stmt = $this->pdoInstance->prepare($basic);

@@ -113,7 +113,7 @@ class MarketDataServiceImpl implements MarketDataService
     {
         $usd_val = $this->convertSatToUsd($sat_val);
         if($usd_val < 1){
-            return round($usd_val * 100) . " cts.";
+            return '&#162;' . round($usd_val * 100);
         }else{
             return '$' . round($usd_val, 2);
         }
