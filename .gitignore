@@ -3,4 +3,4 @@ log.txt
 /dir1
 config.env
 /vendor/
-lightread_public_tbl_nodes.sql
+/db/custom_scripts/
