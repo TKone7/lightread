@@ -257,6 +257,7 @@ CREATE TABLE tbl_Views (
   fld_CONT_ID INT   NOT NULL ,
   fld_VIEW_SessionID VARCHAR(255)    ,
   fld_VIEW_IP VARCHAR(255)    ,
+  fld_VIEW_City VARCHAR(255)    ,
   fld_VIEW_Country VARCHAR(255)    ,
   fld_VIEW_OS VARCHAR(255)    ,
   fld_VIEW_Browser VARCHAR(255)    ,
