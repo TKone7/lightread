@@ -9,15 +9,22 @@
 use domain\Access;
 use domain\Content;
 use services\MarketDataServiceImpl;
+use validator\ContentValidator;
 
 $load = isset($this->content);
 (isset($this->content)) ? $content = $this->content : $content = new Content();
+(isset($this->contentValidator)) ? $contentValidator = $this->contentValidator : $contentValidator = new ContentValidator();
 ?>
 <div class="container">
         <div class="row articlerow">
             <div class="col-md-10 col-lg-8 mx-auto">
                 <h1>Let's put it down</h1>
                 <div class="container">
+                    <?php if($contentValidator->isUserVerifiedError()): ?>
+                        <div class="alert alert-warning">
+                            <strong>Warning!</strong> <?php echo $contentValidator->getUserVerifiedError() ?>
+                        </div>
+                    <?php endif; ?>
                     <form method="post" action="<?php echo $GLOBALS["ROOT_URL"]; ?>/publish">
                         <input type="hidden" name="id" value="<?php echo $load ? $content->getId() : ""; ?>">
 
@@ -32,8 +39,9 @@ $load = isset($this->content);
                         </div>
                         <input name="btcprice" id="btcprice" type="hidden" value="<?php echo $load ? MarketDataServiceImpl::getInstance()->getPrice() : ""; ?>" readonly>
                         <div class="form-group">
-                            <button formaction="<?php echo $GLOBALS["ROOT_URL"]; ?>/preview" class="btn btn-light" type="submit">Store & Preview</button>
+                            <button formaction="<?php echo $GLOBALS["ROOT_URL"]; ?>/preview" class="btn btn-light" type="submit">Store as draft</button>
                             <button class="btn btn-primary" type="submit">Publish</button>
+
                         </div>
             </form>
         </div>

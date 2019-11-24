@@ -12,7 +12,7 @@ class NodeDAO extends BasicDAO
 {
     public function create($ssl, $macaroon, $ip){
         $stmt = $this->pdoInstance->prepare('
-        INSERT INTO tbl_nodes (fld_node_tls,fld_node_macaroon,fld_node_ip, fld_active)
+        INSERT INTO tbl_node (fld_node_tls,fld_node_macaroon,fld_node_ip, fld_node_active)
           values(:tls, :macaroon, :ip, :active)');
         $stmt->bindValue(':tls', $ssl);
         $stmt->bindValue(':macaroon', $macaroon);
@@ -24,8 +24,8 @@ class NodeDAO extends BasicDAO
     }
     public function readActive(){
         $stmt = $this->pdoInstance->prepare('
-            SELECT * FROM tbl_nodes 
-              WHERE fld_active;');
+            SELECT * FROM tbl_node
+              WHERE fld_node_active;');
         $stmt->execute();
         if ($stmt->rowCount() > 0) {
             return $stmt->fetch(\PDO::FETCH_ASSOC);

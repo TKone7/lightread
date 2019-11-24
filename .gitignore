@@ -3,3 +3,4 @@ log.txt
 /dir1
 config.env
 /vendor/
+/db/custom_scripts/

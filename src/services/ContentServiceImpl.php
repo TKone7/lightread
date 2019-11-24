@@ -48,7 +48,6 @@ class ContentServiceImpl implements ContentService
         $auth = AuthServiceImpl::getInstance();
         if(AuthServiceImpl::getInstance()->verifyAuth()){
             $contentdao = new ContentDAO();
-            $content->setAuthor($auth->readUser());
             return $contentdao->update($content);
         }
         throw new HTTPException(HTTPStatusCode::HTTP_401_UNAUTHORIZED);
@@ -74,7 +73,7 @@ class ContentServiceImpl implements ContentService
         return $paym_dao->selectContentTurnover($content,$purpose);
     }
 
-    public function getContentMgr(array $keyword = NULL, array $category = NULL, array $author = NULL): ContentManager
+    public function getContentMgr($verified_only = false, array $keyword = NULL, array $category = NULL, array $author = NULL): ContentManager
     {
         $authorslist = NULL;
         $contentdao = new ContentDAO();
@@ -84,7 +83,7 @@ class ContentServiceImpl implements ContentService
                 $authorslist .= $a->getId().",";
             }
         }
-        $contents = $contentdao->filter(NULL,NULL,$authorslist);
+        $contents = $contentdao->filter($verified_only,NULL,NULL,$authorslist);
         $cm = new ContentManager($contents);
         return $cm;
     }

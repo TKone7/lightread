@@ -48,6 +48,11 @@ class User
     private $password;
 
     /**
+     * @AttributeType bool
+     */
+    private $verfied;
+
+    /**
      * @return mixed
      */
     public function getId()
@@ -178,6 +183,30 @@ class User
         return UserServiceImpl::getInstance()->getTurnover($this, $purpose);
     }
 
+    public function getBalance()
+    {
+        // @ todo must be reduced by the amount of withdrawals (here 0)
+        return UserServiceImpl::getInstance()->getTurnover($this) - 0;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVerfied()
+    {
+        return $this->verfied;
+    }
+
+    /**
+     * @param mixed $verfied
+     */
+    public function setVerfied($verfied)
+    {
+        $this->verfied = $verfied;
+    }
+
+
+
     public function __set($name, $value)
     {
         // TODO: Implement __set() method.
@@ -197,6 +226,8 @@ class User
             $this->setPassword($value);
         }elseif ($name=='fld_user_description'){
             $this->setDescription($value);
+        }elseif ($name=='fld_user_verified'){
+            $this->setVerfied($value);
         }
     }
 

@@ -35,7 +35,7 @@ class UserServiceImpl implements UserService
         return $userdao->create($user);
     }
 
-    public function updateUser(User $user)
+    public function updateUser(User $olduser, User $user)
     {
         if(AuthServiceImpl::getInstance()->verifyAuth()){
             $userdao = new UserDAO();
@@ -43,11 +43,27 @@ class UserServiceImpl implements UserService
                 if(!is_null($user->getPassword())){
                     $userdao->updatePassword($user);
                 }
+                if(empty($user->getEmail())){
+                    // cannot be verified without email address
+                    $user->setVerfied(false);
+                }else{
+                    if($olduser->getEmail() !== $user->getEmail()){
+                        // email has changed and triggers re-verification
+                        $user->setVerfied(false);
+                        // sendout email here
+                    }
+                }
                 return $userdao->update($user);
             }
         }
         throw new HTTPException(HTTPStatusCode::HTTP_401_UNAUTHORIZED);
     }
+    public function readUser($id)
+    {
+        $userdao = new UserDAO();
+        return $userdao->read($id);
+    }
+
     public function getTurnover(User $user, Purpose $purpose = NULL){
         $paym_dao = new PaymentDAO();
         return $paym_dao->selectUserTurnover($user,$purpose);

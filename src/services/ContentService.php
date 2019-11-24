@@ -22,5 +22,5 @@ interface ContentService
 
     public function readContent($content_id);
 
-    public function getContentMgr(array $keyword = NULL, array $category = NULL, array $author = NULL ) : ContentManager;
+    public function getContentMgr($verified_only = false, array $keyword = NULL, array $category = NULL, array $author = NULL ) : ContentManager;
 }

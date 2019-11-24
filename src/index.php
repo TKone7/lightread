@@ -49,7 +49,7 @@ $softauthFunction = function () {
 
 Router::route_auth("GET", "/", $softauthFunction, function () {
     $home = new TemplateView("home.php");
-    $mgr = ContentServiceImpl::getInstance()->getContentMgr();
+    $mgr = ContentServiceImpl::getInstance()->getContentMgr(true);
     $home->mgr=$mgr;
     LayoutRendering::simpleLayout($home);
 
