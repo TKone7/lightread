@@ -10,6 +10,7 @@ namespace controller;
 
 
 use domain\User;
+use domain\Role;
 use router\Router;
 use services\AuthServiceImpl;
 use services\ContentServiceImpl;
@@ -26,6 +27,7 @@ class UserController
         $nu->setUsername($_POST["username"]);
         $nu->setPassword(password_hash($_POST["password"], PASSWORD_DEFAULT));
         $nu->setEmail(($_POST["email"]!=="")?$_POST["email"]:NULL);
+        $nu->setRole(Role::USER());
 
         $res = UserServiceImpl::getInstance()->createUser($nu);
         if(!(is_null($res->getId()))){
