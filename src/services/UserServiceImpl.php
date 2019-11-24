@@ -35,13 +35,23 @@ class UserServiceImpl implements UserService
         return $userdao->create($user);
     }
 
-    public function updateUser(User $user)
+    public function updateUser(User $olduser, User $user)
     {
         if(AuthServiceImpl::getInstance()->verifyAuth()){
             $userdao = new UserDAO();
             if($user->getId()==(AuthServiceImpl::getInstance())->getCurrentUserId()){
                 if(!is_null($user->getPassword())){
                     $userdao->updatePassword($user);
+                }
+                if(empty($user->getEmail())){
+                    // cannot be verified without email address
+                    $user->setVerfied(false);
+                }else{
+                    if($olduser->getEmail() !== $user->getEmail()){
+                        // email has changed and triggers re-verification
+                        $user->setVerfied(false);
+                        // sendout email here
+                    }
                 }
                 return $userdao->update($user);
             }

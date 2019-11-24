@@ -27,7 +27,7 @@ class UserValidator
     {
         if (!is_null($user)) {
             if (!$user->getVerfied() AND !empty($user->getEmail())) {
-                $this->userValidatedWarning = 'Your e-mail address is still unverified. Please check the e-mail we sent you.';
+                $this->userValidatedWarning = 'Your e-mail address is unverified. Please check the e-mail we sent you.';
             }
         } else {
             $this->valid = false;

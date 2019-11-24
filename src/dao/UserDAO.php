@@ -45,12 +45,13 @@ class UserDAO extends BasicDAO
     }
     public function update(User $user){
         $stmt = $this->pdoInstance->prepare('
-        UPDATE tbl_user set fld_user_firstname = :firstname, fld_user_lastname = :lastname, fld_user_email = :email
+        UPDATE tbl_user set fld_user_firstname = :firstname, fld_user_lastname = :lastname, fld_user_email = :email, fld_user_verified = :verified
          where 	fld_user_id	 = :id;');
         $stmt->bindValue(':id', $user->getId());
         $stmt->bindValue(':firstname', $user->getFirstname());
         $stmt->bindValue(':lastname', $user->getLastname());
         $stmt->bindValue(':email', $user->getEmail());
+        $stmt->bindValue(':verified',intval($user->getVerfied()));
         $stmt->execute();
         return $this->read($user->getId());
     }

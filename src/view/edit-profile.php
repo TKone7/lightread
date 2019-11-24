@@ -27,6 +27,7 @@ isset($this->userValidator) ? $userValidator = $this->userValidator : $userValid
                     <div class="alert alert-warning">
                         <?php echo $userValidator->isDuplEmailError() ? $userValidator->getDuplEmailError() . '<br>': '' ?>
                         <?php echo $userValidator->isPasswordPolicyError() ? $userValidator->getPasswordPolicyError() . '<br>': '' ?>
+                        <?php echo $userValidator->isRemoveEmailError() ? $userValidator->getRemoveEmailError() . '<br>': '' ?>
                     </div>
                 <?php endif; ?>
                 <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">

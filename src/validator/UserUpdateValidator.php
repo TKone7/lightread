@@ -10,12 +10,15 @@ namespace validator;
 
 
 use dao\UserDAO;
+use domain\Status;
 use domain\User;
+use services\ContentServiceImpl;
 
 class UserUpdateValidator
 {
     private $valid = true;
     private $duplEmailError = null;
+    private $removeEmailError = null;
     private $passwordPolicyError = null;
 
 
@@ -38,6 +41,19 @@ class UserUpdateValidator
             }
             */
             $emailhaschanged = !($olduser->getEmail()===$newuser->getEmail());
+
+            if($emailhaschanged AND empty($newuser->getEmail())){
+                // user tried to remove his email
+                $mgr = (ContentServiceImpl::getInstance())->getContentMgr(false,NULL, NULL,array($newuser));
+                $active = $mgr->getContent(Status::PUBLISHED());
+                // if either the current balance is above zero or some articles are still published
+                if ($newuser->getBalance() > 0 OR sizeof($active)>0){
+                    $this->removeEmailError = "You cannot remove your e-mail address when there is a positive balance or articles still published.";
+                    $this->valid = false;
+                }
+
+            }
+
             if ($emailhaschanged &&  !empty($userdao->findByEmail($newuser->getEmail()))) {
                 $this->duplEmailError = 'This email is already chosen.';
                 $this->valid = false;
@@ -79,6 +95,16 @@ class UserUpdateValidator
     public function getDuplEmailError()
     {
         return $this->duplEmailError;
+    }
+
+    public function isRemoveEmailError()
+    {
+        return isset($this->removeEmailError);
+    }
+
+    public function getRemoveEmailError()
+    {
+        return $this->removeEmailError;
     }
 
     public function isPasswordPolicyError()

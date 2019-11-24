@@ -101,13 +101,15 @@ class UserController
         $user->setFirstname(($_POST["firstname"]!=="")?$_POST["firstname"]:NULL);
         $user->setLastname(($_POST["lastname"]!=="")?$_POST["lastname"]:NULL);
         $user->setPassword(($_POST["password"]!=="")?$_POST["password"]:NULL);
-
+        $user->setVerfied($orig_user->getVerfied());
         $userValid = new UserUpdateValidator($orig_user,$user);
+
+
         if($userValid->isValid()){
             if(!empty($_POST["password"])){
                 $user->setPassword(password_hash($user->getPassword(),PASSWORD_DEFAULT));
             }
-            $res = UserServiceImpl::getInstance()->updateUser($user);
+            $res = UserServiceImpl::getInstance()->updateUser($orig_user,$user);
             Router::redirect("/profile");
         }else{
             $content = new TemplateView("edit-profile.php");
