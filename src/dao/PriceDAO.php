@@ -12,7 +12,7 @@ class PriceDAO extends BasicDAO
 {
     public function insert($price, $sym1, $sym2, $update){
         $stmt = $this->pdoInstance->prepare('
-        INSERT INTO tbl_price (fld_price_sym1,fld_price_sym2,fld_price_value,fld_price_update)
+        INSERT INTO tbl_price (fld_pric_sym1,fld_pric_sym2,fld_pric_value,fld_pric_PIT)
           values(:sym1, :sym2, :value, :update )');
         $stmt->bindValue(':sym1', $sym1);
         $stmt->bindValue(':sym2', $sym2);
@@ -26,7 +26,7 @@ class PriceDAO extends BasicDAO
     public function readLast($sym1, $sym2){
         $stmt = $this->pdoInstance->prepare('
             SELECT * FROM tbl_price 
-              WHERE fld_price_sym1 = :sym1 AND fld_price_sym2 = :sym2 order by fld_price_update DESC;');
+              WHERE fld_pric_sym1 = :sym1 AND fld_pric_sym2 = :sym2 order by fld_pric_PIT DESC;');
         $stmt->bindValue(':sym1', $sym1);
         $stmt->bindValue(':sym2', $sym2);
         $stmt->execute();

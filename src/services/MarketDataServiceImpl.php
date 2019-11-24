@@ -33,7 +33,7 @@ class MarketDataServiceImpl implements MarketDataService
         $last_record = (new PriceDAO())->readLast($crypto,$fiat);
         if(!is_null($last_record)){
             $now = new \DateTime('now', new \DateTimeZone(date_default_timezone_get()));
-            $last_time = date_create_from_format('Y-m-d H:i:s',$last_record['fld_price_update']);
+            $last_time = date_create_from_format('Y-m-d H:i:s',$last_record['fld_pric_pit']);
             $diff = $now->diff($last_time);
             $min_diff = $diff->i;
         }
@@ -41,7 +41,7 @@ class MarketDataServiceImpl implements MarketDataService
         if(is_null($last_record) || $min_diff > $tolerance){
             return $this->getFromApi($crypto,$fiat);
         }else{
-            return floatval($last_record['fld_price_value']);
+            return floatval($last_record['fld_pric_value']);
         }
     }
 
