@@ -5,10 +5,18 @@
  * Date: 30.10.2019
  * Time:
  */
+isset($this->failed)?$failed=$this->failed:$failed=false;
+
 ?>
 <div class="container">
         <div class="row">
             <div class="col-md-10 col-lg-8 mx-auto">
+                <?php if($failed): ?>
+                <div class="alert alert-danger">
+                    Login was not successful. Please try again.
+                </div>
+                <?php endif; ?>
+
                 <form method="post" action="<?php echo $GLOBALS["ROOT_URL"]; ?>/login">
                     <div class="form-label-group"><input name="email" class="form-control" type="text" id="inputEmail" placeholder="Username or e-mail" required="" autofocus=""><label for="inputEmail">Username or e-mail</label></div>
                     <div class="form-label-group"><input name="password" class="form-control" type="password" id="inputPassword" required="" placeholder="Password"><label for="inputPassword">Password</label></div>

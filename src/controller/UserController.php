@@ -64,7 +64,9 @@ class UserController
             $_SESSION["userLogin"]["token"] = $authservice->issueToken();
             Router::redirect("/profile");
         }else {
-            LayoutRendering::headerLayout(new TemplateView("login.php"), "Login", "Welcome back");
+            $loginview = new TemplateView("login.php");
+            $loginview->failed=true;
+            LayoutRendering::headerLayout($loginview, "Login", "Welcome back");
         }
     }
 
