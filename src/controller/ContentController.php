@@ -17,6 +17,7 @@ use router\Router;
 use services\AuthServiceImpl;
 use services\ContentServiceImpl;
 use services\InvoiceServiceImpl;
+use services\ViewServiceImpl;
 use view\LayoutRendering;
 use view\TemplateView;
 
@@ -61,6 +62,10 @@ class ContentController
         if (is_null($content)) {
             Router::redirect("/article-not-found");
         }
+
+        //register a view
+        ViewServiceImpl::registerView($content);
+
 
         if ($content->getAccess() == Access::PAID()){
             $auth = AuthServiceImpl::getInstance();
