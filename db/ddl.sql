@@ -61,6 +61,7 @@ PRIMARY KEY(fld_SCON_ID));
 
 CREATE TABLE tbl_Role (
   fld_ROLE_ID INT   NOT NULL ,
+  fld_ROLE_Key VARCHAR(255)    ,
   fld_ROLE_Name VARCHAR(255)      ,
 PRIMARY KEY(fld_ROLE_ID));
 
@@ -126,8 +127,8 @@ CREATE INDEX IFK_defines ON tbl_User (fld_ROLE_ID);
 
 CREATE TABLE tbl_Content (
   fld_CONT_ID SERIAL  NOT NULL ,
-  fld_CATE_ID INT   NOT NULL ,
   fld_USER_ID INT   NOT NULL ,
+  fld_CATE_ID INT   ,
   fld_ACCC_ID INT   NOT NULL ,
   fld_SCON_ID INT   NOT NULL ,
   fld_CONT_Title VARCHAR(255)    ,
@@ -299,4 +300,5 @@ INSERT INTO public.tbl_statusinvoice (fld_sinv_id, fld_sinv_key, fld_sinv_name) 
 INSERT INTO public.tbl_statusinvoice (fld_sinv_id, fld_sinv_key, fld_sinv_name) VALUES (3, 'CANCELED', 'canceled');
 INSERT INTO public.tbl_statusinvoice (fld_sinv_id, fld_sinv_key, fld_sinv_name) VALUES (4, 'ACCEPTED', 'accepted');
 
-
+INSERT INTO public.tbl_role (fld_role_id, fld_role_key, fld_role_name) VALUES (1, 'ADMIN', 'admin');
+INSERT INTO public.tbl_role (fld_role_id, fld_role_key, fld_role_name) VALUES (2, 'USER', 'user');
