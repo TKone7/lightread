@@ -10,16 +10,24 @@ use domain\Access;
 use domain\ContentManager;
 use domain\Purpose;
 use domain\User;
-use Google\Protobuf\NullValue;
 use services\MarketDataServiceImpl;
+use validator\UserValidator;
 
 isset($this->user) ? $user = $this->user : $user = new User();
 isset($this->mgr) ? $mgr = $this->mgr : $mgr = new ContentManager();
+(isset($this->userValidator)) ? $userValidator = $this->userValidator : $userValidator = new UserValidator();
 ?>
 <div class="container">
     <div class="row articlerow">
         <div class="col-md-10 col-lg-8 mx-auto">
             <h1>Welcome <?php echo $user->getFirstname() ?></h1>
+            <?php if($userValidator->isUserVerifiedWarning()): ?>
+                <div class="alert alert-warning alert-dismissible">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <?php echo $userValidator->getUserVerifiedWarning() ?>
+                </div>
+            <?php endif; ?>
+
             <h3 class="profile-title">Your profile</h3>
             <div>
                 <span class="earning-title">Name</span>

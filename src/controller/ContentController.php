@@ -17,18 +17,23 @@ use router\Router;
 use services\AuthServiceImpl;
 use services\ContentServiceImpl;
 use services\InvoiceServiceImpl;
+use validator\ContentValidator;
 use view\LayoutRendering;
 use view\TemplateView;
 
 class ContentController
 {
     public function store(Status $new_status){
+        $auth = AuthServiceImpl::getInstance();
         $cont = new Content();
         $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
+
+        $cont->setId($id);
         $cont->setTitle($_POST["title"]);
         $cont->setSubtitle($_POST["subtitle"]);
         $cont->setBody($_POST["editordata"]);
         $cont->setStatus($new_status);
+        $cont->setAuthor($auth->readUser());
         $sat = filter_input(INPUT_POST, 'price', FILTER_VALIDATE_INT);
         if($sat>0){
             $cont->setAccess(Access::PAID());
@@ -37,19 +42,26 @@ class ContentController
             $cont->setAccess(Access::FREE());
             $cont->setPrice(0);
         }
+        $validator = new ContentValidator($cont);
+        if ($validator->isValid()){
+            $contsvc = ContentServiceImpl::getInstance();
+            if($id>0){
+                // update
+                $cont->setId($id);
+                $res = $contsvc->updateContent($cont);
 
-        $contsvc = ContentServiceImpl::getInstance();
-        if($id>0){
-            // update
-            $cont->setId($id);
-            $res = $contsvc->updateContent($cont);
-
+            }else{
+                // create
+                $res = $contsvc->createContent($cont);
+            }
+            Router::redirect("/article?id=" . $res->getId());
         }else{
-            // create
-            $res = $contsvc->createContent($cont);
+            $editorView = new TemplateView("editor.php");
+            $editorView->content=$cont;
+            $editorView->contentValidator = $validator;
+            LayoutRendering::simpleLayout($editorView);
         }
 
-        Router::redirect("/article?id=" . $res->getId());
 
     }
     public function showContent(){

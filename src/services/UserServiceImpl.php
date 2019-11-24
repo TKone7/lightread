@@ -48,6 +48,12 @@ class UserServiceImpl implements UserService
         }
         throw new HTTPException(HTTPStatusCode::HTTP_401_UNAUTHORIZED);
     }
+    public function readUser($id)
+    {
+        $userdao = new UserDAO();
+        return $userdao->read($id);
+    }
+
     public function getTurnover(User $user, Purpose $purpose = NULL){
         $paym_dao = new PaymentDAO();
         return $paym_dao->selectUserTurnover($user,$purpose);

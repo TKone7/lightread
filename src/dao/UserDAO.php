@@ -16,8 +16,8 @@ class UserDAO extends BasicDAO
     {
         $withemail= !is_null($user->getEmail());
         $sqlstmt = '
-        INSERT INTO tbl_user (fld_user_firstname, fld_user_lastname,fld_user_email, fld_user_pwhash, fld_user_nickname,fld_user_locked, fld_user_creationpit)
-          SELECT :firstname,:lastname,:email,:password,:username,:locked,:creation
+        INSERT INTO tbl_user (fld_user_firstname, fld_user_lastname,fld_user_email, fld_user_pwhash, fld_user_nickname,fld_user_locked, fld_user_creationpit,fld_user_verified)
+          SELECT :firstname,:lastname,:email,:password,:username,:locked,:creation,:verified
         WHERE NOT EXISTS (
         SELECT fld_user_nickname FROM tbl_user WHERE fld_user_nickname = :usercheck';
         if($withemail){
@@ -33,6 +33,7 @@ class UserDAO extends BasicDAO
         date_default_timezone_set('Europe/Zurich');
         $stmt->bindValue(':creation', $timestamp = date('Y-m-d H:i:s'));
         $stmt->bindValue(':locked', 0);
+        $stmt->bindValue(':verified', 0);
         $stmt->bindValue(':email', $user->getEmail());
 
         if($withemail){

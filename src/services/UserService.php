@@ -16,4 +16,6 @@ interface UserService
 
     public function updateUser(User $user);
 
+    public function readUser($id);
+
 }

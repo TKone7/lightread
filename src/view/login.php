@@ -15,9 +15,8 @@
                     <div class="custom-control custom-checkbox mb-3"><input type="checkbox" id="customCheck1" class="custom-control-input"><label class="custom-control-label" for="customCheck1">Remember password</label></div>
                     <button class="btn btn-primary btn-lg btn-login text-uppercase font-weight-bold mb-2"
                         type="submit">Sign in</button> <br>
-                    <button class="btn btn-primary btn-lg btn-login text-uppercase font-weight-bold mb-2" onclick="window.location.href='<?php echo $GLOBALS["ROOT_URL"]; ?>/register'">Register now</button>
-
                 </form>
+                <button class="btn btn-primary btn-lg btn-login text-uppercase font-weight-bold mb-2" onclick="window.location.href='<?php echo $GLOBALS["ROOT_URL"]; ?>/register'">Register now</button>
             </div>
         </div>
     </div>

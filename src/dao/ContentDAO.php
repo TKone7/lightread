@@ -71,7 +71,7 @@ class ContentDAO extends BasicDAO
     }
 
 
-    public function filter($keyword = NULL, $category = NULL, $authors = NULL)
+    public function filter($verified_only, $keyword, $category, $authors)
     {
         $basic = 'SELECT * from tbl_content c 
             inner join tbl_accesscontraint a
@@ -80,9 +80,12 @@ class ContentDAO extends BasicDAO
               on c.fld_scon_id = s.fld_scon_id 
             inner join tbl_user u 
               on u.fld_user_id = c.fld_user_id
-              where 1=1 AND u.fld_user_verified';
+              where 1=1';
         if(!is_null($authors))
             $basic .= ' AND c.fld_user_id in ('.rtrim($authors, ',').')';
+        if($verified_only){
+            $basic .= ' AND u.fld_user_verified';
+        }
         $stmt = $this->pdoInstance->prepare($basic);
 
         $stmt->execute();
