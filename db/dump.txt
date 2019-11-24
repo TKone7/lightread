@@ -1,0 +1,314 @@
+-- Adminer 4.7.4 PostgreSQL dump
+
+\connect "lightread";
+
+DROP TABLE IF EXISTS "tbl_accesscontraint";
+CREATE TABLE "public"."tbl_accesscontraint" (
+    "fld_accc_id" integer NOT NULL,
+    "fld_accc_key" character varying(255),
+    "fld_accc_name" character varying(255),
+    CONSTRAINT "tbl_accesscontraint_pkey" PRIMARY KEY ("fld_accc_id")
+) WITH (oids = false);
+
+INSERT INTO "tbl_accesscontraint" ("fld_accc_id", "fld_accc_key", "fld_accc_name") VALUES
+(1,	'FREE',	'these articles are free'),
+(2,	'PAID',	'these articles must be paid for');
+
+DROP TABLE IF EXISTS "tbl_attachment";
+DROP SEQUENCE IF EXISTS tbl_attachment_fld_attc_id_seq;
+CREATE SEQUENCE tbl_attachment_fld_attc_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 START  CACHE 1;
+
+CREATE TABLE "public"."tbl_attachment" (
+    "fld_attc_id" integer DEFAULT nextval('tbl_attachment_fld_attc_id_seq') NOT NULL,
+    "fld_cont_id" integer NOT NULL,
+    "fld_attc_uri" character varying(255) NOT NULL,
+    "fld_attc_alttext" character varying(255),
+    CONSTRAINT "tbl_attachment_pkey" PRIMARY KEY ("fld_attc_id"),
+    CONSTRAINT "tbl_attachment_fld_cont_id_fkey" FOREIGN KEY (fld_cont_id) REFERENCES tbl_content(fld_cont_id) NOT DEFERRABLE
+) WITH (oids = false);
+
+CREATE INDEX "ifk_includes" ON "public"."tbl_attachment" USING btree ("fld_cont_id");
+
+CREATE INDEX "tbl_attachment_fkindex1" ON "public"."tbl_attachment" USING btree ("fld_cont_id");
+
+
+DROP TABLE IF EXISTS "tbl_category";
+DROP SEQUENCE IF EXISTS tbl_category_fld_cate_id_seq;
+CREATE SEQUENCE tbl_category_fld_cate_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 START  CACHE 1;
+
+CREATE TABLE "public"."tbl_category" (
+    "fld_cate_id" integer DEFAULT nextval('tbl_category_fld_cate_id_seq') NOT NULL,
+    "fld_cate_name" character varying(255),
+    CONSTRAINT "tbl_category_pkey" PRIMARY KEY ("fld_cate_id")
+) WITH (oids = false);
+
+
+DROP TABLE IF EXISTS "tbl_content";
+DROP SEQUENCE IF EXISTS tbl_content_fld_cont_id_seq;
+CREATE SEQUENCE tbl_content_fld_cont_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 START  CACHE 1;
+
+CREATE TABLE "public"."tbl_content" (
+    "fld_cont_id" integer DEFAULT nextval('tbl_content_fld_cont_id_seq') NOT NULL,
+    "fld_cate_id" integer NOT NULL,
+    "fld_user_id" integer NOT NULL,
+    "fld_accc_id" integer NOT NULL,
+    "fld_scon_id" integer NOT NULL,
+    "fld_cont_title" character varying(255),
+    "fld_cont_subtitle" character varying(255),
+    "fld_cont_body" text,
+    "fld_cont_creationpit" timestamp,
+    "fld_cont_satoshis" integer,
+    "fld_cont_etr" integer,
+    CONSTRAINT "tbl_content_pkey" PRIMARY KEY ("fld_cont_id"),
+    CONSTRAINT "tbl_content_fld_accc_id_fkey" FOREIGN KEY (fld_accc_id) REFERENCES tbl_accesscontraint(fld_accc_id) NOT DEFERRABLE,
+    CONSTRAINT "tbl_content_fld_cate_id_fkey" FOREIGN KEY (fld_cate_id) REFERENCES tbl_category(fld_cate_id) NOT DEFERRABLE,
+    CONSTRAINT "tbl_content_fld_scon_id_fkey" FOREIGN KEY (fld_scon_id) REFERENCES tbl_statuscontent(fld_scon_id) NOT DEFERRABLE,
+    CONSTRAINT "tbl_content_fld_user_id_fkey" FOREIGN KEY (fld_user_id) REFERENCES tbl_user(fld_user_id) NOT DEFERRABLE
+) WITH (oids = false);
+
+CREATE INDEX "ifk_indicates2" ON "public"."tbl_content" USING btree ("fld_scon_id");
+
+CREATE INDEX "ifk_provides" ON "public"."tbl_content" USING btree ("fld_user_id");
+
+CREATE INDEX "ifk_restricts" ON "public"."tbl_content" USING btree ("fld_accc_id");
+
+CREATE INDEX "ifk_specifies" ON "public"."tbl_content" USING btree ("fld_cate_id");
+
+CREATE INDEX "tbl_content_fkindex1" ON "public"."tbl_content" USING btree ("fld_user_id");
+
+CREATE INDEX "tbl_content_fkindex2" ON "public"."tbl_content" USING btree ("fld_scon_id");
+
+CREATE INDEX "tbl_content_fkindex3" ON "public"."tbl_content" USING btree ("fld_accc_id");
+
+CREATE INDEX "tbl_content_fkindex4" ON "public"."tbl_content" USING btree ("fld_cate_id");
+
+
+DROP TABLE IF EXISTS "tbl_contentkeyword";
+DROP SEQUENCE IF EXISTS tbl_contentkeyword_fld_coke_it_seq;
+CREATE SEQUENCE tbl_contentkeyword_fld_coke_it_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 START  CACHE 1;
+
+CREATE TABLE "public"."tbl_contentkeyword" (
+    "fld_coke_it" integer DEFAULT nextval('tbl_contentkeyword_fld_coke_it_seq') NOT NULL,
+    "fld_cont_id" integer NOT NULL,
+    "fld_keyw_id" integer NOT NULL,
+    CONSTRAINT "tbl_contentkeyword_pkey" PRIMARY KEY ("fld_coke_it"),
+    CONSTRAINT "tbl_contentkeyword_fld_cont_id_fkey" FOREIGN KEY (fld_cont_id) REFERENCES tbl_content(fld_cont_id) NOT DEFERRABLE,
+    CONSTRAINT "tbl_contentkeyword_fld_keyw_id_fkey" FOREIGN KEY (fld_keyw_id) REFERENCES tbl_keyword(fld_keyw_id) NOT DEFERRABLE
+) WITH (oids = false);
+
+CREATE INDEX "ifk_describes" ON "public"."tbl_contentkeyword" USING btree ("fld_keyw_id");
+
+CREATE INDEX "ifk_has" ON "public"."tbl_contentkeyword" USING btree ("fld_cont_id");
+
+CREATE INDEX "tbl_contentkeyword_fkindex1" ON "public"."tbl_contentkeyword" USING btree ("fld_keyw_id");
+
+CREATE INDEX "tbl_contentkeyword_fkindex2" ON "public"."tbl_contentkeyword" USING btree ("fld_cont_id");
+
+
+DROP TABLE IF EXISTS "tbl_invoice";
+DROP SEQUENCE IF EXISTS tbl_invoice_fld_invc_id_seq;
+CREATE SEQUENCE tbl_invoice_fld_invc_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 START  CACHE 1;
+
+CREATE TABLE "public"."tbl_invoice" (
+    "fld_invc_id" integer DEFAULT nextval('tbl_invoice_fld_invc_id_seq') NOT NULL,
+    "fld_user_id1" integer,
+    "fld_user_id2" integer,
+    "fld_cont_id" integer,
+    "fld_purp_id" integer NOT NULL,
+    "fld_sinv_id" integer NOT NULL,
+    "fld_invc_rhash" character varying(255),
+    "fld_invc_payreq" character varying(510),
+    "fld_invc_memo" character varying(510),
+    "fld_invc_satoshis" integer,
+    "fld_invc_creationpit" timestamp,
+    "fld_invc_settlepit" timestamp,
+    "fld_invc_expiry" integer,
+    CONSTRAINT "tbl_invoice_pkey" PRIMARY KEY ("fld_invc_id"),
+    CONSTRAINT "tbl_invoice_fld_cont_id_fkey" FOREIGN KEY (fld_cont_id) REFERENCES tbl_content(fld_cont_id) NOT DEFERRABLE,
+    CONSTRAINT "tbl_invoice_fld_purp_id_fkey" FOREIGN KEY (fld_purp_id) REFERENCES tbl_purpose(fld_purp_id) NOT DEFERRABLE,
+    CONSTRAINT "tbl_invoice_fld_sinv_id_fkey" FOREIGN KEY (fld_sinv_id) REFERENCES tbl_statusinvoice(fld_sinv_id) NOT DEFERRABLE,
+    CONSTRAINT "tbl_invoice_fld_user_id1_fkey" FOREIGN KEY (fld_user_id1) REFERENCES tbl_user(fld_user_id) NOT DEFERRABLE,
+    CONSTRAINT "tbl_invoice_fld_user_id2_fkey" FOREIGN KEY (fld_user_id2) REFERENCES tbl_user(fld_user_id) NOT DEFERRABLE
+) WITH (oids = false);
+
+CREATE INDEX "ifk_causes" ON "public"."tbl_invoice" USING btree ("fld_cont_id");
+
+CREATE INDEX "ifk_indicates1" ON "public"."tbl_invoice" USING btree ("fld_sinv_id");
+
+CREATE INDEX "ifk_pays" ON "public"."tbl_invoice" USING btree ("fld_user_id1");
+
+CREATE INDEX "ifk_reasons" ON "public"."tbl_invoice" USING btree ("fld_purp_id");
+
+CREATE INDEX "ifk_receives" ON "public"."tbl_invoice" USING btree ("fld_user_id2");
+
+CREATE INDEX "tbl_invoice_fkindex1" ON "public"."tbl_invoice" USING btree ("fld_user_id1");
+
+CREATE INDEX "tbl_invoice_fkindex2" ON "public"."tbl_invoice" USING btree ("fld_cont_id");
+
+CREATE INDEX "tbl_invoice_fkindex3" ON "public"."tbl_invoice" USING btree ("fld_purp_id");
+
+CREATE INDEX "tbl_invoice_fkindex4" ON "public"."tbl_invoice" USING btree ("fld_sinv_id");
+
+CREATE INDEX "tbl_invoice_fkindex5" ON "public"."tbl_invoice" USING btree ("fld_user_id2");
+
+
+DROP TABLE IF EXISTS "tbl_keyword";
+DROP SEQUENCE IF EXISTS tbl_keyword_fld_keyw_id_seq;
+CREATE SEQUENCE tbl_keyword_fld_keyw_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 START  CACHE 1;
+
+CREATE TABLE "public"."tbl_keyword" (
+    "fld_keyw_id" integer DEFAULT nextval('tbl_keyword_fld_keyw_id_seq') NOT NULL,
+    "fld_keyw_name" character varying(255),
+    CONSTRAINT "tbl_keyword_pkey" PRIMARY KEY ("fld_keyw_id")
+) WITH (oids = false);
+
+
+DROP TABLE IF EXISTS "tbl_logs";
+DROP SEQUENCE IF EXISTS tbl_logs_fld_logs_id_seq;
+CREATE SEQUENCE tbl_logs_fld_logs_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 START  CACHE 1;
+
+CREATE TABLE "public"."tbl_logs" (
+    "fld_logs_id" integer DEFAULT nextval('tbl_logs_fld_logs_id_seq') NOT NULL,
+    "fld_logs_refid" integer,
+    "fld_logs_reffield" character varying(255),
+    "fld_logs_memo" character varying(255),
+    "fld_logs_creationpit" timestamp,
+    CONSTRAINT "tbl_logs_pkey" PRIMARY KEY ("fld_logs_id")
+) WITH (oids = false);
+
+
+DROP TABLE IF EXISTS "tbl_node";
+DROP SEQUENCE IF EXISTS tbl_node_fld_node_id_seq;
+CREATE SEQUENCE tbl_node_fld_node_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 START  CACHE 1;
+
+CREATE TABLE "public"."tbl_node" (
+    "fld_node_id" integer DEFAULT nextval('tbl_node_fld_node_id_seq') NOT NULL,
+    "fld_node_tls" text,
+    "fld_node_macaroon" text,
+    "fld_node_ip" character varying(255),
+    "fld_node_active" boolean DEFAULT false,
+    CONSTRAINT "tbl_node_pkey" PRIMARY KEY ("fld_node_id")
+) WITH (oids = false);
+
+
+DROP TABLE IF EXISTS "tbl_price";
+DROP SEQUENCE IF EXISTS tbl_price_fld_pric_id_seq;
+CREATE SEQUENCE tbl_price_fld_pric_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 START  CACHE 1;
+
+CREATE TABLE "public"."tbl_price" (
+    "fld_pric_id" integer DEFAULT nextval('tbl_price_fld_pric_id_seq') NOT NULL,
+    "fld_pric_sym1" character varying(20) NOT NULL,
+    "fld_pric_sym2" character varying(20) NOT NULL,
+    "fld_pric_value" double precision NOT NULL,
+    "fld_pric_pit" timestamp,
+    CONSTRAINT "tbl_price_pkey" PRIMARY KEY ("fld_pric_id")
+) WITH (oids = false);
+
+
+DROP TABLE IF EXISTS "tbl_purpose";
+CREATE TABLE "public"."tbl_purpose" (
+    "fld_purp_id" integer NOT NULL,
+    "fld_purp_key" character varying(255),
+    "fld_purp_name" character varying(255),
+    CONSTRAINT "tbl_purpose_pkey" PRIMARY KEY ("fld_purp_id")
+) WITH (oids = false);
+
+INSERT INTO "tbl_purpose" ("fld_purp_id", "fld_purp_key", "fld_purp_name") VALUES
+(1,	'DONATION',	'donation'),
+(2,	'READ',	'read'),
+(3,	'WITHDRAWAL',	'withdrawal');
+
+DROP TABLE IF EXISTS "tbl_role";
+CREATE TABLE "public"."tbl_role" (
+    "fld_role_id" integer NOT NULL,
+    "fld_role_name" character varying(255),
+    CONSTRAINT "tbl_role_pkey" PRIMARY KEY ("fld_role_id")
+) WITH (oids = false);
+
+
+DROP TABLE IF EXISTS "tbl_statuscontent";
+CREATE TABLE "public"."tbl_statuscontent" (
+    "fld_scon_id" integer NOT NULL,
+    "fld_scon_key" character varying(255),
+    "fld_scon_name" character varying(255),
+    CONSTRAINT "tbl_statuscontent_pkey" PRIMARY KEY ("fld_scon_id")
+) WITH (oids = false);
+
+INSERT INTO "tbl_statuscontent" ("fld_scon_id", "fld_scon_key", "fld_scon_name") VALUES
+(1,	'DRAFT',	'not visible by others'),
+(2,	'PUBLISHED',	'published for everyone'),
+(3,	'DELETED',	'marked as deleted');
+
+DROP TABLE IF EXISTS "tbl_statusinvoice";
+CREATE TABLE "public"."tbl_statusinvoice" (
+    "fld_sinv_id" integer NOT NULL,
+    "fld_sinv_key" character varying(255),
+    "fld_sinv_name" character varying(255),
+    CONSTRAINT "tbl_statusinvoice_pkey" PRIMARY KEY ("fld_sinv_id")
+) WITH (oids = false);
+
+INSERT INTO "tbl_statusinvoice" ("fld_sinv_id", "fld_sinv_key", "fld_sinv_name") VALUES
+(1,	'OPEN',	'open'),
+(2,	'SETTLED',	'settled'),
+(3,	'CANCELED',	'canceled'),
+(4,	'ACCEPTED',	'accepted');
+
+DROP TABLE IF EXISTS "tbl_user";
+DROP SEQUENCE IF EXISTS tbl_user_fld_user_id_seq;
+CREATE SEQUENCE tbl_user_fld_user_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 START  CACHE 1;
+
+CREATE TABLE "public"."tbl_user" (
+    "fld_user_id" integer DEFAULT nextval('tbl_user_fld_user_id_seq') NOT NULL,
+    "fld_role_id" integer NOT NULL,
+    "fld_user_email" character varying(255),
+    "fld_user_pwhash" character varying(255),
+    "fld_user_creationpit" timestamp,
+    "fld_user_verified" boolean,
+    "fld_user_firstname" character varying(255),
+    "fld_user_lastname" character varying(255),
+    "fld_user_nickname" character varying(255),
+    "fld_user_picture" bytea,
+    "fld_user_description" character varying(255),
+    "fld_user_locked" boolean,
+    "fld_user_deletionpit" timestamp,
+    "fld_user_isadmin" boolean,
+    CONSTRAINT "tbl_user_pkey" PRIMARY KEY ("fld_user_id"),
+    CONSTRAINT "tbl_user_fld_role_id_fkey" FOREIGN KEY (fld_role_id) REFERENCES tbl_role(fld_role_id) NOT DEFERRABLE
+) WITH (oids = false);
+
+CREATE INDEX "ifk_defines" ON "public"."tbl_user" USING btree ("fld_role_id");
+
+CREATE INDEX "tbl_user_fkindex1" ON "public"."tbl_user" USING btree ("fld_role_id");
+
+
+DROP TABLE IF EXISTS "tbl_views";
+DROP SEQUENCE IF EXISTS tbl_views_fld_view_id_seq;
+CREATE SEQUENCE tbl_views_fld_view_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 START  CACHE 1;
+
+CREATE TABLE "public"."tbl_views" (
+    "fld_view_id" integer DEFAULT nextval('tbl_views_fld_view_id_seq') NOT NULL,
+    "fld_user_id" integer,
+    "fld_cont_id" integer NOT NULL,
+    "fld_view_sessionid" character varying(255),
+    "fld_view_ip" character varying(255),
+    "fld_view_country" character varying(255),
+    "fld_view_os" character varying(255),
+    "fld_view_browser" character varying(255),
+    "fld_view_screensize" character varying(255),
+    "fld_view_searcheng" character varying(255),
+    "fld_view_pit" timestamp,
+    CONSTRAINT "tbl_views_pkey" PRIMARY KEY ("fld_view_id"),
+    CONSTRAINT "tbl_views_fld_cont_id_fkey" FOREIGN KEY (fld_cont_id) REFERENCES tbl_content(fld_cont_id) NOT DEFERRABLE,
+    CONSTRAINT "tbl_views_fld_user_id_fkey" FOREIGN KEY (fld_user_id) REFERENCES tbl_user(fld_user_id) NOT DEFERRABLE
+) WITH (oids = false);
+
+CREATE INDEX "ifk_counts" ON "public"."tbl_views" USING btree ("fld_cont_id");
+
+CREATE INDEX "ifk_raises" ON "public"."tbl_views" USING btree ("fld_user_id");
+
+CREATE INDEX "tbl_views_fkindex1" ON "public"."tbl_views" USING btree ("fld_cont_id");
+
+CREATE INDEX "tbl_views_fkindex2" ON "public"."tbl_views" USING btree ("fld_user_id");
+
+
+-- 2019-11-24 10:16:27.862766+01
