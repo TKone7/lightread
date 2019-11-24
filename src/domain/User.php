@@ -18,6 +18,10 @@ class User
      */
     private $id;
     /**
+     * @AttributeType Role
+     */
+    private $role;
+    /**
      * @AttributeType String
      */
     private $firstname;
@@ -59,6 +63,16 @@ class User
     public function setId($id)
     {
         $this->id = $id;
+    }
+
+
+    public function getRole(): Role
+    {
+        return $this->role;
+    }
+    public function setRole(Role $role)
+    {
+        $this->role = $role;
     }
 
 
@@ -190,8 +204,10 @@ class User
     public function __set($name, $value)
     {
         // TODO: Implement __set() method.
-        if ($name=='fld_user_id'){
-            $this->id=$value;
+        if ($name=='fld_user_id') {
+            $this->id = $value;
+        }elseif ($name=='fld_user_role'){
+            $this->setRole(Role::$value());
         }elseif ($name=='fld_user_firstname'){
             $this->setFirstname($value);
         }elseif ($name=='fld_user_lastname'){

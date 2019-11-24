@@ -85,7 +85,7 @@ class AuthServiceImpl implements AuthService
      * @return User
      * @ReturnType User
      */
-    public function readUser() : User
+    public function readUser() //: User
     {
         if ($this->verifyAuth()) {
             $userdao = new UserDAO;

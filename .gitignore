@@ -2,5 +2,4 @@
 log.txt
 /dir1
 config.env
-*.sql
 /vendor/

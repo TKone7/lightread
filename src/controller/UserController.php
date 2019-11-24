@@ -10,6 +10,7 @@ namespace controller;
 
 
 use domain\User;
+use domain\Role;
 use router\Router;
 use services\AuthServiceImpl;
 use services\ContentServiceImpl;
@@ -29,6 +30,7 @@ class UserController
         $nu->setUsername($_POST["username"]);
         $nu->setPassword($_POST["password"]);
         $nu->setEmail(($_POST["email"]!=="")?$_POST["email"]:NULL);
+        $nu->setRole(Role::USER());
 
         $registerValid = new UserRegisterValidator($nu);
         if ($registerValid->isValid()){

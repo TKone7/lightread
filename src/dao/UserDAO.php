@@ -16,8 +16,8 @@ class UserDAO extends BasicDAO
     {
         $withemail= !is_null($user->getEmail());
         $sqlstmt = '
-        INSERT INTO tbl_user (fld_user_firstname, fld_user_lastname,fld_user_email, fld_user_pwhash, fld_user_nickname,fld_user_locked, fld_user_creationpit,fld_user_verified)
-          SELECT :firstname,:lastname,:email,:password,:username,:locked,:creation,:verified
+        INSERT INTO tbl_user (fld_role_id,fld_user_firstname, fld_user_lastname,fld_user_email, fld_user_pwhash, fld_user_nickname,fld_user_locked, fld_user_creationpit,fld_user_verified)
+          SELECT :role_id,:firstname,:lastname,:email,:password,:username,:locked,:creation,:verified
         WHERE NOT EXISTS (
         SELECT fld_user_nickname FROM tbl_user WHERE fld_user_nickname = :usercheck';
         if($withemail){
@@ -25,6 +25,7 @@ class UserDAO extends BasicDAO
         }
         $sqlstmt.=');';
         $stmt = $this->pdoInstance->prepare($sqlstmt);
+        $stmt->bindValue(':role_id', $this->readRoleID($user->getRole()->getKey())['fld_role_id']);
         $stmt->bindValue(':firstname', $user->getFirstname());
         $stmt->bindValue(':lastname', $user->getLastname());
         $stmt->bindValue(':username', $user->getUsername());
@@ -92,5 +93,16 @@ class UserDAO extends BasicDAO
         }
         return null;
     }
-}
 
+    private function readRoleID($key){
+        $stmt = $this->pdoInstance->prepare('
+            SELECT * FROM tbl_role WHERE fld_role_key = :key;');
+        $stmt->bindValue(':key', $key);
+        $stmt->execute();
+        if ($stmt->rowCount() > 0) {
+            return $stmt->fetch(\PDO::FETCH_ASSOC);
+        }
+        return null;
+    }
+
+}
