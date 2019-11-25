@@ -89,6 +89,10 @@ Router::route_auth("GET", "/register", $softauthFunction, function () {
 Router::route_auth("POST", "/register", $softauthFunction, function () {
     (new UserController())->register();
 });
+Router::route_auth("GET", "/confirm_mail", $softauthFunction, function () {
+    (new UserController())->confirmmail();
+});
+
 Router::route_auth("GET", "/login", $softauthFunction, function () {
     if(!(AuthServiceImpl::getInstance()->verifyAuth())) {
         LayoutRendering::headerLayout(new TemplateView("login.php"), "Login", "Welcome back");

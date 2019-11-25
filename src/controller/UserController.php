@@ -9,6 +9,7 @@
 namespace controller;
 
 
+use config\Config;
 use domain\User;
 use domain\Role;
 use router\Router;
@@ -56,6 +57,24 @@ class UserController
 
     }
 
+    public function confirmmail(){
+        $confirm_hash = $_GET['cfm'];
+        $user_id =filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+
+        $userservice = UserServiceImpl::getInstance();
+        $authservice = AuthServiceImpl::getInstance();
+
+        if($user_id) {
+            $user = $userservice->readUser($user_id);
+        }
+        if(!empty($user) && $userservice->validateMailHash($user, $confirm_hash)){
+            $login_view = new TemplateView("login.php");
+            LayoutRendering::headerLayout($login_view,"E-mail verified","You can now use all of our services");
+        }else{
+            Router::redirect("/");
+        }
+    }
+
     public function login()
     {
         $authservice = AuthServiceImpl::getInstance();
@@ -95,15 +114,16 @@ class UserController
     {
         $authservice = AuthServiceImpl::getInstance();
         $orig_user =UserServiceImpl::getInstance()->readUser($_POST["id"]);
-
+        $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
         $user = new User();
-        $user->setId($_POST["id"]);
+        $user->setId($id);
         $user->setUsername($_POST["username"]);
         $user->setEmail(($_POST["email"]!=="")?$_POST["email"]:NULL);
         $user->setFirstname(($_POST["firstname"]!=="")?$_POST["firstname"]:NULL);
         $user->setLastname(($_POST["lastname"]!=="")?$_POST["lastname"]:NULL);
         $user->setPassword(($_POST["password"]!=="")?$_POST["password"]:NULL);
         $user->setVerfied($orig_user->getVerfied());
+        $user->setCreationDate($orig_user->getCreationDate());
         $userValid = new UserUpdateValidator($orig_user,$user);
 
 

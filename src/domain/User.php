@@ -53,6 +53,27 @@ class User
     private $verfied;
 
     /**
+     * @AttributeType date
+     */
+    private $creation_date;
+
+    /**
+     * @return mixed
+     */
+    public function getCreationDate()
+    {
+        return $this->creation_date;
+    }
+
+    /**
+     * @param mixed $creation_date
+     */
+    public function setCreationDate($creation_date)
+    {
+        $this->creation_date = $creation_date;
+    }
+
+    /**
      * @return mixed
      */
     public function getId()
@@ -244,6 +265,8 @@ class User
             $this->setDescription($value);
         }elseif ($name=='fld_user_verified'){
             $this->setVerfied($value);
+        }elseif ($name=='fld_user_creationpit'){
+            $this->setCreationDate(date_create_from_format('Y-m-d H:i:s',$value)  );
         }
     }
 

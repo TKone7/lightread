@@ -34,7 +34,11 @@ class UserServiceImpl implements UserService
     }
     public function createUser(User $user) {
         $userdao = new UserDAO();
-        return $userdao->create($user);
+        $new_user = $userdao->create($user);
+        if(!empty($new_user->getEmail())){
+            $this->sendVerificationMail($new_user);
+        }
+        return $new_user;
     }
 
     public function updateUser(User $olduser, User $user)
@@ -52,7 +56,7 @@ class UserServiceImpl implements UserService
                     if($olduser->getEmail() !== $user->getEmail()){
                         // email has changed and triggers re-verification
                         $user->setVerfied(false);
-                        // sendout email here
+                        $this->sendVerificationMail($user);
                     }
                 }
                 return $userdao->update($user);
@@ -91,4 +95,31 @@ class UserServiceImpl implements UserService
         $purchaseHist = $pdao->selectByPayer($user);
         return $purchaseHist;
     }
+
+    public function sendVerificationMail(User $user){
+        $url = $GLOBALS["ROOT_URL"] . '/confirm_mail/?cfm=' . $this->getUserHash($user) . '&id=' . $user->getId();
+        $body = 'Thank you very much for your registration. <br>In order to use the full range of our features you will need to verfy your e-mail address on lightread: <br>
+                   <a href=\'' . $url . '\'>Please click this link</a> or paste the following in your browser:<br>
+                   ' . $url;
+        EmailServiceClient::sendEmail($user->getEmail(), 'Verify your email on Lightread',$body);
+    }
+    public function getUserHash(User $user)
+    {
+        $hash_msg = array(
+            'mail' => $user->getEmail(),
+            'creation' => $user->getCreationDate(),
+            'id' => $user->getId());
+        return hash('sha256', json_encode($hash_msg));
+    }
+
+    public function validateMailHash(User $user, $hash){
+        $result = $this->getUserHash($user) === $hash;
+        if ($result){
+            $user->setVerfied(true);
+            (new UserDAO())->update($user);
+        }
+        return $result;
+    }
+
+
 }
