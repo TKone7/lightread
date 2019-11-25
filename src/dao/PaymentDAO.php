@@ -164,4 +164,42 @@ class PaymentDAO extends BasicDAO
         $res = $stmt->fetch(\PDO::FETCH_ASSOC)['sum'];
         return $res ?? 0;
     }
+
+    public function selectByReceiver(User $user){
+        $basic ='SELECT inv.*, p.fld_purp_key, s.fld_sinv_key FROM tbl_invoice inv
+            inner join tbl_purpose p
+              on inv.fld_purp_id = p.fld_purp_id
+            inner join tbl_statusinvoice s
+              on inv.fld_sinv_id = s.fld_sinv_id
+            inner join tbl_content c 
+              on c.fld_cont_id = inv.fld_cont_id
+              where c.fld_user_id=:user_id AND inv.fld_sinv_id=:sinv_id';
+
+        //@todo if we allow to donate on user basis, this select must also include this
+        $stmt = $this->pdoInstance->prepare($basic);
+        $stmt->bindValue(':user_id', $user->getId());
+        $stmt->bindValue(':sinv_id', (new InvoiceDAO())->readInvStatusId(InvStatus::SETTLED()->getKey()));
+
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_CLASS, "domain\Payment");
+
+    }
+
+    public function selectByPayer(User $user){
+        $basic ='SELECT inv.*, p.fld_purp_key, s.fld_sinv_key FROM tbl_invoice inv
+            inner join tbl_purpose p
+              on inv.fld_purp_id = p.fld_purp_id
+            inner join tbl_statusinvoice s
+              on inv.fld_sinv_id = s.fld_sinv_id
+              where inv.fld_sinv_id=:sinv_id AND inv.fld_user_id1=:user_id AND inv.fld_purp_id in (1,2)'; //@todo replace numbers
+
+        //@todo if we allow to donate on user basis, this select must also include this
+        $stmt = $this->pdoInstance->prepare($basic);
+        $stmt->bindValue(':user_id', $user->getId());
+        $stmt->bindValue(':sinv_id', (new InvoiceDAO())->readInvStatusId(InvStatus::SETTLED()->getKey()));
+
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_CLASS, "domain\Payment");
+
+    }
 }

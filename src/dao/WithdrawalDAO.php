@@ -120,5 +120,21 @@ class WithdrawalDAO extends BasicDAO
         $res = $stmt->fetch(\PDO::FETCH_ASSOC)['sum'];
         return $res ?? 0;
     }
+    public function selectByWithdrawer(User $user){
+        $basic ='SELECT inv.*, p.fld_purp_key, s.fld_sinv_key FROM tbl_invoice inv
+            inner join tbl_purpose p
+              on inv.fld_purp_id = p.fld_purp_id
+            inner join tbl_statusinvoice s
+              on inv.fld_sinv_id = s.fld_sinv_id 
+              where inv.fld_user_id1=:user_id AND inv.fld_sinv_id=:sinv_id AND inv.fld_purp_id=:purp_id';
+
+        $stmt = $this->pdoInstance->prepare($basic);
+        $stmt->bindValue(':user_id', $user->getId());
+        $stmt->bindValue(':sinv_id', (new InvoiceDAO())->readInvStatusId(InvStatus::SETTLED()->getKey()));
+        $stmt->bindValue(':purp_id', (new InvoiceDAO())->readPurposeId(Purpose::WITHDRAWAL()->getKey()));
+        $stmt->execute();
+        $res = $stmt->fetchAll(\PDO::FETCH_CLASS, "domain\Withdrawal");
+        return $res;
+    }
 
 }

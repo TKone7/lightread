@@ -196,6 +196,15 @@ class User
         return ($turnover ?? 0) - ($withdrawals ?? 0);
     }
 
+    public function getBalanceHistory(){
+        return UserServiceImpl::getInstance()->getBalanceHistory($this);
+    }
+
+    public function getPurchaseHistory(){
+        return UserServiceImpl::getInstance()->getPurchaseHistory($this);
+    }
+
+
     /**
      * @return mixed
      */

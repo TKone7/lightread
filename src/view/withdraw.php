@@ -15,7 +15,7 @@ isset($this->user) ? $user = $this->user : $user = new User();
     <div class="row articlerow">
         <div class="col-md-10 col-lg-8 mx-auto">
             <h1>Withdraw</h1>
-            <p>You should regularly take control of your funds by withdrawing them to your personal wallet. Only so, you
+            <p>You should regularly take back control of your funds by withdrawing them to your personal wallet. Only so, you
                 take control of your earnings and lose dependency from our platform.</p>
 
             <p>Please paste a valid lightning invoice in the textfield below. Your maximum amount to withdraw is <?php echo $user->getBalance() ?> satoshis.

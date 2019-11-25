@@ -105,7 +105,7 @@ isset($this->mgr) ? $mgr = $this->mgr : $mgr = new ContentManager();
                 <label class="earning-value"><?php echo MarketDataServiceImpl::getInstance()->convertSatToUsdFormat($user->getBalance()); ?></label>
                 <hr class="earning-hr">
             </div>
-            <div class="text-center clearfix"><button class="btn btn-primary" type="button">Transaction Details</button><button class="btn btn-primary" type="button" style="margin-left:10px"  onclick="window.location.href='<?php echo $GLOBALS["ROOT_URL"]; ?>/withdraw'">Withdraw to your wallet&nbsp;<i class="fa fa-arrow-circle-o-down" style="font-size: 20px;vertical-align: middle;"></i></button></div>
+            <div class="text-center clearfix"><button class="btn btn-primary" onclick="window.location.href='<?php echo $GLOBALS["ROOT_URL"]; ?>/transactions'" type="button">Transaction Details</button><button class="btn btn-primary" type="button" style="margin-left:10px"  onclick="window.location.href='<?php echo $GLOBALS["ROOT_URL"]; ?>/withdraw'">Withdraw to your wallet&nbsp;<i class="fa fa-arrow-circle-o-down" style="font-size: 20px;vertical-align: middle;"></i></button></div>
         </div>
     </div>
 </div>

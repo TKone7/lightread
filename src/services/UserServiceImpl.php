@@ -9,6 +9,7 @@
 namespace services;
 
 
+use dao\InvoiceDAO;
 use dao\PaymentDAO;
 use dao\WithdrawalDAO;
 use domain\Purpose;
@@ -73,5 +74,21 @@ class UserServiceImpl implements UserService
     public function getAggrWithdrawal(User $user){
         $wdrw_dao = new WithdrawalDAO();
         return $wdrw_dao->selectUserWithdrawal($user);
+    }
+
+    // returns an array of transactions on the user's balance
+    public function getBalanceHistory(User $user){
+        $pdao = new PaymentDAO();
+        $wdao = new WithdrawalDAO();
+        $paymentHist = $pdao->selectByReceiver($user);
+        $withdrawalHist = $wdao->selectByWithdrawer($user);
+        return array_merge($paymentHist, $withdrawalHist);
+    }
+
+    // returns an array of purchase transactions made by the user
+    public function getPurchaseHistory(User $user){
+        $pdao = new PaymentDAO();
+        $purchaseHist = $pdao->selectByPayer($user);
+        return $purchaseHist;
     }
 }

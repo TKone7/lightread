@@ -198,13 +198,19 @@ Router::route_auth("GET", "/admin", $authFunction, function () {
 
 });
 
+Router::route_auth("GET", "/transactions", $authFunction, function () {
+    $wdrw_view = new TemplateView("transactions.php");
+    $wdrw_view->user = $auth = AuthServiceImpl::getInstance()->readUser();
+    LayoutRendering::simpleLayout($wdrw_view);
+
+});
+
 Router::route_auth("GET", "/withdraw", $authFunction, function () {
     $wdrw_view = new TemplateView("withdraw.php");
     $wdrw_view->user = $auth = AuthServiceImpl::getInstance()->readUser();
     LayoutRendering::simpleLayout($wdrw_view);
 
 });
-
 Router::route_auth("POST", "/withdraw", $authFunction, function () {
     if( isset($_POST['ajax']) && isset($_POST['pay_req']) ){
         $withdrw = new Withdrawal();
