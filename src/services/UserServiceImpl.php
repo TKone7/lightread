@@ -10,6 +10,7 @@ namespace services;
 
 
 use dao\PaymentDAO;
+use dao\WithdrawalDAO;
 use domain\Purpose;
 use domain\User;
 use dao\UserDAO;
@@ -67,5 +68,10 @@ class UserServiceImpl implements UserService
     public function getTurnover(User $user, Purpose $purpose = NULL){
         $paym_dao = new PaymentDAO();
         return $paym_dao->selectUserTurnover($user,$purpose);
+    }
+
+    public function getAggrWithdrawal(User $user){
+        $wdrw_dao = new WithdrawalDAO();
+        return $wdrw_dao->selectUserWithdrawal($user);
     }
 }

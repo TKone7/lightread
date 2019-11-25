@@ -183,10 +183,17 @@ class User
         return UserServiceImpl::getInstance()->getTurnover($this, $purpose);
     }
 
+    public function getWithdrawal()
+    {
+        return UserServiceImpl::getInstance()->getAggrWithdrawal($this);
+    }
+
     public function getBalance()
     {
         // @ todo must be reduced by the amount of withdrawals (here 0)
-        return UserServiceImpl::getInstance()->getTurnover($this) - 0;
+        $turnover = $this->getTurnover();
+        $withdrawals = $this->getWithdrawal();
+        return ($turnover ?? 0) - ($withdrawals ?? 0);
     }
 
     /**

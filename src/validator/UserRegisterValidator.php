@@ -15,6 +15,7 @@ use domain\User;
 class UserRegisterValidator
 {
     private $valid = true;
+
     private $duplUsernameError = null;
     private $duplEmailError = null;
     private $passwordPolicyError = null;

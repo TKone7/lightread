@@ -41,29 +41,29 @@ $load = isset($this->content);
                         <div class="form-group">
                             <button formaction="<?php echo $GLOBALS["ROOT_URL"]; ?>/preview" class="btn btn-light" type="submit">Store as draft</button>
                             <button class="btn btn-primary" type="submit">Publish</button>
-
                         </div>
             </form>
         </div>
-                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-                <script>
-                    $(document).ready(function (){
-                        $('#price').on('input',function(e){
-                            var val = $('#price').val();
-                            var btcprice = $('#btcprice').val();
-                            var satprice = btcprice / 100000000;
-                            var usdval = satprice * val;
-                            if (usdval<1){
-                                usdval = usdval * 100;
-                                usdval = Math.floor(usdval);
-                                $('#fiat').text('~' + usdval  + ' cts.');
-                            }else{
-                                $('#fiat').text('~' + (usdval).toFixed(2) + ' $');
-                            }
-                        });
-                    });
+    </div>
+    </div>
+    </div>
 
-                </script>
-    </div>
-    </div>
-    </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function (){
+        $('#price').on('input',function(e){
+            var val = $('#price').val();
+            var btcprice = $('#btcprice').val();
+            var satprice = btcprice / 100000000;
+            var usdval = satprice * val;
+            if (usdval<1){
+                usdval = usdval * 100;
+                usdval = Math.floor(usdval);
+                $('#fiat').text('~¢' + usdval);
+            }else{
+                $('#fiat').text('~$' + (usdval).toFixed(2));
+            }
+        });
+    });
+
+</script>

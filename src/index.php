@@ -19,9 +19,11 @@ use domain\Payment;
 use domain\Purpose;
 use domain\Status;
 
+use domain\Withdrawal;
 use services\ContentServiceImpl;
 use services\InvoiceServiceImpl;
 use services\AuthServiceImpl;
+use validator\WithdrawalValidator;
 use view\TemplateView;
 use view\LayoutRendering;
 use router\Router;
@@ -188,6 +190,47 @@ Router::route_auth("GET", "/node", $authFunction, function () {
     $node_content->ListChannelsResp = $ListChannelsResp;
     $node_content->PendingChannelsResp = $PendingChannelsResp;
     LayoutRendering::headerLayout($node_content,"Your Node","See if it's healthy");
+});
+
+Router::route_auth("GET", "/admin", $authFunction, function () {
+        $admin_view = new TemplateView("admin.php");
+        LayoutRendering::simpleLayout($admin_view);
+
+});
+
+Router::route_auth("GET", "/withdraw", $authFunction, function () {
+    $wdrw_view = new TemplateView("withdraw.php");
+    $wdrw_view->user = $auth = AuthServiceImpl::getInstance()->readUser();
+    LayoutRendering::simpleLayout($wdrw_view);
+
+});
+
+Router::route_auth("POST", "/withdraw", $authFunction, function () {
+    if( isset($_POST['ajax']) && isset($_POST['pay_req']) ){
+        $withdrw = new Withdrawal();
+        $withdrw->setReceiver(AuthServiceImpl::getInstance()->readUser());
+        $withdrw->setPayReq($_POST['pay_req']);
+
+        // validate first
+        $wdrw_val = new WithdrawalValidator($withdrw);
+
+        if($wdrw_val->isValid()){
+            $withdrw = InvoiceServiceImpl::getInstance()->createWithdrawal($withdrw);
+            $result = InvoiceServiceImpl::getInstance()->payOut($withdrw);
+            $prc->result = $result['result'];
+            $prc->memo = $withdrw->getMemo();
+            $prc->amount = $withdrw->getValue();
+            $prc->msg = $result['msg'];
+        }else{
+            $prc->result = false;
+            $prc->msg .= $wdrw_val->isInvoiceFormatError() ? $wdrw_val->getInvoiceFormatError() : '';
+            $prc->msg .= $wdrw_val->isInsufficientFunds() ? $wdrw_val->getInsufficientFunds() : '';
+        }
+        $myJSON = json_encode($prc);
+        echo $myJSON;
+        exit;
+    }
+
 });
 
 try {

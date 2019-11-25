@@ -97,12 +97,15 @@ isset($this->mgr) ? $mgr = $this->mgr : $mgr = new ContentManager();
                 <label class="earning-value"><?php echo $user->getTurnover(Purpose::READ()); ?> sats</label>
                 <hr class="earning-hr"><span class="earning-title">Total earning</span>
                 <label class="earning-value"><?php echo $user->getTurnover(); ?> sats</label>
-                <span class="earning-title">Total earning USD (<?php echo MarketDataServiceImpl::getInstance()->getPrice(); ?> / BTC)</span><label class="earning-value"><?php echo MarketDataServiceImpl::getInstance()->convertSatToUsdFormat($user->getTurnover()); ?></label>
-                <hr class="earning-hr"><span class="earning-title">Withdrawals</span><label class="earning-value">- 10 000 sats</label>
-                <hr class="earning-hr"><span class="earning-title">Current balance</span><label class="earning-value">37 456 sats</label><span class="earning-title">Current balance USD ($9,263.59 / BTC)</span><label class="earning-value">3.47 USD</label>
+                <span class="earning-title">Total earning USD (<?php echo MarketDataServiceImpl::getInstance()->getPrice(); ?> / BTC)</span>
+                <label class="earning-value"><?php echo MarketDataServiceImpl::getInstance()->convertSatToUsdFormat($user->getTurnover()); ?></label>
+                <hr class="earning-hr"><span class="earning-title">Withdrawals</span><label class="earning-value">- <?php echo $user->getWithdrawal(); ?> sats</label>
+                <hr class="earning-hr"><span class="earning-title">Current balance</span><label class="earning-value"><?php echo $user->getBalance(); ?> sats</label>
+                <span class="earning-title">Current balance USD (<?php echo MarketDataServiceImpl::getInstance()->getPrice(); ?> / BTC)</span>
+                <label class="earning-value"><?php echo MarketDataServiceImpl::getInstance()->convertSatToUsdFormat($user->getBalance()); ?></label>
                 <hr class="earning-hr">
             </div>
-            <div class="text-center clearfix"><button class="btn btn-primary" type="button">Transaction Details</button><button class="btn btn-primary" type="button" style="margin-left:10px">Withdraw to your wallet&nbsp;<i class="fa fa-arrow-circle-o-down" style="font-size: 20px;vertical-align: middle;"></i></button></div>
+            <div class="text-center clearfix"><button class="btn btn-primary" type="button">Transaction Details</button><button class="btn btn-primary" type="button" style="margin-left:10px"  onclick="window.location.href='<?php echo $GLOBALS["ROOT_URL"]; ?>/withdraw'">Withdraw to your wallet&nbsp;<i class="fa fa-arrow-circle-o-down" style="font-size: 20px;vertical-align: middle;"></i></button></div>
         </div>
     </div>
 </div>
