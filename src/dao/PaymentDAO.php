@@ -35,8 +35,8 @@ class PaymentDAO extends BasicDAO
         $payer = !is_null($payment->getPayer()->getId()) ? $payment->getPayer()->getId() : NULL;
         $stmt->bindValue(':user_id', $payer);
         $stmt->bindValue(':cont_id', $payment->getContent()->getId());
-        $stmt->bindValue(':sinv_id', $this->readInvStatusId($payment->getStatus()->getKey()));
-        $stmt->bindValue(':purp_id', $this->readPurposeId($payment->getPurpose()->getKey()));
+        $stmt->bindValue(':sinv_id', (new InvoiceDAO())->readInvStatusId($payment->getStatus()->getKey()));
+        $stmt->bindValue(':purp_id', (new InvoiceDAO())->readPurposeId($payment->getPurpose()->getKey()));
         $stmt->bindValue(':rhash', $payment->getRhash());
         $stmt->bindValue(':payreq', $payment->getPayReq());
         $stmt->bindValue(':memo', $payment->getMemo());
@@ -81,8 +81,8 @@ class PaymentDAO extends BasicDAO
         $payer = !is_null($payment->getPayer()->getId()) ? $payment->getPayer()->getId() : NULL;
         $stmt->bindValue(':user_id', $payer);
         $stmt->bindValue(':cont_id', $payment->getContent()->getId());
-        $stmt->bindValue(':sinv_id', $this->readInvStatusId($payment->getStatus()->getKey()));
-        $stmt->bindValue(':purp_id', $this->readPurposeId($payment->getPurpose()->getKey()));
+        $stmt->bindValue(':sinv_id', (new InvoiceDAO())->readInvStatusId($payment->getStatus()->getKey()));
+        $stmt->bindValue(':purp_id', (new InvoiceDAO())->readPurposeId($payment->getPurpose()->getKey()));
         $stmt->bindValue(':rhash', $payment->getRhash());
         $stmt->bindValue(':payreq', $payment->getPayReq());
         $stmt->bindValue(':memo', $payment->getMemo());
@@ -117,9 +117,9 @@ class PaymentDAO extends BasicDAO
               WHERE inv.fld_cont_id = :cont_id AND inv.fld_user_id1 = :user_id AND inv.fld_purp_id = :purp_key AND inv.fld_sinv_id = :inv_key;');
         $stmt->bindValue(':cont_id', $content->getId());
         $stmt->bindValue(':user_id', $user->getId());
-        $purp_key = $this->readPurposeId(Purpose::READ()->getKey());
+        $purp_key = (new InvoiceDAO())->readPurposeId(Purpose::READ()->getKey());
         $stmt->bindValue(':purp_key',$purp_key );
-        $inv_key = $this->readInvStatusId(InvStatus::SETTLED()->getKey());
+        $inv_key = (new InvoiceDAO())->readInvStatusId(InvStatus::SETTLED()->getKey());
         $stmt->bindValue(':inv_key', $inv_key);
         $stmt->execute();
 
@@ -137,9 +137,9 @@ class PaymentDAO extends BasicDAO
         }
         $stmt = $this->pdoInstance->prepare($basic);
         $stmt->bindValue(':cont_id', $content->getId());
-        $stmt->bindValue(':sinv_id', $this->readInvStatusId(InvStatus::SETTLED()->getKey()));
+        $stmt->bindValue(':sinv_id', (new InvoiceDAO())->readInvStatusId(InvStatus::SETTLED()->getKey()));
         if(!is_null($purpose)){
-            $stmt->bindValue(':purp_id', $this->readPurposeId($purpose->getKey()));
+            $stmt->bindValue(':purp_id', (new InvoiceDAO())->readPurposeId($purpose->getKey()));
         }
         $stmt->execute();
         $res = $stmt->fetch(\PDO::FETCH_ASSOC)['sum'];
@@ -151,39 +151,55 @@ class PaymentDAO extends BasicDAO
                 on c.fld_cont_id = inv.fld_cont_id
               where c.fld_user_id=:user_id AND inv.fld_sinv_id=:sinv_id';
         if(!is_null($purpose)){
+            // @todo shoudl only select READ and DONATE not the WITHDRAW purpose
             $basic .= ' AND fld_purp_id=:purp_id';
         }
         $stmt = $this->pdoInstance->prepare($basic);
         $stmt->bindValue(':user_id', $user->getId());
-        $stmt->bindValue(':sinv_id', $this->readInvStatusId(InvStatus::SETTLED()->getKey()));
+        $stmt->bindValue(':sinv_id', (new InvoiceDAO())->readInvStatusId(InvStatus::SETTLED()->getKey()));
         if(!is_null($purpose)){
-            $stmt->bindValue(':purp_id', $this->readPurposeId($purpose->getKey()));
+            $stmt->bindValue(':purp_id', (new InvoiceDAO())->readPurposeId($purpose->getKey()));
         }
         $stmt->execute();
         $res = $stmt->fetch(\PDO::FETCH_ASSOC)['sum'];
         return $res ?? 0;
     }
-    private function readInvStatusId($key){
-        $stmt = $this->pdoInstance->prepare('
-            SELECT * FROM tbl_statusinvoice WHERE fld_sinv_key = :key;');
-        $stmt->bindValue(':key', $key);
+
+    public function selectByReceiver(User $user){
+        $basic ='SELECT inv.*, p.fld_purp_key, s.fld_sinv_key FROM tbl_invoice inv
+            inner join tbl_purpose p
+              on inv.fld_purp_id = p.fld_purp_id
+            inner join tbl_statusinvoice s
+              on inv.fld_sinv_id = s.fld_sinv_id
+            inner join tbl_content c 
+              on c.fld_cont_id = inv.fld_cont_id
+              where c.fld_user_id=:user_id AND inv.fld_sinv_id=:sinv_id';
+
+        //@todo if we allow to donate on user basis, this select must also include this
+        $stmt = $this->pdoInstance->prepare($basic);
+        $stmt->bindValue(':user_id', $user->getId());
+        $stmt->bindValue(':sinv_id', (new InvoiceDAO())->readInvStatusId(InvStatus::SETTLED()->getKey()));
+
         $stmt->execute();
-        if ($stmt->rowCount() > 0) {
-            return $stmt->fetch(\PDO::FETCH_ASSOC)['fld_sinv_id'];
-        }
-        return null;
+        return $stmt->fetchAll(\PDO::FETCH_CLASS, "domain\Payment");
+
     }
-    private function readPurposeId($key){
-        $stmt = $this->pdoInstance->prepare('
-            SELECT * FROM tbl_purpose WHERE fld_purp_key = :key;');
-        $stmt->bindValue(':key', $key);
+
+    public function selectByPayer(User $user){
+        $basic ='SELECT inv.*, p.fld_purp_key, s.fld_sinv_key FROM tbl_invoice inv
+            inner join tbl_purpose p
+              on inv.fld_purp_id = p.fld_purp_id
+            inner join tbl_statusinvoice s
+              on inv.fld_sinv_id = s.fld_sinv_id
+              where inv.fld_sinv_id=:sinv_id AND inv.fld_user_id1=:user_id AND inv.fld_purp_id in (1,2)'; //@todo replace numbers
+
+        //@todo if we allow to donate on user basis, this select must also include this
+        $stmt = $this->pdoInstance->prepare($basic);
+        $stmt->bindValue(':user_id', $user->getId());
+        $stmt->bindValue(':sinv_id', (new InvoiceDAO())->readInvStatusId(InvStatus::SETTLED()->getKey()));
+
         $stmt->execute();
-        if ($stmt->rowCount() > 0) {
-            return $stmt->fetch(\PDO::FETCH_ASSOC)['fld_purp_id'];
-        }
-        return null;
+        return $stmt->fetchAll(\PDO::FETCH_CLASS, "domain\Payment");
+
     }
-
-
-
 }

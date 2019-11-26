@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>About us - lightread</title>
+    <title>Home - lightread</title>
     <link rel="icon" type="image/png" sizes="32x33" href="assets/img/lightread.png">
     <link rel="icon" type="image/png" sizes="16x16" href="assets/img/lightread16.png">
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
@@ -31,44 +31,73 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-light navbar-expand-lg fixed-top" id="mainNav">
-        <div class="container"><a class="navbar-brand lrlogo" href="index.html">light<i class="fa fa-flash" style="color: #ffc81e;"></i>read</a><button data-toggle="collapse" data-target="#navbarResponsive" class="navbar-toggler" aria-controls="navbarResponsive" aria-expanded="false"
-                aria-label="Toggle navigation"><i class="fa fa-bars"></i></button>
+    <nav class="navbar navbar-light navbar-expand-lg fixed-top index" id="mainNav">
+        <div class="container"><a class="navbar-brand lrlogo lrlogo-index" href="index.html">light<i class="fa fa-flash" style="color: #ffc81e;"></i>read</a><button data-toggle="collapse" data-target="#navbarResponsive" class="navbar-toggler" aria-controls="navbarResponsive"
+                aria-expanded="false" aria-label="Toggle navigation"><i class="fa fa-bars"></i></button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="nav navbar-nav ml-auto">
                     <li class="nav-item" role="presentation"><a class="nav-link" href="index.html">Home</a></li>
                     <li class="nav-item" role="presentation"><a class="nav-link" href="about.html">About</a></li>
                     <li class="nav-item" role="presentation"><a class="nav-link" href="category.html">Category</a></li>
-                    <li class="nav-item" role="presentation" id="login"><a class="nav-link" href="login.html">Login</a></li>
+                    <li class="nav-item post-subtitle" role="presentation" id="login"><a class="nav-link" id="login" href="profile.html"><i class="fa fa-user-circle-o" style="font-size: 16px;vertical-align: middle;"></i>&nbsp;Peter Muster</a></li>
                 </ul>
             </div>
         </div>
     </nav>
-    <header class="masthead" style="background-image:url('assets/img/lightningstruck.jpg');">
-        <div class="overlay"></div>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-10 col-lg-8 mx-auto">
-                    <div class="site-heading">
-                        <h1 class="lrlogo"><strong>About</strong><br><strong>light</strong><i class="fa fa-flash" style="color: #ffc81e;"></i>read</h1><span class="subheading">This is how it works</span></div>
-                </div>
-            </div>
-        </div>
-    </header>
     <div class="container">
-        <div class="row">
+        <div class="row articlerow">
             <div class="col-md-10 col-lg-8 mx-auto">
-                <h1><strong>Solution</strong></h1>
-                <p>lightread offers a solution where no 3rd party payment provider is included in the process. (Micro) payments are done solely through the&nbsp;<a href="https://lightning.network/">Lightning Network</a>&nbsp;that represents a second layer
-                    technology to leverage payment throughput on the Bitcoin network.<br></p>
-                <p>With the Lightning Network payments get very cheap and therefore even allow for small transactions down to several Satoshis (0.008 cents, while 1 sat = 1/100'000'000 1 BTC).<br></p>
-                <p>Solutions for end-users to use the Lightning wallets in their every-day life will get easier in the future as new engineers and UX specialist optimize the user experience.<br></p>
-                <p>On the platform consumers will have the ability to pay content producers for their work or even tip on a donation basis for producers that offer their work for free. Additionally, users can sign up for supporting certain producers on a
-                    subscription base (every week / month) allowing the producers to count on a more steady income.<br></p>
+                <h1>Admin Panel</h1><section class="cms-boxes">
+   <div class="container-fluid">
+      <div class="row">
+         <div class="col-md-6 cms-boxes-outer">
+            <div class="cms-boxes-items cms-pink">
+               <div class="boxes-align">
+                  <div class="large-box">
+                     <h3>Node Management</h3>
+                    
+                  </div>
+               </div>
             </div>
+         </div>
+         <div class="col-md-6 cms-boxes-outer">
+            <div class="cms-boxes-items cms-purple">
+               <div class="boxes-align">
+                  <div class="large-box">
+                     <h3>Categories</h3>
+                    
+                  </div>
+               </div>
+            </div>
+         </div>
+         
+      </div>
+      <div class="row">
+         <div class="col-md-6 cms-boxes-outer">
+            <div class="cms-boxes-items cms-purple">
+               <div class="boxes-align">
+                  <div class="large-box">
+                     <h3>Users</h3>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="col-md-6 cms-boxes-outer">
+            <div class="cms-boxes-items cms-pink">
+               <div class="boxes-align">
+                  <div class="large-box">
+                     <h3>Settings</h3>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      
+      
+   </div>
+</section></div>
         </div>
     </div>
-    <hr>
     <footer>
         <div class="container">
             <div class="row">

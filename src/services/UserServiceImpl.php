@@ -9,7 +9,9 @@
 namespace services;
 
 
+use dao\InvoiceDAO;
 use dao\PaymentDAO;
+use dao\WithdrawalDAO;
 use domain\Purpose;
 use domain\User;
 use dao\UserDAO;
@@ -32,7 +34,11 @@ class UserServiceImpl implements UserService
     }
     public function createUser(User $user) {
         $userdao = new UserDAO();
-        return $userdao->create($user);
+        $new_user = $userdao->create($user);
+        if(!empty($new_user->getEmail())){
+            $this->sendVerificationMail($new_user);
+        }
+        return $new_user;
     }
 
     public function updateUser(User $olduser, User $user)
@@ -50,7 +56,7 @@ class UserServiceImpl implements UserService
                     if($olduser->getEmail() !== $user->getEmail()){
                         // email has changed and triggers re-verification
                         $user->setVerfied(false);
-                        // sendout email here
+                        $this->sendVerificationMail($user);
                     }
                 }
                 return $userdao->update($user);
@@ -68,4 +74,52 @@ class UserServiceImpl implements UserService
         $paym_dao = new PaymentDAO();
         return $paym_dao->selectUserTurnover($user,$purpose);
     }
+
+    public function getAggrWithdrawal(User $user){
+        $wdrw_dao = new WithdrawalDAO();
+        return $wdrw_dao->selectUserWithdrawal($user);
+    }
+
+    // returns an array of transactions on the user's balance
+    public function getBalanceHistory(User $user){
+        $pdao = new PaymentDAO();
+        $wdao = new WithdrawalDAO();
+        $paymentHist = $pdao->selectByReceiver($user);
+        $withdrawalHist = $wdao->selectByWithdrawer($user);
+        return array_merge($paymentHist, $withdrawalHist);
+    }
+
+    // returns an array of purchase transactions made by the user
+    public function getPurchaseHistory(User $user){
+        $pdao = new PaymentDAO();
+        $purchaseHist = $pdao->selectByPayer($user);
+        return $purchaseHist;
+    }
+
+    public function sendVerificationMail(User $user){
+        $url = $GLOBALS["ROOT_URL"] . '/confirm_mail/?cfm=' . $this->getUserHash($user) . '&id=' . $user->getId();
+        $body = 'Thank you very much for your registration. <br>In order to use the full range of our features you will need to verfy your e-mail address on lightread: <br>
+                   <a href=\'' . $url . '\'>Please click this link</a> or paste the following in your browser:<br>
+                   ' . $url;
+        EmailServiceClient::sendEmail($user->getEmail(), 'Verify your email on Lightread',$body);
+    }
+    public function getUserHash(User $user)
+    {
+        $hash_msg = array(
+            'mail' => $user->getEmail(),
+            'creation' => $user->getCreationDate(),
+            'id' => $user->getId());
+        return hash('sha256', json_encode($hash_msg));
+    }
+
+    public function validateMailHash(User $user, $hash){
+        $result = $this->getUserHash($user) === $hash;
+        if ($result){
+            $user->setVerfied(true);
+            (new UserDAO())->update($user);
+        }
+        return $result;
+    }
+
+
 }

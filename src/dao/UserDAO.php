@@ -12,7 +12,7 @@ use domain\User;
 
 class UserDAO extends BasicDAO
 {
-    public function create(User $user)
+    public function create(User $user) : User
     {
         $withemail= !is_null($user->getEmail());
         $sqlstmt = '

@@ -38,11 +38,14 @@ class Config
             self::$config["database.user"] = $dbopts["user"];
             self::$config["database.password"] = $dbopts["pass"];
         }
-        if (isset($_ENV["APYKEY"])) {
-            self::$config["api.key"] = $_ENV["APYKEY"] ;
+        if (isset($_ENV["CMC_APIKEY"])) {
+            self::$config["api.key"] = $_ENV["CMC_APIKEY"] ;
         }
         if (isset($_ENV["PRICETOLERANCE"])) {
             self::$config["price.tolerance"] = $_ENV["PRICETOLERANCE"] ;
+        }
+        if (isset($_ENV["SENDGRID_APIKEY"])) {
+            self::$config["email.sendgrid-apikey"] = $_ENV["SENDGRID_APIKEY"];
         }
     }
 }

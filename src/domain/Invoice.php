@@ -9,6 +9,9 @@
 namespace domain;
 
 
+use dao\ContentDAO;
+use dao\UserDAO;
+
 class Invoice
 {
     /**
@@ -212,6 +215,35 @@ class Invoice
     public function setPurpose($purpose)
     {
         $this->purpose = $purpose;
+    }
+
+    public function __set($name, $value)
+    {
+        if ($name=='fld_invc_id'){
+            $this->setId($value);
+        }elseif ($name=='fld_purp_key'){
+            $this->setPurpose(Purpose::$value());
+        }elseif ($name=='fld_sinv_key'){
+            $this->setStatus(InvStatus::$value());
+        }elseif ($name=='fld_invc_rhash'){
+            $this->setRhash($value);
+        }elseif ($name=='fld_invc_payreq'){
+            $this->setPayReq($value);
+        }elseif ($name=='fld_invc_memo'){
+            $this->setMemo($value);
+        }elseif ($name=='fld_invc_satoshis'){
+            $this->setValue($value);
+        }elseif ($name=='fld_invc_creationpit'){
+            $this->setCreationDate(date_create_from_format('Y-m-d H:i:s',$value)  );
+        }elseif ($name=='fld_invc_settlepit'){
+            if(!is_null($value)){
+                $this->setSettleDate(date_create_from_format('Y-m-d H:i:s',$value));
+            }else{
+                $this->setSettleDate(NULL);
+            }
+        }elseif ($name=='fld_invc_expiry'){
+            $this->setExpiry($value);
+        }
     }
 
 }

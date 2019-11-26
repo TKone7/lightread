@@ -31,7 +31,7 @@ isset($this->restricted)?$restricted=$this->restricted:$restricted=false;
                         </div>
                         <div id="output" style="display: none">
                             <div class="text-center clearfix">
-                                <input name="pay_req" type="text" id='response' readonly style="width: 100%;">
+                                <input name="pay_req" class="form-control" type="text" id='response' readonly style="width: 100%;">
                                 <a id="wallet" href=""> <div id="qr"></div></a>
                                 <!--
                                 don't need button since we do polling
@@ -104,7 +104,7 @@ isset($this->restricted)?$restricted=$this->restricted:$restricted=false;
                             poll();
                         }
                     });
-                }, 5000);
+                }, 8000);
             })();
 
 
