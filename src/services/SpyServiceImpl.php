@@ -10,6 +10,7 @@ class SpyServiceImpl implements SpyService
     private static $instance = NULL;
     private static $agent = NULL;
     private static $IPinfo = NULL;
+    private static $BrowserInfo = NULL;
 
     protected function __construct()
     {
@@ -27,6 +28,7 @@ class SpyServiceImpl implements SpyService
         }
 
         $this->analyseIP();
+        $this->analyseBrowser();
 
     }
 
@@ -151,7 +153,26 @@ class SpyServiceImpl implements SpyService
     }
 
 
-    public function getBrowser($key):String {
+    public function getBrowser($key): String {
+
+        //keys: [browser], [version], [platform], [device_type]
+
+        $return = self::$BrowserInfo[$key];
+        if (empty($return)){
+            $return = 'unknown';
+        }
+
+        return $return;
+    }
+
+    public function getDevice():String {
+
+        $return = $this->getBrowser('device_type');
+        return $return;
+    }
+
+
+    public function getBrowser_old($key):String {
 
         //source: https://stackoverflow.com/questions/2199793/php-get-the-browser-name
 
@@ -267,6 +288,10 @@ class SpyServiceImpl implements SpyService
         $array = json_decode(file_get_contents("http://www.geoplugin.net/json.gp?ip={$ip}"),true);
         self::$IPinfo = $array;
 
+    }
+
+    private function analyseBrowser(){
+        self::$BrowserInfo = get_browser( null , true);
     }
 
     public function getIP() {

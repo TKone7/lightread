@@ -259,8 +259,10 @@ CREATE TABLE tbl_Views (
   fld_VIEW_Country VARCHAR(255)    ,
   fld_VIEW_City VARCHAR(255)    ,
   fld_VIEW_OS VARCHAR(255)    ,
-  fld_VIEW_Browser VARCHAR(255)    ,
-  fld_VIEW_BrowserVrs VARCHAR(255)    ,
+  fld_VIEW_BName VARCHAR(255)    ,
+  fld_VIEW_BVersion VARCHAR(255)    ,
+  fld_VIEW_BPlatform VARCHAR(255)    ,
+  fld_VIEW_Device VARCHAR(255)    ,
   fld_VIEW_PIT TIMESTAMP      ,
 PRIMARY KEY(fld_VIEW_ID)    ,
   FOREIGN KEY(fld_CONT_ID)

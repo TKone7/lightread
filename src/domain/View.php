@@ -7,10 +7,7 @@ namespace domain;
 class View
 {
 
-    /**
-     * @AttributeType int
-     */
-    private $id;
+
     /**
      * @AttributeType User
      */
@@ -40,32 +37,27 @@ class View
     /**
      * @AttributeType String
      */
-    private $browser;
+    private $bname;
     /**
      * @AttributeType String
      */
-    private $browserversion;
+    private $bversion;
+    /**
+     * @AttributeType String
+     */
+    private $bplatform;
+
+    /**
+     * @AttributeType String
+     */
+    private $device;
 
     /**
      * @AttributeType date
      */
     private $PIT;
 
-    /**
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
 
-    /**
-     * @param mixed $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
 
     /**
      * @return mixed
@@ -170,35 +162,66 @@ class View
     /**
      * @return mixed
      */
-    public function getBrowser()
+    public function getBName()
     {
-        return $this->browser;
+        return $this->bname;
     }
 
     /**
-     * @param mixed $browser
+     * @param mixed $bname
      */
-    public function setBrowser($browser)
+    public function setBName($bname)
     {
-        $this->browser = $browser;
+        $this->bname = $bname;
     }
 
     /**
      * @return mixed
      */
-    public function getBrowserVersion()
+    public function getBVersion()
     {
-        return $this->browserversion;
+        return $this->bversion;
     }
 
     /**
-     * @param mixed $screensize
+     * @param mixed $bversion
      */
-    public function setBrowserVersion($browserversion)
+    public function setBVersion($bversion)
     {
-        $this->browserversion = $browserversion;
+        $this->bversion = $bversion;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getBPlatform()
+    {
+        return $this->bplatform;
+    }
+
+    /**
+     * @param mixed $bplatform
+     */
+    public function setBPlatform($bplatform)
+    {
+        $this->bplatform = $bplatform;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDevice()
+    {
+        return $this->device;
+    }
+
+    /**
+     * @param mixed $device
+     */
+    public function setDevice($device)
+    {
+        $this->device = $device;
+    }
 
     /**
      * @return mixed

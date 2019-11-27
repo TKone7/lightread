@@ -30,14 +30,20 @@ class ViewServiceImpl implements ViewService
         $spy = SpyServiceImpl::getInstance();
 
         $v = new View();
+
+        //$infos = $spy->getBrwsInfo();
+
         $v->setUser($spy->getUser());
         $v->setContent($content);
         $v->setIp($spy->getIP());
         $v->setCountry($spy->getCountry());
         $v->setCity($spy->getCity());
         $v->setOs($spy->getOS());
-        $v->setBrowser($spy->getBrowser('name'));
-        $v->setBrowserVersion($spy->getBrowser('version'));
+        $v->setBName($spy->getBrowser('browser'));
+        $v->setBVersion($spy->getBrowser('version'));
+        $v->setBPlatform($spy->getBrowser('platform'));
+        $v->setDevice($spy->getDevice());
+
 
         if(self::isCountable($v)) {
             $view_dao = new ViewDAO();
@@ -49,11 +55,10 @@ class ViewServiceImpl implements ViewService
     private function isCountable(View $v, $minutes = 20){
 
         $view_dao = new ViewDAO();
-        $latest_pit = $view_dao->readLast($v->getUser(), $v->getContent(), $v->getIp(), $v->getCountry(),
-                                           $v->getCity(), $v->getOs(), $v->getBrowser(), $v->getBrowserVersion());
+        $latest_pit = $view_dao->readLast($v);
 
         $return = false;
-        if(!is_null($latest_pit)){
+        if(!empty($latest_pit)){
 
             $now = new \DateTime('now', new \DateTimeZone(date_default_timezone_get()));
             $last_time = date_create_from_format('Y-m-d H:i:s', $latest_pit);
