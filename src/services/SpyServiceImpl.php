@@ -26,7 +26,7 @@ class SpyServiceImpl implements SpyService
             }
         }
 
-        self::analyseIP();
+        $this->analyseIP();
 
     }
 
@@ -151,7 +151,7 @@ class SpyServiceImpl implements SpyService
     }
 
 
-    public function getBrowser():String {
+    public function getBrowser($key):String {
 
         //source: https://stackoverflow.com/questions/2199793/php-get-the-browser-name
 
@@ -236,15 +236,15 @@ class SpyServiceImpl implements SpyService
         // check if we have a number
         if ($version==null || $version=="") {$version="?";}
 
+                        //keys
         $infos = array( 'name'      => $bname,
                         'version'   => $version,
                         'platform'  => $platform,
                         'pattern'    => $pattern
         );
 
-        return $infos['name'] . ";" .  $infos['version'];
+        return $infos[$key];
     }
-
 
 
 
@@ -269,16 +269,28 @@ class SpyServiceImpl implements SpyService
     }
 
     public function getIP() {
-        return self::$IPinfo['geoplugin_request'];
+        $return = self::$IPinfo['geoplugin_request'];
+        if (is_null($return)){
+            $return = 'unknown';
+        }
+        return $return;
     }
 
     public function getCountry() {
-        return self::$IPinfo['geoplugin_countryName'];
+        $return =  self::$IPinfo['geoplugin_countryName'];
+        if (is_null($return)){
+            $return = 'unknown';
+        }
+        return $return;
     }
 
 
     public function getCity() {
-        return self::$IPinfo['geoplugin_city'];
+        $return =  self::$IPinfo['geoplugin_city'];
+        if (is_null($return)){
+            $return = 'unknown';
+        }
+        return $return;
     }
 
 

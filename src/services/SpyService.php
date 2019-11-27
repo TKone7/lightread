@@ -6,7 +6,7 @@ namespace services;
 interface SpyService
 {
 
-    public function getBrowser();
+    public function getBrowser($info);
     public function getOS();
 
 }

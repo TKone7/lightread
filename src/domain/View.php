@@ -19,10 +19,7 @@ class View
      * @AttributeType Content
      */
     private $content;
-    /**
-     * @AttributeType String
-     */
-    private $session;
+
     /**
      * @AttributeType String
      */
@@ -30,11 +27,12 @@ class View
     /**
      * @AttributeType String
      */
-    private $city;
+    private $country;
+
     /**
      * @AttributeType String
      */
-    private $country;
+    private $city;
     /**
      * @AttributeType String
      */
@@ -46,11 +44,8 @@ class View
     /**
      * @AttributeType String
      */
-    private $screensize;
-    /**
-     * @AttributeType String
-     */
-    private $searcheng;
+    private $browserversion;
+
     /**
      * @AttributeType date
      */
@@ -104,21 +99,6 @@ class View
         $this->content = $content;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getSession()
-    {
-        return $this->session;
-    }
-
-    /**
-     * @param mixed $session
-     */
-    public function setSession($session)
-    {
-        $this->session = $session;
-    }
 
     /**
      * @return mixed
@@ -136,23 +116,6 @@ class View
         $this->ip = $ip;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getCity()
-    {
-        return $this->city;
-    }
-
-    /**
-     * @param mixed $country
-     */
-    public function setCity($city)
-    {
-        $this->city = $city;
-    }
-
-
 
     /**
      * @return mixed
@@ -169,6 +132,24 @@ class View
     {
         $this->country = $country;
     }
+
+
+    /**
+     * @return mixed
+     */
+    public function getCity()
+    {
+        return $this->city;
+    }
+
+    /**
+     * @param mixed $country
+     */
+    public function setCity($city)
+    {
+        $this->city = $city;
+    }
+
 
     /**
      * @return mixed
@@ -205,34 +186,19 @@ class View
     /**
      * @return mixed
      */
-    public function getScreensize()
+    public function getBrowserVersion()
     {
-        return $this->screensize;
+        return $this->browserversion;
     }
 
     /**
      * @param mixed $screensize
      */
-    public function setScreensize($screensize)
+    public function setBrowserVersion($browserversion)
     {
-        $this->screensize = $screensize;
+        $this->browserversion = $browserversion;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getSearcheng()
-    {
-        return $this->searcheng;
-    }
-
-    /**
-     * @param mixed $searcheng
-     */
-    public function setSearcheng($searcheng)
-    {
-        $this->searcheng = $searcheng;
-    }
 
     /**
      * @return mixed

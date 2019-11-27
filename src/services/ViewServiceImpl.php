@@ -6,9 +6,8 @@ namespace services;
 
 use dao\ViewDAO;
 use domain\Content;
-use domain\User;
 use domain\View;
-use Google\Protobuf\StringValue;
+
 
 class ViewServiceImpl implements ViewService
 {
@@ -34,10 +33,11 @@ class ViewServiceImpl implements ViewService
         $v->setUser($spy->getUser());
         $v->setContent($content);
         $v->setIp($spy->getIP());
-        $v->setBrowser($spy->getBrowser());
-        $v->setOs($spy->getOS());
         $v->setCountry($spy->getCountry());
         $v->setCity($spy->getCity());
+        $v->setOs($spy->getOS());
+        $v->setBrowser($spy->getBrowser('name'));
+        $v->setBrowserVersion($spy->getBrowser('version'));
 
         if(self::isCountable($v)) {
             $view_dao = new ViewDAO();
@@ -49,8 +49,8 @@ class ViewServiceImpl implements ViewService
     private function isCountable(View $v, $minutes = 20){
 
         $view_dao = new ViewDAO();
-        $latest_pit = $view_dao->readLast($v->getUser(), $v->getContent(), $v->getIp(), $v->getCity(),
-                                           $v->getCountry(), $v->getOs(), $v->getBrowser());
+        $latest_pit = $view_dao->readLast($v->getUser(), $v->getContent(), $v->getIp(), $v->getCountry(),
+                                           $v->getCity(), $v->getOs(), $v->getBrowser(), $v->getBrowserVersion());
 
         $return = false;
         if(!is_null($latest_pit)){
