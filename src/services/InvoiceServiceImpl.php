@@ -9,7 +9,6 @@
 namespace services;
 
 
-use dao\ContentDAO;
 use dao\PaymentDAO;
 use dao\WithdrawalDAO;
 use domain\Content;
@@ -28,6 +27,7 @@ use Lnrpc\SendRequest;
 use rpcclient\RpcClient;
 use DateTime;
 use validator\WithdrawalValidator;
+use function tkijewski\lnurl\encodeUrl;
 
 class InvoiceServiceImpl implements InvoiceService
 {
@@ -65,10 +65,7 @@ class InvoiceServiceImpl implements InvoiceService
         $payment = $pay_dao->create($payment);
         return $payment;
     }
-    public function createLnUrlRequest(Withdrawal $withdrawal) : Withdrawal
-    {
 
-    }
     public function createWithdrawal(Withdrawal $withdrawal) : Withdrawal
     {
         $pay_req = $this->decodePayReq($withdrawal->getPayReq());
@@ -87,17 +84,31 @@ class InvoiceServiceImpl implements InvoiceService
         }else{
             $withdrawal = $existing;
         }
-
-
-
         return $withdrawal;
+    }
+    public function createLnUrl(Withdrawal $withdrawal)
+    {
+        // create a challenge
+        $challenge = bin2hex(openssl_random_pseudo_bytes(40));
+        $withdrawal->setLnurlChallenge($challenge);
+
+        $withdrawal->setStatus(InvStatus::OPEN());
+        $withdrawal->setPurpose(Purpose::WITHDRAWAL());
+        $withdrawal->setCreationDate((new DateTime(now))->setTimezone(new \DateTimeZone(date_default_timezone_get())));
+        $withdrawal->setMemo('Withdrawal of ' . $withdrawal->getValue() . ' sats');
+
+        // store do DB
+        $withdrw_dao = new WithdrawalDAO();
+        $withdrw = $withdrw_dao->create($withdrawal);
+        $lnurl = encodeUrl($GLOBALS["ROOT_URL"] . '/lnurl/info_request?challenge=' . $challenge);
+        return $lnurl;
     }
 
     public function payOut(Withdrawal $withdrawal):array
     {
         // check if balance is sufficient
         if($withdrawal->getValue() > $withdrawal->getReceiver()->getBalance()){
-            return array('result' => false, 'msg' => '');
+            return array('result' => false, 'msg' => 'You do not have enough funds');
         }
 
         // try payout

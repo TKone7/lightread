@@ -27,8 +27,10 @@ class WithdrawalDAO extends BasicDAO
         fld_invc_satoshis,
         fld_invc_creationpit,
         fld_invc_settlepit,
-        fld_invc_expiry
-        ) select :user_id, :purp_id, :sinv_id, :rhash, :payreq, :memo, :sats, :create, :settle, :expiry
+        fld_invc_expiry,
+        fld_invc_lnurl_challenge,
+        fld_invc_lnurl_secret
+        ) select :user_id, :purp_id, :sinv_id, :rhash, :payreq, :memo, :sats, :create, :settle, :expiry, :lnurl_challenge, :lnurl_secret
         WHERE NOT EXISTS (
         SELECT fld_invc_rhash FROM tbl_invoice WHERE fld_invc_rhash = :rhashcheck);');
         $receiver = !is_null($withdrawal->getReceiver()->getId()) ? $withdrawal->getReceiver()->getId() : NULL;
@@ -44,6 +46,9 @@ class WithdrawalDAO extends BasicDAO
         $stmt->bindValue(':settle',(!is_null($withdrawal->getSettleDate())) ? $withdrawal->getSettleDate()->format('Y-m-d H:i:s') : NULL);
         $stmt->bindValue(':create', $withdrawal->getCreationDate()->format('Y-m-d H:i:s'));
         $stmt->bindValue(':expiry', $withdrawal->getExpiry());
+        $stmt->bindValue(':lnurl_challenge', $withdrawal->getLnurlChallenge());
+        $stmt->bindValue(':lnurl_secret', $withdrawal->getLnurlSecret());
+
         $stmt->execute();
         return $this->read($this->pdoInstance->lastInsertId());
     }
@@ -74,7 +79,9 @@ class WithdrawalDAO extends BasicDAO
         fld_invc_satoshis=:sats,
         fld_invc_creationpit=:create,
         fld_invc_settlepit=:settle,
-        fld_invc_expiry=:expiry
+        fld_invc_expiry=:expiry,
+        fld_invc_lnurl_challenge=:lnurl_challenge,
+        fld_invc_lnurl_secret=:lnurl_secret
         WHERE fld_invc_id=:id');
         $stmt->bindValue(':id', $withdrawal->getId());
         $receiver = !is_null($withdrawal->getReceiver()->getId()) ? $withdrawal->getReceiver()->getId() : NULL;
@@ -88,6 +95,8 @@ class WithdrawalDAO extends BasicDAO
         $stmt->bindValue(':settle',(!is_null($withdrawal->getSettleDate())) ? $withdrawal->getSettleDate()->format('Y-m-d H:i:s') : NULL);
         $stmt->bindValue(':create', $withdrawal->getCreationDate()->format('Y-m-d H:i:s'));
         $stmt->bindValue(':expiry', $withdrawal->getExpiry());
+        $stmt->bindValue(':lnurl_challenge', $withdrawal->getLnurlChallenge());
+        $stmt->bindValue(':lnurl_secret', $withdrawal->getLnurlSecret());
         $stmt->execute();
         return $this->read($withdrawal->getId());
     }
@@ -101,6 +110,38 @@ class WithdrawalDAO extends BasicDAO
               WHERE inv.fld_invc_payreq = :payreq;');
         $stmt->bindValue(':payreq', $pay_req);
 
+        $stmt->execute();
+        if ($stmt->rowCount() > 0) {
+            return $stmt->fetchAll(\PDO::FETCH_CLASS, "domain\Withdrawal")[0];
+        }
+        return null;
+    }
+
+    public function findByChallenge($challenge){
+        $stmt = $this->pdoInstance->prepare('
+            SELECT inv.*, p.fld_purp_key, s.fld_sinv_key FROM tbl_invoice inv
+            inner join tbl_purpose p
+              on inv.fld_purp_id = p.fld_purp_id
+            inner join tbl_statusinvoice s
+              on inv.fld_sinv_id = s.fld_sinv_id
+              WHERE inv.fld_invc_lnurl_challenge = :challenge;');
+        $stmt->bindValue(':challenge', $challenge);
+        $stmt->execute();
+        if ($stmt->rowCount() > 0) {
+            return $stmt->fetchAll(\PDO::FETCH_CLASS, "domain\Withdrawal")[0];
+        }
+        return null;
+    }
+
+    public function findBySecret($secret){
+        $stmt = $this->pdoInstance->prepare('
+            SELECT inv.*, p.fld_purp_key, s.fld_sinv_key FROM tbl_invoice inv
+            inner join tbl_purpose p
+              on inv.fld_purp_id = p.fld_purp_id
+            inner join tbl_statusinvoice s
+              on inv.fld_sinv_id = s.fld_sinv_id
+              WHERE inv.fld_invc_lnurl_secret = :secret;');
+        $stmt->bindValue(':secret', $secret);
         $stmt->execute();
         if ($stmt->rowCount() > 0) {
             return $stmt->fetchAll(\PDO::FETCH_CLASS, "domain\Withdrawal")[0];

@@ -83,7 +83,7 @@ isset($this->user) ? $user = $this->user : $user = new User();
 
         $.ajax({
             type: 'POST',
-            url: '<?php  echo $GLOBALS["ROOT_URL"]; ?>/withdraw_lnurl',
+            url: '<?php  echo $GLOBALS["ROOT_URL"]; ?>/withdraw',
             data: {ajax: 1, amount: amount},
             dataType: "json",
             success: function (response) {

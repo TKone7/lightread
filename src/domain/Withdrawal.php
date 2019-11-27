@@ -20,6 +20,48 @@ class Withdrawal extends Invoice
     private $receiver;
 
     /**
+     * @AttributeType String
+     */
+    private $lnurl_challenge;
+
+    /**
+     * @AttributeType String
+     */
+    private $lnurl_secret;
+
+    /**
+     * @return mixed
+     */
+    public function getLnurlChallenge()
+    {
+        return $this->lnurl_challenge;
+    }
+
+    /**
+     * @param mixed $lnurl_challenge
+     */
+    public function setLnurlChallenge($lnurl_challenge)
+    {
+        $this->lnurl_challenge = $lnurl_challenge;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLnurlSecret()
+    {
+        return $this->lnurl_secret;
+    }
+
+    /**
+     * @param mixed $lnurl_secret
+     */
+    public function setLnurlSecret($lnurl_secret)
+    {
+        $this->lnurl_secret = $lnurl_secret;
+    }
+
+    /**
      * @return mixed
      */
     public function getReceiver() : User
@@ -42,6 +84,10 @@ class Withdrawal extends Invoice
         // do the specific attributes after
         if ($name=='fld_user_id1'){
             $this->setReceiver((new UserDAO())->read($value));
+        }elseif ($name=='fld_invc_lnurl_challenge'){
+            $this->setLnurlChallenge($value);
+        }elseif ($name=='fld_invc_lnurl_secret'){
+            $this->setLnurlSecret($value);
         }
     }
 
