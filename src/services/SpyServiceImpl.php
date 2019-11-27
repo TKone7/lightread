@@ -250,8 +250,9 @@ class SpyServiceImpl implements SpyService
 
     private function analyseIP() {
 
-        $return = Null;
+        //source: https://www.w3resource.com/php-exercises/php-basic-exercise-5.php
 
+        $return = Null;
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
             $return = $_SERVER['HTTP_CLIENT_IP'];
         } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {

@@ -16,7 +16,7 @@ class ViewDAO extends BasicDAO
                                fld_view_os, fld_view_browser, fld_view_browservrs, fld_view_pit)
           values(:user_id, :cont_id, :ip,  :country, :city, :os, :browser, :browservrs, :pit)');
         $u = !is_null($view->getUser()->getId()) ? $view->getUser()->getId() : NULL;
-        $stmt->bindParam(':user_id', $u);
+        $stmt->bindValue(':user_id', $u);
         $stmt->bindValue(':cont_id', $view->getContent()->getId());
         $stmt->bindValue(':ip', $view->getIp());
         $stmt->bindValue(':country', $view->getCountry());
@@ -47,12 +47,12 @@ class ViewDAO extends BasicDAO
                 WHERE fld_cont_id = :cont_id AND fld_view_ip = :ip AND fld_view_city = :city AND
                       fld_view_country = :country AND fld_view_os = :os AND fld_view_browser = :browser AND fld_view_browservrs = :browservrs;');
             $stmt->bindValue(':cont_id', $content->getId());
-            $stmt->bindParam(':ip', $ip);
-            $stmt->bindParam(':country', $country);
-            $stmt->bindParam(':city', $city);
-            $stmt->bindParam(':os', $os);
-            $stmt->bindParam(':browser', $browser);
-            $stmt->bindParam(':browservrs', $browserversion);
+            $stmt->bindValue(':ip', $ip);
+            $stmt->bindValue(':country', $country);
+            $stmt->bindValue(':city', $city);
+            $stmt->bindValue(':os', $os);
+            $stmt->bindValue(':browser', $browser);
+            $stmt->bindValue(':browservrs', $browserversion);
         }
 
         $stmt->execute();
