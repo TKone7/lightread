@@ -33,7 +33,7 @@ PRIMARY KEY(fld_LOGS_ID));
 
 
 CREATE TABLE tbl_Purpose (
-  fld_PURP_ID INT   NOT NULL ,
+  fld_PURP_ID SERIAL  NOT NULL ,
   fld_PURP_Key VARCHAR(255)    ,
   fld_PURP_Name VARCHAR(255)      ,
 PRIMARY KEY(fld_PURP_ID));
@@ -42,7 +42,7 @@ PRIMARY KEY(fld_PURP_ID));
 
 
 CREATE TABLE tbl_StatusInvoice (
-  fld_SINV_ID INT   NOT NULL ,
+  fld_SINV_ID SERIAL   NOT NULL ,
   fld_SINV_Key VARCHAR(255)    ,
   fld_SINV_Name VARCHAR(255)      ,
 PRIMARY KEY(fld_SINV_ID));
@@ -51,7 +51,7 @@ PRIMARY KEY(fld_SINV_ID));
 
 
 CREATE TABLE tbl_StatusContent (
-  fld_SCON_ID INT   NOT NULL ,
+  fld_SCON_ID SERIAL   NOT NULL ,
   fld_SCON_Key VARCHAR(255)    ,
   fld_SCON_Name VARCHAR(255)      ,
 PRIMARY KEY(fld_SCON_ID));
@@ -60,7 +60,7 @@ PRIMARY KEY(fld_SCON_ID));
 
 
 CREATE TABLE tbl_Role (
-  fld_ROLE_ID INT   NOT NULL ,
+  fld_ROLE_ID SERIAL   NOT NULL ,
   fld_ROLE_Key VARCHAR(255)    ,
   fld_ROLE_Name VARCHAR(255)      ,
 PRIMARY KEY(fld_ROLE_ID));
@@ -77,7 +77,7 @@ PRIMARY KEY(fld_CATE_ID));
 
 
 CREATE TABLE tbl_AccessContraint (
-  fld_ACCC_ID INT   NOT NULL ,
+  fld_ACCC_ID SERIAL   NOT NULL ,
   fld_ACCC_Key VARCHAR(255)    ,
   fld_ACCC_Name VARCHAR(255)      ,
 PRIMARY KEY(fld_ACCC_ID));
@@ -285,21 +285,21 @@ CREATE INDEX IFK_raises ON tbl_Views (fld_USER_ID);
 
 
 
-INSERT INTO public.tbl_accesscontraint (fld_accc_id, fld_accc_key, fld_accc_name) VALUES (1, 'FREE', 'these articles are free');
-INSERT INTO public.tbl_accesscontraint (fld_accc_id, fld_accc_key, fld_accc_name) VALUES (2, 'PAID', 'these articles must be paid for');
+INSERT INTO public.tbl_accesscontraint (fld_accc_key, fld_accc_name) VALUES ('FREE', 'these articles are free');
+INSERT INTO public.tbl_accesscontraint (fld_accc_key, fld_accc_name) VALUES ('PAID', 'these articles must be paid for');
 
-INSERT INTO public.tbl_purpose (fld_purp_id, fld_purp_key, fld_purp_name) VALUES (1, 'DONATION', 'donation');
-INSERT INTO public.tbl_purpose (fld_purp_id, fld_purp_key, fld_purp_name) VALUES (2, 'READ', 'read');
-INSERT INTO public.tbl_purpose (fld_purp_id, fld_purp_key, fld_purp_name) VALUES (3, 'WITHDRAWAL', 'withdrawal');
+INSERT INTO public.tbl_purpose (fld_purp_key, fld_purp_name) VALUES ('DONATION', 'donation');
+INSERT INTO public.tbl_purpose (fld_purp_key, fld_purp_name) VALUES ('READ', 'read');
+INSERT INTO public.tbl_purpose (fld_purp_key, fld_purp_name) VALUES ('WITHDRAWAL', 'withdrawal');
 
-INSERT INTO public.tbl_statuscontent (fld_scon_id, fld_scon_key, fld_scon_name) VALUES (1, 'DRAFT', 'not visible by others');
-INSERT INTO public.tbl_statuscontent (fld_scon_id, fld_scon_key, fld_scon_name) VALUES (2, 'PUBLISHED', 'published for everyone');
-INSERT INTO public.tbl_statuscontent (fld_scon_id, fld_scon_key, fld_scon_name) VALUES (3, 'DELETED', 'marked as deleted');
+INSERT INTO public.tbl_statuscontent (fld_scon_key, fld_scon_name) VALUES ('DRAFT', 'not visible by others');
+INSERT INTO public.tbl_statuscontent (fld_scon_key, fld_scon_name) VALUES ('PUBLISHED', 'published for everyone');
+INSERT INTO public.tbl_statuscontent (fld_scon_key, fld_scon_name) VALUES ('DELETED', 'marked as deleted');
 
-INSERT INTO public.tbl_statusinvoice (fld_sinv_id, fld_sinv_key, fld_sinv_name) VALUES (1, 'OPEN', 'open');
-INSERT INTO public.tbl_statusinvoice (fld_sinv_id, fld_sinv_key, fld_sinv_name) VALUES (2, 'SETTLED', 'settled');
-INSERT INTO public.tbl_statusinvoice (fld_sinv_id, fld_sinv_key, fld_sinv_name) VALUES (3, 'CANCELED', 'canceled');
-INSERT INTO public.tbl_statusinvoice (fld_sinv_id, fld_sinv_key, fld_sinv_name) VALUES (4, 'ACCEPTED', 'accepted');
+INSERT INTO public.tbl_statusinvoice (fld_sinv_key, fld_sinv_name) VALUES ('OPEN', 'open');
+INSERT INTO public.tbl_statusinvoice (fld_sinv_key, fld_sinv_name) VALUES ('SETTLED', 'settled');
+INSERT INTO public.tbl_statusinvoice (fld_sinv_key, fld_sinv_name) VALUES ('CANCELED', 'canceled');
+INSERT INTO public.tbl_statusinvoice (fld_sinv_key, fld_sinv_name) VALUES ('ACCEPTED', 'accepted');
 
-INSERT INTO public.tbl_role (fld_role_id, fld_role_key, fld_role_name) VALUES (1, 'ADMIN', 'admin');
-INSERT INTO public.tbl_role (fld_role_id, fld_role_key, fld_role_name) VALUES (2, 'USER', 'user');
+INSERT INTO public.tbl_role (fld_role_key, fld_role_name) VALUES ('ADMIN', 'admin');
+INSERT INTO public.tbl_role (fld_role_key, fld_role_name) VALUES ('USER', 'user');
