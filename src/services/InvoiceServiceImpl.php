@@ -95,7 +95,7 @@ class InvoiceServiceImpl implements InvoiceService
         $withdrawal->setStatus(InvStatus::OPEN());
         $withdrawal->setPurpose(Purpose::WITHDRAWAL());
         $withdrawal->setCreationDate((new DateTime(now))->setTimezone(new \DateTimeZone(date_default_timezone_get())));
-        $withdrawal->setMemo('Withdrawal of ' . $withdrawal->getValue() . ' sats');
+        $withdrawal->setMemo('Withdrawal from lighread');
 
         // store do DB
         $withdrw_dao = new WithdrawalDAO();

@@ -88,7 +88,6 @@ isset($this->user) ? $user = $this->user : $user = new User();
             dataType: "json",
             success: function (response) {
                 $("#qr").empty();
-                $("#qr").text(response.lnurl);
                 $("#qr").qrcode({render: 'canvas', text: response.lnurl});
             }
         });
