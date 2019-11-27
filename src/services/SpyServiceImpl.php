@@ -139,7 +139,7 @@ class SpyServiceImpl implements SpyService
         $ros[] = array('NetAnts', 'Windows');
         $file = count ( $ros );
 
-        $return = '';
+        $return = 'unknown';
         for ( $n=0 ; $n<$file ; $n++ ){
             if ( preg_match('/'.$ros[$n][0].'/i', self::$agent, $name)){
                 $return = @$ros[$n][1].' '.@$name[2];
@@ -234,7 +234,7 @@ class SpyServiceImpl implements SpyService
         }
 
         // check if we have a number
-        if ($version==null || $version=="") {$version="?";}
+        if ($version==null || $version=="") {$version="unknown";}
 
                         //keys
         $infos = array( 'name'      => $bname,
@@ -270,7 +270,7 @@ class SpyServiceImpl implements SpyService
 
     public function getIP() {
         $return = self::$IPinfo['geoplugin_request'];
-        if (is_null($return)){
+        if (empty($return)){
             $return = 'unknown';
         }
         return $return;
@@ -278,7 +278,7 @@ class SpyServiceImpl implements SpyService
 
     public function getCountry() {
         $return =  self::$IPinfo['geoplugin_countryName'];
-        if (is_null($return)){
+        if (empty($return)){
             $return = 'unknown';
         }
         return $return;
@@ -287,7 +287,7 @@ class SpyServiceImpl implements SpyService
 
     public function getCity() {
         $return =  self::$IPinfo['geoplugin_city'];
-        if (is_null($return)){
+        if (empty($return)){
             $return = 'unknown';
         }
         return $return;
