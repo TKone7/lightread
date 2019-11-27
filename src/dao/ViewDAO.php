@@ -44,6 +44,7 @@ class ViewDAO extends BasicDAO
 
         } else {
             //check by spied data
+            //we don't check for [fld_view_user is Null] as logged out users could revisit the article as well
             $stmt = $this->pdoInstance->prepare('
                 SELECT MAX(fld_view_pit) as view_pit FROM tbl_views
                 WHERE fld_cont_id = :cont_id AND fld_view_ip = :ip AND fld_view_city = :city AND
