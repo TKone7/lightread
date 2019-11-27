@@ -8,22 +8,22 @@ class SpyServiceImpl implements SpyService
 {
 
     private static $instance = NULL;
-    private static $agent = NULL;
-    private static $IPinfo = NULL;
-    private static $BrowserInfo = NULL;
+    private $agent = NULL;
+    private $IPinfo = NULL;
+    private $BrowserInfo = NULL;
 
     protected function __construct()
     {
         if ( isset( $_SERVER ) ) {
-            self::$agent = $_SERVER['HTTP_USER_AGENT'];
+            $this->agent = $_SERVER['HTTP_USER_AGENT'];
         }
         else {
             global $HTTP_SERVER_VARS;
             if (isset($HTTP_SERVER_VARS)) {
-                self::$agent = $HTTP_SERVER_VARS['HTTP_USER_AGENT'];
+                $this->agent = $HTTP_SERVER_VARS['HTTP_USER_AGENT'];
             } else {
                 global $HTTP_USER_AGENT;
-                self::$agent = $HTTP_USER_AGENT;
+                $this->agent = $HTTP_USER_AGENT;
             }
         }
 
@@ -143,7 +143,7 @@ class SpyServiceImpl implements SpyService
 
         $return = 'unknown';
         for ( $n=0 ; $n<$file ; $n++ ){
-            if ( preg_match('/'.$ros[$n][0].'/i', self::$agent, $name)){
+            if ( preg_match('/'.$ros[$n][0].'/i', $this->agent, $name)){
                 $return = @$ros[$n][1].' '.@$name[2];
                 break;
             }
@@ -157,7 +157,7 @@ class SpyServiceImpl implements SpyService
 
         //keys: [browser], [version], [platform], [device_type]
 
-        $return = self::$BrowserInfo[$key];
+        $return = $this->BrowserInfo[$key];
         if (empty($return)){
             $return = 'unknown';
         }
@@ -182,48 +182,48 @@ class SpyServiceImpl implements SpyService
 
 
         //First get the platform?
-        if (preg_match('/linux/i', self::$agent)) {
+        if (preg_match('/linux/i', $this->agent)) {
             $platform = 'linux';
         }
-        elseif (preg_match('/macintosh|mac os x/i', self::$agent)) {
+        elseif (preg_match('/macintosh|mac os x/i', $this->agent)) {
             $platform = 'mac';
         }
-        elseif (preg_match('/windows|win32/i', self::$agent)) {
+        elseif (preg_match('/windows|win32/i', $this->agent)) {
             $platform = 'windows';
         }
 
         // Next get the name of the useragent yes seperately and for good reason
-        if(preg_match('/MSIE/i',self::$agent) && !preg_match('/Opera/i',self::$agent))
+        if(preg_match('/MSIE/i', $this->agent) && !preg_match('/Opera/i',$this->agent))
         {
             $bname = 'Internet Explorer';
             $ub = "MSIE";
         }
-        elseif(preg_match('/Trident/i',self::$agent))
+        elseif(preg_match('/Trident/i', $this->agent))
         { // this condition is for IE11
             $bname = 'Internet Explorer';
             $ub = "rv";
         }
-        elseif(preg_match('/Firefox/i',self::$agent))
+        elseif(preg_match('/Firefox/i', $this->agent))
         {
             $bname = 'Mozilla Firefox';
             $ub = "Firefox";
         }
-        elseif(preg_match('/Chrome/i',self::$agent))
+        elseif(preg_match('/Chrome/i', $this->agent))
         {
             $bname = 'Google Chrome';
             $ub = "Chrome";
         }
-        elseif(preg_match('/Safari/i',self::$agent))
+        elseif(preg_match('/Safari/i', $this->agent))
         {
             $bname = 'Apple Safari';
             $ub = "Safari";
         }
-        elseif(preg_match('/Opera/i',self::$agent))
+        elseif(preg_match('/Opera/i', $this->agent))
         {
             $bname = 'Opera';
             $ub = "Opera";
         }
-        elseif(preg_match('/Netscape/i',self::$agent))
+        elseif(preg_match('/Netscape/i', $this->agent))
         {
             $bname = 'Netscape';
             $ub = "Netscape";
@@ -234,7 +234,7 @@ class SpyServiceImpl implements SpyService
         $known = array('Version', $ub, 'other');
         $pattern = '#(?<browser>' . join('|', $known) .
             ')[/|: ]+(?<version>[0-9.|a-zA-Z.]*)#';
-        if (!preg_match_all($pattern, self::$agent, $matches)) {
+        if (!preg_match_all($pattern, $this->agent, $matches)) {
             // we have no matching number just continue
         }
 
@@ -243,7 +243,7 @@ class SpyServiceImpl implements SpyService
         if ($i != 1) {
             //we will have two since we are not using 'other' argument yet
             //see if version is before or after the name
-            if (strripos(self::$agent,"Version") < strripos(self::$agent,$ub)){
+            if (strripos($this->agent,"Version") < strripos($this->agent,$ub)){
                 $version= $matches['version'][0];
             }
             else {
@@ -286,16 +286,16 @@ class SpyServiceImpl implements SpyService
         $ip = trim($return);
         //$ip = '80.219.160.223';
         $array = json_decode(file_get_contents("http://www.geoplugin.net/json.gp?ip={$ip}"),true);
-        self::$IPinfo = $array;
+        $this->IPinfo = $array;
 
     }
 
     private function analyseBrowser(){
-        self::$BrowserInfo = get_browser( null , true);
+        $this->BrowserInfo = get_browser( null , true);
     }
 
     public function getIP() {
-        $return = self::$IPinfo['geoplugin_request'];
+        $return = $this->IPinfo['geoplugin_request'];
         if (empty($return)){
             $return = 'unknown';
         }
@@ -303,7 +303,7 @@ class SpyServiceImpl implements SpyService
     }
 
     public function getCountry() {
-        $return =  self::$IPinfo['geoplugin_countryName'];
+        $return =  $this->IPinfo['geoplugin_countryName'];
         if (empty($return)){
             $return = 'unknown';
         }
@@ -312,7 +312,7 @@ class SpyServiceImpl implements SpyService
 
 
     public function getCity() {
-        $return =  self::$IPinfo['geoplugin_city'];
+        $return =  $this->IPinfo['geoplugin_city'];
         if (empty($return)){
             $return = 'unknown';
         }
