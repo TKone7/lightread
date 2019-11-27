@@ -15,6 +15,7 @@ use domain\Purpose;
 use domain\Withdrawal;
 use services\AuthServiceImpl;
 use services\InvoiceServiceImpl;
+use validator\LnURLValidator;
 use validator\WithdrawalValidator;
 
 class WithdrawalController
@@ -61,9 +62,19 @@ class WithdrawalController
     private function withdrawLnUrl(Withdrawal $withdrw){
         // user wants to withdraw via lnurl
         $withdrw->setValue($_POST['amount']);
+        // check if amount is ok
+        $lnurl_validator = new LnURLValidator($withdrw);
+        if(!$lnurl_validator->isValid()){
+            $prc->result = false;
+            $prc->msg .= $lnurl_validator->isInsufficientFunds() ? $lnurl_validator->getInsufficientFunds() : '';
+            $myJSON = json_encode($prc);
+            echo $myJSON;
+            exit;
+        }
         // creat url
         $lnurl = InvoiceServiceImpl::getInstance()->createLnUrl($withdrw);
         $prc->lnurl = strtoupper($lnurl);
+        $prc->result = true;
         $myJSON = json_encode($prc);
         echo $myJSON;
         exit;

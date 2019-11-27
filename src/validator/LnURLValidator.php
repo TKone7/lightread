@@ -1,0 +1,64 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: tobias
+ * Date: 24.11.19
+ * Time: 11:19
+ */
+
+namespace validator;
+
+
+use domain\Withdrawal;
+use services\InvoiceServiceImpl;
+
+class LnURLValidator
+{
+    private $valid = true;
+    private $insufficientFunds = null;
+
+    public function __construct(Withdrawal $withdrawal = null)
+    {
+        if (!is_null($withdrawal)) {
+            $this->validate($withdrawal);
+        }
+    }
+
+    public function validate(Withdrawal $withdrawal)
+    {
+        if (!is_null($withdrawal)) {
+            if(!empty($withdrawal->getValue())){
+                if($withdrawal->getValue() > $withdrawal->getReceiver()->getBalance()){
+                    $this->insufficientFunds = 'You do not have enough balance to withdraw ' . $withdrawal->getValue() . ' sats';
+                    $this->valid = false;
+                }
+            }
+        } else {
+            $this->valid = false;
+        }
+        return $this->valid;
+
+    }
+
+    public function isValid()
+    {
+        return $this->valid;
+    }
+
+    public function isInsufficientFunds()
+    {
+        return isset($this->insufficientFunds);
+    }
+
+    public function getInsufficientFunds()
+    {
+        return $this->insufficientFunds;
+    }
+
+}
+
+
+
+
+
+
