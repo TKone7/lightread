@@ -29,6 +29,17 @@ isset($this->user) ? $user = $this->user : $user = new User();
                 <div id="success" class="alert" style="display: none">
 
                 </div>
+                <hr>
+
+                <div class="form-group">
+                    <input id="amount" name="amount" class="form-control" type="number" placeholder="1 - <?php echo $user->getBalance() ?> sats" style="display:block;margin:0 auto">
+                </div>
+
+                <div class="form-group">
+                    <button class="btn btn-primary btn-block" onclick="reqLnUrl()" style="display:block;margin:0 auto;max-width:200px">Withdraw</button>
+                    <div style="margin-top: 50px" id="qr"></div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -66,8 +77,20 @@ isset($this->user) ? $user = $this->user : $user = new User();
             }
         });
 
+    }
+    function reqLnUrl() {
+        var amount = $('#amount').val();
 
-
-
+        $.ajax({
+            type: 'POST',
+            url: '<?php  echo $GLOBALS["ROOT_URL"]; ?>/withdraw_lnurl',
+            data: {ajax: 1, amount: amount},
+            dataType: "json",
+            success: function (response) {
+                $("#qr").empty();
+                $("#qr").text(response.lnurl);
+                $("#qr").qrcode({render: 'canvas', text: response.lnurl});
+            }
+        });
     }
 </script>

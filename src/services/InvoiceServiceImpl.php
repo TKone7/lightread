@@ -65,9 +65,12 @@ class InvoiceServiceImpl implements InvoiceService
         $payment = $pay_dao->create($payment);
         return $payment;
     }
-    public function createWithdrawal(Withdrawal $withdrawal) : Withdrawal
+    public function createLnUrlRequest(Withdrawal $withdrawal) : Withdrawal
     {
 
+    }
+    public function createWithdrawal(Withdrawal $withdrawal) : Withdrawal
+    {
         $pay_req = $this->decodePayReq($withdrawal->getPayReq());
         $withdrawal->setValue($pay_req->getNumSatoshis());
         $withdrawal->setMemo($pay_req->getDescription());

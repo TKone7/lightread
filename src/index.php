@@ -15,6 +15,8 @@ date_default_timezone_set("Europe/Zurich");
 use controller\ContentController;
 use controller\UserController;
 
+use dao\WithdrawalDAO;
+use domain\InvStatus;
 use domain\Payment;
 use domain\Purpose;
 use domain\Status;
@@ -29,6 +31,7 @@ use view\LayoutRendering;
 use router\Router;
 use http\HTTPException;
 use rpcclient\RpcClient;
+use function tkijewski\lnurl\decodeUrl;
 
 ini_set( 'session.cookie_httponly', 1 );
 session_start();
@@ -214,6 +217,77 @@ Router::route_auth("GET", "/withdraw", $authFunction, function () {
     $wdrw_view->user = $auth = AuthServiceImpl::getInstance()->readUser();
     LayoutRendering::simpleLayout($wdrw_view);
 
+});
+Router::route_auth("GET", "/lnurl/withdraw", $softauthFunction, function () {
+    $k1 = $_GET['k1'];
+    $pr = $_GET['pr'];
+    // check secret k1
+    $withdrw_dao = new WithdrawalDAO();
+    $existing = $withdrw_dao->findByPayReq($k1);
+    $existing->setPayReq($pr);
+    $result = InvoiceServiceImpl::getInstance()->payOut($existing);
+    $prc->status ="OK";
+    $myJSON = json_encode($prc);
+    echo $myJSON;
+    exit;
+
+});
+Router::route_auth("GET", "/lnurl/withdraw_request", $softauthFunction, function () {
+    $challenge = $_GET['challenge'];
+    // check if challenge was previously issued
+    $withdrw_dao = new WithdrawalDAO();
+    $existing = $withdrw_dao->findByPayReq($challenge);
+    if (empty($existing)){
+        $prc->status = 'ERROR';
+        $prc->reason = 'this challenge was not issued';
+        $myJSON = json_encode($prc);
+        echo $myJSON;
+        exit;
+    }
+    $secret = bin2hex(openssl_random_pseudo_bytes(40));
+
+    $existing->setPayReq($secret);
+    $withdrw_dao->update($existing);
+
+    // answer to
+    $prc->callback = $GLOBALS["ROOT_URL"] . '/lnurl/withdraw';//string to send invoice to;
+    $prc->k1 = $secret;
+    $prc->maxWithdrawable = ($existing->getValue() *1000);//in msat
+    $prc->defaultDescription = 'I dont know';
+    $prc->minWithdrawable = ($existing->getValue() *1000);//in msat
+    $prc->tag = "withdrawRequest";
+    $myJSON = json_encode($prc);
+    echo $myJSON;
+    exit;
+});
+Router::route_auth("POST", "/withdraw_lnurl", $authFunction, function () {
+    if( isset($_POST['ajax']) && isset($_POST['amount']) ) {
+
+        // user wants to withdraw via lnurl
+        // create a challenge
+        $challenge = bin2hex(openssl_random_pseudo_bytes(40));
+        $withdrw = new Withdrawal();
+        $withdrw->setReceiver(AuthServiceImpl::getInstance()->readUser());
+        $withdrw->setPayReq($challenge);
+        $withdrw->setValue($_POST['amount']);
+        $withdrw->setStatus(InvStatus::OPEN());
+        $withdrw->setPurpose(Purpose::WITHDRAWAL());
+        $withdrw->setCreationDate((new DateTime(now))->setTimezone(new \DateTimeZone(date_default_timezone_get())));
+
+        $withdrw->setMemo('missuse for LNURL');
+        $withdrw_dao = new WithdrawalDAO();
+        $existing = $withdrw_dao->findByPayReq($withdrw->getPayReq());
+        if (empty($existing)){
+            $withdrw = $withdrw_dao->create($withdrw);
+        }else{
+            $withdrw = $existing;
+        }
+        $lnurl = tkijewski\lnurl\encodeUrl($GLOBALS["ROOT_URL"] . '/lnurl/withdraw_request?challenge=' . $challenge);
+        $prc->lnurl = strtoupper($lnurl);
+        $myJSON = json_encode($prc);
+        echo $myJSON;
+        exit;
+    }
 });
 Router::route_auth("POST", "/withdraw", $authFunction, function () {
     if( isset($_POST['ajax']) && isset($_POST['pay_req']) ){

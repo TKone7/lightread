@@ -1,11 +1,12 @@
 {
-  "name": "grpc/grpc-demo",
-  "description": "gRPC example for PHP",
+  "name": "Lightread Webapp",
+  "description": "Lightread Webapp",
   "require": {
     "ext-grpc": ">=0.1.0",
     "grpc/grpc": "^v1.3.0",
     "google/protobuf": "^v3.3.0",
-    "myclabs/php-enum": "^v1.7.2"
+    "myclabs/php-enum": "^v1.7.2",
+    "tkijewski/php-lnurl": "^v0.0.1"
   },
   "autoload": {
     "psr-4": {
