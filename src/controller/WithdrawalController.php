@@ -87,9 +87,9 @@ class WithdrawalController
             // check if challenge was previously issued
             $withdrw_dao = new WithdrawalDAO();
             $existing = $withdrw_dao->findByChallenge($challenge);
-            if (!isset($existing) OR !empty($existing->getLnurlSecret())){
+            if (!isset($existing) OR $existing->getStatus() == InvStatus::SETTLED()){
                 $prc->status = 'ERROR';
-                $prc->reason = 'this challenge was not issued or has already been used';
+                $prc->reason = 'this challenge was not issued or has already been paid out';
                 $myJSON = json_encode($prc);
                 echo $myJSON;
                 exit;
