@@ -9,16 +9,17 @@
 namespace services;
 
 
+use domain\AuthType;
+
 interface AuthService
 {
     /**
      * @AttributeType int
-     */
+
     const AGENT_TOKEN = 1;
-    /**
-     * @AttributeType int
-     */
+
     const RESET_TOKEN = 2;
+     */
 
     public function verifyUser($ref, $password);
 
@@ -40,7 +41,7 @@ interface AuthService
      * @ParamType email String
      * @ReturnType String
      */
-    public function issueToken($type = self::AGENT_TOKEN, $email = null);
+    public function issueToken(AuthType $type, $email = null);
 
     /**
      * @access public

@@ -10,6 +10,7 @@ namespace controller;
 
 
 use config\Config;
+use domain\AuthType;
 use domain\User;
 use domain\Role;
 use router\Router;
@@ -72,20 +73,6 @@ class UserController
             LayoutRendering::headerLayout($login_view,"E-mail verified","You can now use all of our services");
         }else{
             Router::redirect("/");
-        }
-    }
-
-    public function login()
-    {
-        $authservice = AuthServiceImpl::getInstance();
-        if($authservice->verifyUser($_POST["email"], $_POST["password"])){
-            session_regenerate_id(true);
-            $_SESSION["userLogin"]["token"] = $authservice->issueToken();
-            Router::redirect("/profile");
-        }else {
-            $loginview = new TemplateView("login.php");
-            $loginview->failed=true;
-            LayoutRendering::headerLayout($loginview, "Login", "Welcome back");
         }
     }
 

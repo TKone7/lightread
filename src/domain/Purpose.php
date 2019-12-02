@@ -14,6 +14,7 @@ use MyCLabs\Enum\Enum;
  * Purpose enum
  * @method static self DONATION()
  * @method static self READ()
+ * @method static self WITHDRAWAL()
  */
 class Purpose extends Enum
 {

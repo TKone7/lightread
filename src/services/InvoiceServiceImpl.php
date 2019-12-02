@@ -217,5 +217,13 @@ class InvoiceServiceImpl implements InvoiceService
         return $pay_dao->paymentExists($user,$content);
 
     }
+    public function anonymPaidContent(Content $content){
+        if(AuthServiceImpl::getInstance()->validateToken($_COOKIE["anonym_token"])) {
+            $token = AuthServiceImpl::getInstance()->readToken($_COOKIE["anonym_token"]);
+            $pay_dao = new PaymentDAO();
+            return $pay_dao->anonymPaymentExists($token,$content);
+        }
+        return false;
+    }
 
 }

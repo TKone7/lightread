@@ -9,6 +9,7 @@
 namespace domain;
 
 
+use dao\AuthTokenDAO;
 use dao\ContentDAO;
 use dao\UserDAO;
 
@@ -56,6 +57,28 @@ class Invoice
     private $status;
 
     private $purpose;
+
+    /**
+     * @AttributeType AuthToken
+     */
+    private $anonym_auth;
+
+    /**
+     * @return mixed
+     */
+    public function getAnonymAuth()
+    {
+        return $this->anonym_auth;
+    }
+
+    /**
+     * @param mixed $anonym_auth
+     */
+    public function setAnonymAuth(AuthToken $anonym_auth)
+    {
+        $this->anonym_auth = $anonym_auth;
+    }
+
 
     /**
      * @return mixed
@@ -243,6 +266,10 @@ class Invoice
             }
         }elseif ($name=='fld_invc_expiry'){
             $this->setExpiry($value);
+        }elseif ($name=='fld_auth_id'){
+            if(!empty($value)){
+                $this->anonym_auth = (new AuthTokenDAO)->read($value);
+            }
         }
     }
 

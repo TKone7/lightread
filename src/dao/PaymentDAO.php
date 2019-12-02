@@ -8,6 +8,7 @@
 
 namespace dao;
 
+use domain\AuthToken;
 use domain\Content;
 use domain\InvStatus;
 use domain\Payment;
@@ -29,11 +30,13 @@ class PaymentDAO extends BasicDAO
         fld_invc_satoshis,
         fld_invc_creationpit,
         fld_invc_settlepit,
-        fld_invc_expiry
+        fld_invc_expiry,
+        fld_auth_id
         )
-          values(:user_id, :cont_id, :purp_id, :sinv_id, :rhash, :payreq, :memo, :sats, :create, :settle, :expiry)');
-        $payer = !is_null($payment->getPayer()->getId()) ? $payment->getPayer()->getId() : NULL;
-        $stmt->bindValue(':user_id', $payer);
+          values(:user_id, :cont_id, :purp_id, :sinv_id, :rhash, :payreq, :memo, :sats, :create, :settle, :expiry, :auth_id)');
+
+        $stmt->bindValue(':auth_id', !empty($payment->getAnonymAuth())?$payment->getAnonymAuth()->getId():NULL);
+        $stmt->bindValue(':user_id', !empty($payment->getPayer())?$payment->getPayer()->getId() : NULL);
         $stmt->bindValue(':cont_id', $payment->getContent()->getId());
         $stmt->bindValue(':sinv_id', (new InvoiceDAO())->readInvStatusId($payment->getStatus()->getKey()));
         $stmt->bindValue(':purp_id', (new InvoiceDAO())->readPurposeId($payment->getPurpose()->getKey()));
@@ -129,6 +132,26 @@ class PaymentDAO extends BasicDAO
         return false;
 
     }
+    public function anonymPaymentExists(AuthToken $authToken, Content $content): bool
+    {
+        $stmt = $this->pdoInstance->prepare('
+            SELECT inv.* FROM tbl_invoice inv
+              WHERE inv.fld_cont_id = :cont_id AND inv.fld_auth_id = :auth_id AND inv.fld_purp_id = :purp_key AND inv.fld_sinv_id = :inv_key;');
+        $stmt->bindValue(':cont_id', $content->getId());
+        $stmt->bindValue(':auth_id', $authToken->getId());
+        $purp_key = (new InvoiceDAO())->readPurposeId(Purpose::READ()->getKey());
+        $stmt->bindValue(':purp_key',$purp_key );
+        $inv_key = (new InvoiceDAO())->readInvStatusId(InvStatus::SETTLED()->getKey());
+        $stmt->bindValue(':inv_key', $inv_key);
+        $stmt->execute();
+
+        if ($stmt->rowCount() > 0) {
+            return true;
+        }
+        return false;
+
+    }
+
     public function selectContentTurnover(Content $content, Purpose $purpose = NULL){
         $basic ='SELECT sum(fld_invc_satoshis) from tbl_invoice 
               where fld_cont_id=:cont_id AND fld_sinv_id=:sinv_id';

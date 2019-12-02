@@ -1,0 +1,68 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: tobias
+ * Date: 02.12.19
+ * Time: 10:12
+ */
+
+namespace controller;
+
+
+use dao\AuthTokenDAO;
+use domain\AuthType;
+use domain\Payment;
+use domain\Purpose;
+use services\AuthServiceImpl;
+use services\ContentServiceImpl;
+use services\InvoiceServiceImpl;
+
+class InvoiceController
+{
+    public static function generateInvoice()
+    {
+
+        if( isset($_POST['ajax']) && isset($_POST['content_id']) ){
+            // get content
+            $content = ContentServiceImpl::getInstance()->readContent($_POST['content_id']);
+            // get user if any
+            $auth = AuthServiceImpl::getInstance();
+            if($auth->verifyAuth()){
+                $user = $auth->readUser();
+                $token = NULL;
+            }else {
+                $user=NULL;
+                //check for an anonymtoken and set, otherwise create it first
+                if (isset($_COOKIE["anonym_token"])) {
+                    $token = AuthServiceImpl::getInstance()->readToken($_COOKIE["anonym_token"]);
+                }else{
+                    $token = AuthServiceImpl::getInstance()->issueToken(AuthType::ANONYM_TOKEN());
+                    setcookie("anonym_token", $token, (new \DateTime('now'))->modify('+365 days')->getTimestamp(), "/", "", false, true);
+                    $token = AuthServiceImpl::getInstance()->readToken($token);
+                }
+            }
+            $payment = new Payment();
+            $payment->setValue($content->getPrice());
+            $payment->setPurpose(Purpose::READ());
+            $payment->setPayer($user);
+            $payment->setAnonymAuth($token);
+            $payment->setContent($content);
+            $memo = "Payment for article: '" . $content->getTitle() ;
+            if(!is_null($user)){
+                $memo .= "' by user " . $user->getFullName() . " ("  . $user->getId() . ")";
+            }else{
+                $memo .= "' by an anonymous user :-)";
+            }
+            $payment->setMemo($memo);
+            $payment = InvoiceServiceImpl::getInstance()->createPayment($payment);
+
+            $inv->id = $payment->getId();
+            $inv->payreq = $payment->getPayReq();
+            $myJSON = json_encode($inv);
+            echo $myJSON;
+            exit;
+        }
+
+    }
+
+}

@@ -76,18 +76,22 @@ class ContentController
         }
 
         //register a view
-        ViewServiceImpl::registerView($content);
+        ViewServiceImpl::getInstance()->registerView($content);
 
 
         if ($content->getAccess() == Access::PAID()){
             $auth = AuthServiceImpl::getInstance();
 
             $userisauthor = false;
+            $userhasalreadypaid = false;
+            $anonymhasalreadypaid = false;
             if ($auth->verifyAuth()){
                 $userisauthor = $content->getAuthor()->getId() == $auth->readUser()->getId();
                 $userhasalreadypaid = InvoiceServiceImpl::getInstance()->userPaidContent($auth->readUser(),$content);
+            }else{
+                $anonymhasalreadypaid = InvoiceServiceImpl::getInstance()->anonymPaidContent($content);
             }
-            if (!$userhasalreadypaid and !$userisauthor){
+            if (!$userhasalreadypaid and !$userisauthor and !$anonymhasalreadypaid){
                 $restricted = true;
             }
         }

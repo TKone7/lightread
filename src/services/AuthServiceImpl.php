@@ -7,13 +7,18 @@
  */
 
 namespace services;
+
+use dao\AuthTokenDAO;
 use dao\UserDAO;
+use domain\AuthToken;
+use domain\AuthType;
 use domain\User;
 
 class AuthServiceImpl implements AuthService
 {
     private static $instance = NULL;
     private $currentUserId;
+    private $currentAnonymId;
 
     public static function getInstance(){
         if(!isset(self::$instance)){
@@ -48,8 +53,23 @@ class AuthServiceImpl implements AuthService
      * @ParamType email String
      * @ReturnType String
      */
-    public function issueToken($type = self::AGENT_TOKEN, $email = null) {
-        return $this->currentUserId .":". bin2hex(random_bytes(20));
+    public function issueToken(AuthType $type, $email = null) {
+        $token = new AuthToken();
+        $validator = random_bytes(20);
+        $token->setValidator(hash('sha256', $validator));
+        $token->setSelector(bin2hex(random_bytes(5)));
+        $token->setType($type);
+
+        if($type == AuthType::USER_TOKEN()){
+            $token->setUser($this->readUser());
+            $timestamp = (new \DateTime('now'))->modify('+30 days');
+        }elseif($type == AuthType::ANONYM_TOKEN()){
+            $timestamp = (new \DateTime('now'))->modify('+365 days');
+        }
+        $token->setExpiration($timestamp);
+        $authTokenDAO = new AuthTokenDAO();
+        $authTokenDAO->create($token);
+        return $token->getSelector() .":". bin2hex($validator);
     }
 
     /**
@@ -62,11 +82,30 @@ class AuthServiceImpl implements AuthService
     public function validateToken($token)
     {
         $tokenArray = explode(":", $token);
-        if(count($tokenArray)>1) {
-            $this->currentUserId = $tokenArray[0];
-            return true;
+        $authTokenDAO = new AuthTokenDAO();
+        $authToken = $authTokenDAO->findBySelector($tokenArray[0]);
+        if(!empty($authToken)) {
+            if(time()<=$authToken->getExpiration()->getTimestamp()){
+                if (hash_equals(hash('sha256', hex2bin($tokenArray[1])), $authToken->getValidator())) {
+                    if($authToken->getType()==AuthType::USER_TOKEN()){
+                        $this->currentUserId = $authToken->getUser()->getId();
+                    }elseif($authToken->getType()==AuthType::ANONYM_TOKEN()){
+                        $this->currentAnonymId = $authToken->getId();
+                    }
+                    return true;
+                }
+            }
+            $authTokenDAO->delete($authToken);
         }
-        return false;    }
+        return false;
+    }
+
+    public function readToken($token){
+        $tokenArray = explode(":", $token);
+        $authTokenDAO = new AuthTokenDAO();
+        $authToken = $authTokenDAO->findBySelector($tokenArray[0]);
+        return $authToken;
+    }
 
     /**
      * @access public
