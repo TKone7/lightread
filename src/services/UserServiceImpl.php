@@ -113,7 +113,7 @@ class UserServiceImpl implements UserService
     }
 
     public function validateMailHash(User $user, $hash){
-        $result = $this->getUserHash($user) === $hash;
+        $result =  hash_equals($this->getUserHash($user), $hash);
         if ($result){
             $user->setVerfied(true);
             (new UserDAO())->update($user);
