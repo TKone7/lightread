@@ -11,13 +11,13 @@ namespace services;
 
 use dao\PaymentDAO;
 use dao\WithdrawalDAO;
+use domain\AuthToken;
 use domain\Content;
 use domain\InvStatus;
 use domain\Payment;
 use domain\Purpose;
 use domain\User;
 use domain\Withdrawal;
-use Google\Protobuf\Enum;
 use Lnrpc\Invoice;
 use Lnrpc\Invoice_InvoiceState;
 use \Lnrpc\PaymentHash;
@@ -26,7 +26,6 @@ use Lnrpc\PayReqString;
 use Lnrpc\SendRequest;
 use rpcclient\RpcClient;
 use DateTime;
-use validator\WithdrawalValidator;
 use function tkijewski\lnurl\encodeUrl;
 
 class InvoiceServiceImpl implements InvoiceService
@@ -226,4 +225,9 @@ class InvoiceServiceImpl implements InvoiceService
         return false;
     }
 
+    public function transferPayments(AuthToken $token, User $user)
+    {
+        $nrTransfers = (new PaymentDAO())->transferPayments($token,$user);
+        return $nrTransfers;
+    }
 }

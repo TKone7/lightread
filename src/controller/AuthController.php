@@ -11,6 +11,7 @@ namespace controller;
 use domain\AuthType;
 use services\AuthServiceImpl;
 use router\Router;
+use services\InvoiceServiceImpl;
 
 class AuthController
 {
@@ -31,10 +32,18 @@ class AuthController
 
     public static function login()
     {
+        if(!empty($_COOKIE["anonym_token"])){
+            $anonym_token = AuthServiceImpl::getInstance()->readToken($_COOKIE["anonym_token"]);
+        }
+
         $authservice = AuthServiceImpl::getInstance();
         if($authservice->verifyUser($_POST["email"], $_POST["password"])){
             session_regenerate_id(true);
             $token = $authservice->issueToken(AuthType::USER_TOKEN());
+            if(!empty($anonym_token)){
+                InvoiceServiceImpl::getInstance()->transferPayments($anonym_token,$authservice->readUser());
+                setcookie("anonym_token","",time() - 3600, "/", "",false, true);
+            }
             $_SESSION["userLogin"]["token"] = $token;
             if(isset($_POST['remember'])){
                 setcookie("token", $token, (new \DateTime('now'))->modify('+30 days')->getTimestamp(), "/", "", false, true);

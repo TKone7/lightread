@@ -9,6 +9,7 @@
 namespace services;
 
 
+use domain\AuthToken;
 use domain\Content;
 use domain\Payment;
 use domain\User;
@@ -18,6 +19,8 @@ use Lnrpc\PayReq;
 interface InvoiceService
 {
     public function createPayment(Payment $payment) : Payment;
+
+    public function transferPayments(AuthToken $token, User $user);
 
     public function createWithdrawal(Withdrawal $withdrawal) : Withdrawal;
 

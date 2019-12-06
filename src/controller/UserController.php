@@ -16,6 +16,7 @@ use domain\Role;
 use router\Router;
 use services\AuthServiceImpl;
 use services\ContentServiceImpl;
+use services\InvoiceServiceImpl;
 use services\UserServiceImpl;
 use validator\UserRegisterValidator;
 use validator\UserUpdateValidator;
@@ -33,12 +34,21 @@ class UserController
         $nu->setPassword($_POST["password"]);
         $nu->setEmail(($_POST["email"]!=="")?$_POST["email"]:NULL);
         $nu->setRole(Role::USER());
+        if(!empty($_COOKIE["anonym_token"])){
+            $token = AuthServiceImpl::getInstance()->readToken($_COOKIE["anonym_token"]);
+        }
 
         $registerValid = new UserRegisterValidator($nu);
         if ($registerValid->isValid()){
             $nu->setPassword(password_hash($nu->getPassword(), PASSWORD_DEFAULT));
             $res = UserServiceImpl::getInstance()->createUser($nu);
             if(!is_null($res->getId())){
+                // transfer the payments to the new user
+                if(!empty($token)){
+                    InvoiceServiceImpl::getInstance()->transferPayments($token,$res);
+                    setcookie("anonym_token","",time() - 3600, "/", "",false, true);
+                }
+
                 if(!is_null($res->getEmail())){
                     LayoutRendering::headerLayout(new TemplateView("login.php"),"Verify E-mail","You will receive an e-mail shortly");
                 }else{

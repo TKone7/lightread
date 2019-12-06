@@ -225,4 +225,16 @@ class PaymentDAO extends BasicDAO
         return $stmt->fetchAll(\PDO::FETCH_CLASS, "domain\Payment");
 
     }
+    public function transferPayments(AuthToken $fromToken, User $toUser){
+        $stmt = $this->pdoInstance->prepare('
+        UPDATE tbl_invoice set 
+        fld_user_id1=:user_id,
+        fld_auth_id=:new_auth_id
+        WHERE fld_auth_id=:auth_id');
+        $stmt->bindValue(':user_id', $toUser->getId());
+        $stmt->bindValue(':auth_id', $fromToken->getId());
+        $stmt->bindValue(':new_auth_id', NULL);
+        $stmt->execute();
+        return $stmt->rowCount();
+    }
 }

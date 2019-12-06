@@ -32,6 +32,7 @@ class UserServiceImpl implements UserService
         }
         return self::$instance;
     }
+
     public function createUser(User $user) {
         $userdao = new UserDAO();
         $new_user = $userdao->create($user);
