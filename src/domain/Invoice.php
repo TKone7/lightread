@@ -74,7 +74,7 @@ class Invoice
     /**
      * @param mixed $anonym_auth
      */
-    public function setAnonymAuth(AuthToken $anonym_auth)
+    public function setAnonymAuth($anonym_auth)
     {
         $this->anonym_auth = $anonym_auth;
     }

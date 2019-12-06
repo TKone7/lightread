@@ -42,8 +42,15 @@ class InvoiceController
                 }
             }
             $payment = new Payment();
-            $payment->setValue($content->getPrice());
-            $payment->setPurpose(Purpose::READ());
+            if(isset($_POST['donation'])){
+                $donation_amount = filter_input(INPUT_POST, 'donation', FILTER_VALIDATE_INT);
+                $payment->setValue($donation_amount);
+                $payment->setPurpose(Purpose::DONATION());
+            }else{
+                $payment->setValue($content->getPrice());
+                $payment->setPurpose(Purpose::READ());
+            }
+
             $payment->setPayer($user);
             $payment->setAnonymAuth($token);
             $payment->setContent($content);

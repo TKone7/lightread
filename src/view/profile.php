@@ -88,8 +88,7 @@ isset($this->mgr) ? $mgr = $this->mgr : $mgr = new ContentManager();
                 </tbody>
             </table>
             <h3 class="profile-title">Your earnings</h3>
-            <p><strong>Lorem Ipsum</strong>&nbsp;is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to
-                make a type specimen book.</p>
+
             <div>
                 <hr class="earning-hr"><span class="earning-title">Earnings from donations</span>
                 <label class="earning-value"><?php echo $user->getTurnover(Purpose::DONATION()); ?> sats</label>

@@ -18,8 +18,6 @@ use controller\InvoiceController;
 use controller\UserController;
 use controller\WithdrawalController;
 
-use domain\Payment;
-use domain\Purpose;
 use domain\Status;
 
 use services\ContentServiceImpl;
@@ -64,16 +62,13 @@ Router::route_auth("GET", "/category", $softauthFunction, function () {
 // Login / registering
 
 Router::route_auth("GET", "/register", $softauthFunction, function () {
-    if(!(AuthServiceImpl::getInstance()->verifyAuth())){
-        LayoutRendering::headerLayout(new TemplateView("register.php"),"Register","Create account");
-    }
-    Router::redirect("/profile");
+    UserController::register();
 });
 Router::route_auth("POST", "/register", $softauthFunction, function () {
-    (new UserController())->register();
+    UserController::submit_register();
 });
 Router::route_auth("GET", "/confirm_mail", $softauthFunction, function () {
-    (new UserController())->confirmmail();
+    UserController::confirmmail();
 });
 
 Router::route_auth("GET", "/login", $softauthFunction, function () {
@@ -86,46 +81,35 @@ Router::route_auth("POST", "/login", $softauthFunction, function () {
     AuthController::login();
 });
 Router::route_auth("GET", "/profile", $authFunction, function () {
-    (new UserController())->showProfile();
+    UserController::showProfile();
 });
 Router::route_auth("GET", "/edit-profile", $authFunction, function () {
-    (new UserController())->loadProfile();
+    UserController::loadProfile();
 });
 Router::route_auth("POST", "/edit-profile", $authFunction, function () {
-    (new UserController())->editProfile();
+    UserController::editProfile();
 });
 Router::route_auth("GET", "/logout", $softauthFunction, function () {
     AuthController::logout();
 });
 Router::route_auth("GET", "/article", $softauthFunction, function () {
-    (new ContentController())->showContent();
+    ContentController::showContent();
 });
 Router::route_auth("GET", "/edit", $authFunction, function () {
-    (new ContentController())->editContent();
+    ContentController::editContent();
 });
 Router::route_auth("POST", "/publish", $authFunction, function () {
-    (new ContentController())->store(Status::PUBLISHED());
+    ContentController::store(Status::PUBLISHED());
 });
 Router::route_auth("POST", "/checkinvoice", $softauthFunction, function () {
-    if( isset($_POST['ajax']) && isset($_POST['pay_req']) ){
-        $inv_svc = InvoiceServiceImpl::getInstance();
-
-        if($inv_svc->checkPayment($_POST["pay_req"])){
-            echo "Status: payment successful";
-        }
-        else{
-            echo "Status: unpaid";
-        }
-        exit;
-    }
-
+        InvoiceController::checkInvoice();
     });
 
 Router::route_auth("POST", "/geninvoice", $softauthFunction, function () {
     InvoiceController::generateInvoice();
 });
 Router::route_auth("POST", "/preview", $authFunction, function () {
-    (new ContentController())->store(Status::DRAFT());
+    ContentController::store(Status::DRAFT());
 });
 Router::route_auth("GET", "/node", $authFunction, function () {
     $client = RpcClient::connect();
@@ -169,14 +153,14 @@ Router::route_auth("GET", "/withdraw", $authFunction, function () {
 
 });
 Router::route_auth("GET", "/lnurl/withdraw", $softauthFunction, function () {
-    (new WithdrawalController())->lnUrlPaymentRequest();
+    WithdrawalController::lnUrlPaymentRequest();
 });
 Router::route_auth("GET", "/lnurl/info_request", $softauthFunction, function () {
-    (new WithdrawalController())->lnUrlInfoRequest();
+    WithdrawalController::lnUrlInfoRequest();
 });
 
 Router::route_auth("POST", "/withdraw", $authFunction, function () {
-    (new WithdrawalController())->withdraw();
+    WithdrawalController::withdraw();;
 });
 
 try {

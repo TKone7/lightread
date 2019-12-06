@@ -41,6 +41,7 @@ isset($this->user) ? $user = $this->user : $user = new User();
     <link rel="stylesheet" href="assets/css/tx-list.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/custom_icons.css">
 </head>
 
 <body>
