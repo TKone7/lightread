@@ -46,21 +46,23 @@ class InvoiceController
                 $donation_amount = filter_input(INPUT_POST, 'donation', FILTER_VALIDATE_INT);
                 $payment->setValue($donation_amount);
                 $payment->setPurpose(Purpose::DONATION());
+                $memo = "Donation on article: '" . $content->getTitle() ;
             }else{
                 $payment->setValue($content->getPrice());
                 $payment->setPurpose(Purpose::READ());
+                $memo = "Payment for article: '" . $content->getTitle() ;
             }
-
-            $payment->setPayer($user);
-            $payment->setAnonymAuth($token);
-            $payment->setContent($content);
-            $memo = "Payment for article: '" . $content->getTitle() ;
             if(!is_null($user)){
                 $memo .= "' by user " . $user->getFullName() . " ("  . $user->getId() . ")";
             }else{
                 $memo .= "' by an anonymous user :-)";
             }
             $payment->setMemo($memo);
+
+            $payment->setPayer($user);
+            $payment->setAnonymAuth($token);
+            $payment->setContent($content);
+
             $payment = InvoiceServiceImpl::getInstance()->createPayment($payment);
 
             $inv->id = $payment->getId();
