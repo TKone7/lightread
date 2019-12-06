@@ -12,6 +12,8 @@ use domain\AuthType;
 use services\AuthServiceImpl;
 use router\Router;
 use services\InvoiceServiceImpl;
+use view\LayoutRendering;
+use view\TemplateView;
 
 class AuthController
 {
@@ -64,4 +66,6 @@ class AuthController
         Router::redirect("/");
 
     }
+
+
 }

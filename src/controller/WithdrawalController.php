@@ -20,22 +20,22 @@ use validator\WithdrawalValidator;
 
 class WithdrawalController
 {
-    public function withdraw()
+    public static function withdraw()
     {
         if(isset($_POST['ajax'])){
             $withdrw = new Withdrawal();
             $withdrw->setReceiver(AuthServiceImpl::getInstance()->readUser());
             // if pay_req provided pay out normally
             if(isset($_POST['pay_req']) ) {
-                $this->withdrawPayReq($withdrw);;
+                self::withdrawPayReq($withdrw);;
             }
             // if amount provided check first and then start LNURL process
             elseif (isset($_POST['amount'])){
-                $this->withdrawLnUrl($withdrw);
+                self::withdrawLnUrl($withdrw);
             }
         }
     }
-    private function withdrawPayReq(Withdrawal $withdrw){
+    private static function withdrawPayReq(Withdrawal $withdrw){
         // set the payment request
         $withdrw->setPayReq($_POST['pay_req']);
         // validate first
@@ -59,7 +59,7 @@ class WithdrawalController
         echo $myJSON;
         exit;
     }
-    private function withdrawLnUrl(Withdrawal $withdrw){
+    private static function withdrawLnUrl(Withdrawal $withdrw){
         // user wants to withdraw via lnurl
         $withdrw->setValue($_POST['amount']);
         // check if amount is ok
@@ -80,7 +80,7 @@ class WithdrawalController
         exit;
     }
 
-    public function lnUrlInfoRequest()
+    public static function lnUrlInfoRequest()
     {
         if(isset($_GET['challenge'])){
             $challenge = $_GET['challenge'];
@@ -118,7 +118,7 @@ class WithdrawalController
         }
     }
 
-    public function lnUrlPaymentRequest(){
+    public static function lnUrlPaymentRequest(){
         if(isset($_GET['k1']) AND isset($_GET['pr'])){
             $k1 = $_GET['k1'];
             $pr = $_GET['pr'];

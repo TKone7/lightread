@@ -65,4 +65,19 @@ class InvoiceController
 
     }
 
+    public static function checkInvoice()
+    {
+        if( isset($_POST['ajax']) && isset($_POST['pay_req']) ){
+            $inv_svc = InvoiceServiceImpl::getInstance();
+
+            if($inv_svc->checkPayment($_POST["pay_req"])){
+                echo "Status: payment successful";
+            }
+            else{
+                echo "Status: unpaid";
+            }
+            exit;
+        }
+    }
+
 }

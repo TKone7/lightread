@@ -24,7 +24,7 @@ use view\TemplateView;
 
 class ContentController
 {
-    public function store(Status $new_status){
+    public static function store(Status $new_status){
         $auth = AuthServiceImpl::getInstance();
         $cont = new Content();
         $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
@@ -65,7 +65,7 @@ class ContentController
 
 
     }
-    public function showContent(){
+    public static function showContent(){
         $restricted = false;
         $id = $_GET["id"];
         $content = ContentServiceImpl::getInstance()->readContent($id);
@@ -107,7 +107,7 @@ class ContentController
 
 
     }
-    public function editContent(){
+    public static function editContent(){
         // retrieve content
         $id = $_GET["id"];
         $editor = new TemplateView("editor.php");

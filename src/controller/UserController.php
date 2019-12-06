@@ -27,7 +27,15 @@ use view\TemplateView;
 class UserController
 {
 
-    public function register()
+    public static function register()
+    {
+        if(!(AuthServiceImpl::getInstance()->verifyAuth())){
+            LayoutRendering::headerLayout(new TemplateView("register.php"),"Register","Create account");
+        }
+        Router::redirect("/profile");
+    }
+
+    public static function submit_register()
     {
         $nu = new User();
         $nu->setUsername($_POST["username"]);
@@ -68,7 +76,7 @@ class UserController
 
     }
 
-    public function confirmmail(){
+    public static function confirmmail(){
         $confirm_hash = $_GET['cfm'];
         $user_id =filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
@@ -86,7 +94,7 @@ class UserController
         }
     }
 
-    public function showProfile()
+    public static function showProfile()
     {
         $authservice = AuthServiceImpl::getInstance();
         $content = new TemplateView("profile.php");
@@ -100,14 +108,14 @@ class UserController
 
     }
 
-    public function loadProfile()
+    public static function loadProfile()
     {
         $authservice = AuthServiceImpl::getInstance();
         $content = new TemplateView("edit-profile.php");
         $content->user=$authservice->readUser();
         LayoutRendering::simpleLayout($content);
     }
-    public function editProfile()
+    public static function editProfile()
     {
         $authservice = AuthServiceImpl::getInstance();
         $orig_user =UserServiceImpl::getInstance()->readUser($_POST["id"]);
