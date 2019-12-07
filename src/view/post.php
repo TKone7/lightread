@@ -105,10 +105,8 @@ isset($this->restricted)?$restricted=$this->restricted:$restricted=false;
 
         function donate(){
             $("#donate").hide();
-            curr_val = 0
-
             myFunc(curr_val)
-
+            curr_val = 0
         }
 
         function myFunc(){
