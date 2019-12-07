@@ -16,11 +16,11 @@ isset($this->restricted)?$restricted=$this->restricted:$restricted=false;
 ?>
 <article>
     <?php if(!$restricted): ?>
-        <div  style="z-index:100;position:fixed;bottom:100px;right:100px;margin:0;padding:5px 3px;">
+        <div class="donate-right" >
             <button id="donate" onclick="donate()"  class="btn btn-primary text-uppercase font-weight-bold mb-2"style="border-radius: 50px;display: none" type="submit">
                 Donate
             </button>
-            <button onclick="incDonation()" id="donate_plus" class="btn btn-primary btn-circle btn-circle m-1"><i class="glyphicon glyphicon-flash"></i></button>
+            <button onclick="incDonation()" id="donate_plus" class="btn btn-primary btn-circle btn-circle-xl m-1"><i class="glyphicon glyphicon-flash"></i></button>
 
         </div>
     <?php endif; ?>
@@ -59,10 +59,28 @@ isset($this->restricted)?$restricted=$this->restricted:$restricted=false;
     </article>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
+        // global variable to increase donation
         var curr_val = 0;
 
+        $(document).ready(function() {
+
+            $('#donate').click(function(){
+                $('html, body').animate({scrollTop:$(document).height()}, 'slow');
+                return false;
+            });
+
+        });
+
         function incDonation(){
-            curr_val = curr_val + 500;
+            var el     = $('#donate_plus'),
+                newone = el.clone(true);
+            el.before(newone);
+            el.remove();
+            newone.children('.glyphicon-flash').addClass('animate-donate');
+            // upper limit for donations
+            if (curr_val < 200000){
+                curr_val = curr_val + 500;
+            }
             $('#donate').show();
             $('#donate').html('Donate ' + curr_val + ' sats');
 
@@ -86,9 +104,8 @@ isset($this->restricted)?$restricted=$this->restricted:$restricted=false;
         }
 
         function donate(){
-            $('html, body').animate({ scrollTop: $("#output").offset().top}, 500);
-
             $("#donate").hide();
+            curr_val = 0
 
             myFunc(curr_val)
 

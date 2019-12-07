@@ -214,3 +214,31 @@ div {
   line-height: 70px;
   font-size: 1.3rem;
 }
+
+.donate-right {
+  z-index:100;
+  position:fixed;
+  bottom:100px;
+  right:10px;
+  margin:0;
+  padding:5px 3px;
+}
+
+@media only screen and (min-width:768px) {
+  .donate-right{
+    right:100px;
+  }
+}
+
+.animate-donate {
+  animation-name: increaseAnimation;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-duration: 0.65s;
+  color: #ffc81e;
+
+}
+@keyframes increaseAnimation {
+  0%   { transform: scale(30); }
+  100% { transform: scale(1); }
+}
