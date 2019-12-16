@@ -22,7 +22,7 @@ Other Lightning node administrators who are interested in opening channels with 
 
 ## Minimum Requirements
 |O#|  Description | Participating Actor |   
-|---|---|---|
+|-----------|-----------|-----------|
 |M01|The platform shall allow visitors to become an User by creating an account.|0|
 |M02|The platform shall allow Users to set up their profile, including enter some descriptive text about themselves and upload a profile picture. |0|
 |M02|The platform shall allow Publishers to publish written content by means of a markdown editor.|2|
@@ -41,7 +41,7 @@ Other Lightning node administrators who are interested in opening channels with 
 
 ## Optional Requirements
 |O#|  Description | Participating Actor |   
-|---|---|---|
+|-----------|-----------|-----------|
 |O01|The platform shall show the information of the Lightning Node in order for other participants to open channels with. |4|
 |O02|Publisher should have the ability to examine the views and revenue per content over time.|1|
 |O03|Publisher shall be able to publish audio files or video clips.|1|
