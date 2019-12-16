@@ -1,0 +1,30 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: tobias
+ * Date: 30.10.2019
+ * Time:
+ */
+?>
+<article>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-10 col-lg-8 mx-auto">
+                    <div>
+                        <p>Never in all their history have men been able truly to conceive of the world as one: a single sphere, a globe, having the qualities of a globe, a round earth in which all the directions eventually meet, in which there is no center
+                            because every point, or none, is center — an equal earth which all men occupy as equals. The airman's earth, if free men make it, will be truly round: a globe in practice, not in theory.</p>
+                        <div class="hiding"></div>
+                    </div>
+                    <div class="text-center clearfix">
+                        <form method="post" action="<?php echo $GLOBALS["ROOT_URL"]; ?>/pay">
+                            <button class="btn btn-primary" type="submit">Read on for 3703 Sats (~30 cents)</button>
+                        </form>
+                    </div>
+                </div>
+                <?php if(isset($paymentrequest)): ?>
+                    <label><?php echo $paymentrequest; ?></label>
+                <?php endif; ?>
+            </div>
+        </div>
+    </article>
+

@@ -1,0 +1,245 @@
+<?php
+
+
+namespace domain;
+
+
+class View
+{
+
+
+    /**
+     * @AttributeType User
+     */
+    private $user;
+    /**
+     * @AttributeType Content
+     */
+    private $content;
+
+    /**
+     * @AttributeType String
+     */
+    private $ip;
+    /**
+     * @AttributeType String
+     */
+    private $country;
+
+    /**
+     * @AttributeType String
+     */
+    private $city;
+    /**
+     * @AttributeType String
+     */
+    private $os;
+    /**
+     * @AttributeType String
+     */
+    private $bname;
+    /**
+     * @AttributeType String
+     */
+    private $bversion;
+    /**
+     * @AttributeType String
+     */
+    private $bplatform;
+
+    /**
+     * @AttributeType String
+     */
+    private $device;
+
+    /**
+     * @AttributeType date
+     */
+    private $PIT;
+
+
+
+    /**
+     * @return mixed
+     */
+    public function getUser() : User
+    {
+        return $this->user ?? new User();
+    }
+
+    /**
+     * @param mixed $user
+     */
+    public function setUser($user)
+    {
+        $this->user = $user;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getContent(): Content
+    {
+        return $this->content;
+    }
+
+    /**
+     * @param mixed $content
+     */
+    public function setContent($content)
+    {
+        $this->content = $content;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getIp()
+    {
+        return $this->ip;
+    }
+
+    /**
+     * @param mixed $ip
+     */
+    public function setIp($ip)
+    {
+        $this->ip = $ip;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getCountry()
+    {
+        return $this->country;
+    }
+
+    /**
+     * @param mixed $country
+     */
+    public function setCountry($country)
+    {
+        $this->country = $country;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getCity()
+    {
+        return $this->city;
+    }
+
+    /**
+     * @param mixed $country
+     */
+    public function setCity($city)
+    {
+        $this->city = $city;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getOs()
+    {
+        return $this->os;
+    }
+
+    /**
+     * @param mixed $os
+     */
+    public function setOs($os)
+    {
+        $this->os = $os;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBName()
+    {
+        return $this->bname;
+    }
+
+    /**
+     * @param mixed $bname
+     */
+    public function setBName($bname)
+    {
+        $this->bname = $bname;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBVersion()
+    {
+        return $this->bversion;
+    }
+
+    /**
+     * @param mixed $bversion
+     */
+    public function setBVersion($bversion)
+    {
+        $this->bversion = $bversion;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBPlatform()
+    {
+        return $this->bplatform;
+    }
+
+    /**
+     * @param mixed $bplatform
+     */
+    public function setBPlatform($bplatform)
+    {
+        $this->bplatform = $bplatform;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDevice()
+    {
+        return $this->device;
+    }
+
+    /**
+     * @param mixed $device
+     */
+    public function setDevice($device)
+    {
+        $this->device = $device;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPIT()
+    {
+        return $this->PIT;
+    }
+
+    /**
+     * @param mixed $PIT
+     */
+    public function setPIT($PIT)
+    {
+        $this->PIT = $PIT;
+    }
+
+
+
+
+}

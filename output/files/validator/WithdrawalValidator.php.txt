@@ -1,0 +1,82 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: tobias
+ * Date: 24.11.19
+ * Time: 11:19
+ */
+
+namespace validator;
+
+
+use domain\Withdrawal;
+use services\InvoiceServiceImpl;
+
+class WithdrawalValidator
+{
+    private $valid = true;
+    private $dec_pay_req = null;
+    private $invoiceFormatError = null;
+    private $insufficientFunds = null;
+
+    public function __construct(Withdrawal $withdrawal = null)
+    {
+        if (!is_null($withdrawal)) {
+            $this->dec_pay_req = InvoiceServiceImpl::getInstance()->decodePayReq($withdrawal->getPayReq());
+            $this->validate($withdrawal);
+        }
+    }
+
+    public function validate(Withdrawal $withdrawal)
+    {
+        if (!is_null($withdrawal)) {
+            if (empty($this->dec_pay_req->getPaymentHash())) {
+                $this->invoiceFormatError = 'This invoice cannot be decoded.';
+                $this->valid = false;
+            }
+            if(!empty($this->dec_pay_req->getNumSatoshis())){
+                if($this->dec_pay_req->getNumSatoshis() > $withdrawal->getReceiver()->getBalance()){
+                    $this->insufficientFunds = 'You do not have enough balance to withdraw ' . $this->dec_pay_req->getNumSatoshis() . ' sats';
+                    $this->valid = false;
+                }
+            }
+        } else {
+            $this->valid = false;
+        }
+        return $this->valid;
+
+    }
+
+    public function isValid()
+    {
+        return $this->valid;
+    }
+
+    public function isInvoiceFormatError()
+    {
+        return isset($this->invoiceFormatError);
+    }
+
+    public function getInvoiceFormatError()
+    {
+        return $this->invoiceFormatError;
+    }
+
+    public function isInsufficientFunds()
+    {
+        return isset($this->insufficientFunds);
+    }
+
+    public function getInsufficientFunds()
+    {
+        return $this->insufficientFunds;
+    }
+
+}
+
+
+
+
+
+
+

@@ -1,0 +1,55 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: tobias
+ * Date: 16.11.19
+ * Time: 22:05
+ */
+
+use config\Config;
+use dao\InvoiceDAO;
+use dao\NodeDAO;
+use dao\PaymentDAO;
+use dao\PriceDAO;
+use dao\UserDAO;
+use domain\AuthType;
+use domain\Payment;
+use domain\User;
+use domain\Withdrawal;
+use Lnrpc\Invoice;
+use Lnrpc\PaymentHash;
+use rpcclient\RpcClient;
+use services\EmailServiceClient;
+use services\MarketDataServiceImpl;
+use services\UserServiceImpl;
+
+date_default_timezone_set("Europe/Zurich");
+
+require dirname(__FILE__).'/../vendor/autoload.php';
+require_once("config/Autoloader.php");
+
+//Config::get('price.tolerance');
+//var_dump(MarketDataServiceImpl::getInstance()->convertSatToUsd(20040));
+
+
+//$f = file_get_contents('/home/tobias/gocode/dev/bob/data/chain/bitcoin/regtest/admin.macaroon');
+//$mac = bin2hex($f);
+//var_dump(bin2hex($f));
+
+//EmailServiceClient::sendEmail("hello@tobiaskoller.tk","Testmail from sendgrid","<p><b>we are happy</b> to have you on board</p>");
+
+//var_dump(UserServiceImpl::getInstance()->getUserHash((new UserDAO())->read(6)));
+/*$lnurl = tkijewski\lnurl\encodeUrl($GLOBALS["ROOT_URL"] . '/lnurl/withdraw?challenge=292e29j29j19nd91m2mfmmurn843');
+echo $lnurl;
+
+var_dump(tkijewski\lnurl\decodeUrl('LNURL1DP68GURN8GHJ7MRFVA58GUN9V9JZUAR0VF5KZUMTDAKXCETJ9E6XKTMVDE6HYMP0D9HXVM6LWFJHZAT9WD6R7CMGV9KXCETWVAJN6EF5V93X2CF3VCMKYETXXFNRGVN9X56NWCF3XYUNSEFS89JK2VEKVY6KGWF5XGUXGENZXS6RYC3HV5CK2DFSVSUXZEPNXYMRJCEJXGEXXEF5VCURWWPSX43KGVFSVYEN2NDA5H8'));
+
+*/
+$a = new \domain\AuthToken();
+$a->setUser((new UserDAO())->read(1));
+$a->setSelector('aaa');
+$a->setExpiration(new DateTime());
+$a->setValidator('sdf');
+$a->setType(AuthType::ANONYM_TOKEN());
+$o = (new \dao\AuthTokenDAO())->create($a);
+var_dump($o);

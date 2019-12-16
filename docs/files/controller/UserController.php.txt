@@ -1,0 +1,150 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: tobias
+ * Date: 16.11.19
+ * Time: 20:45
+ */
+
+namespace controller;
+
+
+use config\Config;
+use domain\AuthType;
+use domain\User;
+use domain\Role;
+use router\Router;
+use services\AuthServiceImpl;
+use services\ContentServiceImpl;
+use services\InvoiceServiceImpl;
+use services\UserServiceImpl;
+use validator\UserRegisterValidator;
+use validator\UserUpdateValidator;
+use validator\UserValidator;
+use view\LayoutRendering;
+use view\TemplateView;
+
+class UserController
+{
+
+    public static function register()
+    {
+        if(!(AuthServiceImpl::getInstance()->verifyAuth())){
+            LayoutRendering::headerLayout(new TemplateView("register.php"),"Register","Create account");
+        }
+        Router::redirect("/profile");
+    }
+
+    public static function submit_register()
+    {
+        $nu = new User();
+        $nu->setUsername($_POST["username"]);
+        $nu->setPassword($_POST["password"]);
+        $nu->setEmail(($_POST["email"]!=="")?$_POST["email"]:NULL);
+        $nu->setRole(Role::USER());
+        if(!empty($_COOKIE["anonym_token"])){
+            $token = AuthServiceImpl::getInstance()->readToken($_COOKIE["anonym_token"]);
+        }
+
+        $registerValid = new UserRegisterValidator($nu);
+        if ($registerValid->isValid()){
+            $nu->setPassword(password_hash($nu->getPassword(), PASSWORD_DEFAULT));
+            $res = UserServiceImpl::getInstance()->createUser($nu);
+            if(!is_null($res->getId())){
+                // transfer the payments to the new user
+                if(!empty($token)){
+                    InvoiceServiceImpl::getInstance()->transferPayments($token,$res);
+                    setcookie("anonym_token","",time() - 3600, "/", "",false, true);
+                }
+
+                if(!is_null($res->getEmail())){
+                    LayoutRendering::headerLayout(new TemplateView("login.php"),"Verify E-mail","You will receive an e-mail shortly");
+                }else{
+                    LayoutRendering::headerLayout(new TemplateView("login.php"),"Thank you","You can login now");
+                }
+            }
+            Router::redirect("/");
+        }else{
+            // remove password to send back
+            $nu->setPassword(null);
+            $registerView = new TemplateView("register.php");
+            $registerView->user=$nu;
+            $registerView->userValidator=$registerValid;
+            LayoutRendering::headerLayout($registerView,"Register","Create account");
+
+        }
+
+    }
+
+    public static function confirmmail(){
+        $confirm_hash = $_GET['cfm'];
+        $user_id =filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+
+        $userservice = UserServiceImpl::getInstance();
+        $authservice = AuthServiceImpl::getInstance();
+
+        if($user_id) {
+            $user = $userservice->readUser($user_id);
+        }
+        if(!empty($user) && $userservice->validateMailHash($user, $confirm_hash)){
+            $login_view = new TemplateView("login.php");
+            LayoutRendering::headerLayout($login_view,"E-mail verified","You can now use all of our services");
+        }else{
+            Router::redirect("/");
+        }
+    }
+
+    public static function showProfile()
+    {
+        $authservice = AuthServiceImpl::getInstance();
+        $content = new TemplateView("profile.php");
+        $user = $authservice->readUser();
+        $mgr = (ContentServiceImpl::getInstance())->getContentMgr(false,NULL, NULL,array($user));
+        $uservalid = new UserValidator($user);
+        $content->user=$user;
+        $content->mgr=$mgr;
+        $content->userValidator =$uservalid;
+        LayoutRendering::simpleLayout($content);
+
+    }
+
+    public static function loadProfile()
+    {
+        $authservice = AuthServiceImpl::getInstance();
+        $content = new TemplateView("edit-profile.php");
+        $content->user=$authservice->readUser();
+        LayoutRendering::simpleLayout($content);
+    }
+    public static function editProfile()
+    {
+        $authservice = AuthServiceImpl::getInstance();
+        $orig_user =UserServiceImpl::getInstance()->readUser($_POST["id"]);
+        $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
+        $user = new User();
+        $user->setId($id);
+        $user->setUsername($_POST["username"]);
+        $user->setEmail(($_POST["email"]!=="")?$_POST["email"]:NULL);
+        $user->setFirstname(($_POST["firstname"]!=="")?$_POST["firstname"]:NULL);
+        $user->setLastname(($_POST["lastname"]!=="")?$_POST["lastname"]:NULL);
+        $user->setPassword(($_POST["password"]!=="")?$_POST["password"]:NULL);
+        $user->setVerfied($orig_user->getVerfied());
+        $user->setCreationDate($orig_user->getCreationDate());
+        $userValid = new UserUpdateValidator($orig_user,$user);
+
+
+        if($userValid->isValid()){
+            if(!empty($_POST["password"])){
+                $user->setPassword(password_hash($user->getPassword(),PASSWORD_DEFAULT));
+            }
+            $res = UserServiceImpl::getInstance()->updateUser($orig_user,$user);
+            Router::redirect("/profile");
+        }else{
+            $content = new TemplateView("edit-profile.php");
+            $content->user=$user;
+            $content->userValidator=$userValid;
+            LayoutRendering::simpleLayout($content);
+        }
+
+
+    }
+}
