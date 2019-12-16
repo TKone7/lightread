@@ -41,6 +41,7 @@ Other Lightning node administrators who are interested in opening channels with 
 
 
 ## Optional Requirements
+
 |O#|  Description | Participating Actor |   
 |-----------|-----------|-----------|
 |O01|The platform shall show the information of the Lightning Node in order for other participants to open channels with. |4|
