@@ -21,9 +21,10 @@ Other Lightning node administrators who are interested in opening channels with 
 ![class diagram describing participants](resources/participants.png)
 
 ## Minimum Requirements
-|O#|  Description | Participating Actor |  
+| O# |  Description | Participating Actor |  
 | -- | -- | -- |
-|M01|The platform shall allow visitors to become an User by creating an account.|0|
+| M01 | The platform shall allow visitors to become an User by creating an account. | 0 |
+
 |M02|The platform shall allow Users to set up their profile, including enter some descriptive text about themselves and upload a profile picture. |0|
 |M02|The platform shall allow Publishers to publish written content by means of a markdown editor.|2|
 |M03|Publishers should have the option to incorporate simple media such as images or links in their markdown articles.|2|
