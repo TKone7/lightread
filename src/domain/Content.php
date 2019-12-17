@@ -9,6 +9,7 @@
 namespace domain;
 
 
+use dao\CategoryDAO;
 use dao\UserDAO;
 use parsedown\Parsedown;
 use services\ContentServiceImpl;
@@ -62,6 +63,12 @@ class Content
      * @AttributeType numeric
      */
     private $price;
+
+    /**
+     * @AttributeType Category
+     */
+    private $category;
+
 
     /**
      * @return mixed
@@ -263,6 +270,24 @@ class Content
         return ContentServiceImpl::getInstance()->getTurnover($this, $purpose);
     }
 
+    /**
+     * @return Category
+     */
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
+    /**
+     * @param mixed $category
+     */
+    public function setCategory($category)
+    {
+        $this->category = $category;
+    }
+
+
+
     public function __set($name, $value)
     {
         if ($name=='fld_cont_id'){
@@ -285,6 +310,8 @@ class Content
             $this->setCreationDate(date_create_from_format('Y-m-d H:i:s', $value));
         }elseif ($name=='fld_cont_satoshis'){
             $this->setPrice($value);
+        }elseif ($name=='fld_cate_id'){
+            $this->setCategory((new CategoryDAO())->read($value));
         }
     }
 

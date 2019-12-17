@@ -7,12 +7,14 @@
  */
 
 use domain\Access;
+use domain\Category;
 use domain\Content;
 use services\MarketDataServiceImpl;
 use validator\ContentValidator;
 
 $load = isset($this->content);
 (isset($this->content)) ? $content = $this->content : $content = new Content();
+(isset($this->categories)) ? $categories = $this->categories: array(new Category());
 (isset($this->contentValidator)) ? $contentValidator = $this->contentValidator : $contentValidator = new ContentValidator();
 ?>
 <div class="container">
@@ -23,6 +25,11 @@ $load = isset($this->content);
                     <?php if($contentValidator->isUserVerifiedError()): ?>
                         <div class="alert alert-warning">
                             <strong>Warning!</strong> <?php echo $contentValidator->getUserVerifiedError() ?>
+                        </div>
+                    <?php endif; ?>
+                    <?php if($contentValidator->isCategorySetError()): ?>
+                        <div class="alert alert-warning">
+                            <strong>Warning!</strong> <?php echo $contentValidator->getCategorySetError() ?>
                         </div>
                     <?php endif; ?>
                     <form method="post" action="<?php echo $GLOBALS["ROOT_URL"]; ?>/publish">
@@ -38,6 +45,23 @@ $load = isset($this->content);
                             <span id="fiat" > ~<?php echo $load ? $content->getPriceFiat() : ""; ?></span>
                         </div>
                         <input name="btcprice" id="btcprice" type="hidden" value="<?php echo $load ? MarketDataServiceImpl::getInstance()->getPrice() : ""; ?>" readonly>
+                        <div class="form-group">
+                            <select name="category" id="inputCategory" class="form-control">
+                                <option <?php echo !$load ? 'selected': '' ?>>Choose a category...</option>
+                                <?php foreach ($categories as $category) {?>
+                                    <?php
+                                    if ($load AND !empty($content->getCategory())){
+                                        $selected = $content->getCategory()->getId()==$category->getId();
+                                    }else{
+                                        $selected = false;
+                                    }
+                                    ?>
+                                    <option value="<?php echo $category->getId(); ?>" <?php echo $selected ? 'selected' : '' ?> > <?php echo $category->getName(); ?></option>
+
+                                <?php } ?>
+
+                            </select>
+                        </div>
                         <div class="form-group">
                             <button formaction="<?php echo $GLOBALS["ROOT_URL"]; ?>/preview" class="btn btn-light" type="submit">Store as draft</button>
                             <button class="btn btn-primary" type="submit">Publish</button>

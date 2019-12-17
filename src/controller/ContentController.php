@@ -9,6 +9,7 @@
 namespace controller;
 
 
+use dao\CategoryDAO;
 use domain\Access;
 use domain\Content;
 use domain\Status;
@@ -32,6 +33,10 @@ class ContentController
         $cont->setId($id);
         $cont->setTitle($_POST["title"]);
         $cont->setSubtitle($_POST["subtitle"]);
+        $category_id = filter_input(INPUT_POST, 'category', FILTER_VALIDATE_INT);
+        if(!empty($category_id)){
+            $cont->setCategory((new CategoryDAO())->read($category_id));
+        }
         $cont->setBody($_POST["editordata"]);
         $cont->setStatus($new_status);
         $cont->setAuthor($auth->readUser());
@@ -60,6 +65,8 @@ class ContentController
             $editorView = new TemplateView("editor.php");
             $editorView->content=$cont;
             $editorView->contentValidator = $validator;
+            $categories =  (new CategoryDAO())->readAll();
+            $editorView->categories = $categories;
             LayoutRendering::simpleLayout($editorView);
         }
 
@@ -103,7 +110,7 @@ class ContentController
         $post->body = $body;
         $post->restricted = $restricted;
         $allow = $content->getAuthor()->getId()==AuthServiceImpl::getInstance()->getCurrentUserId();
-        LayoutRendering::postLayout($post,$content->getTitle(), $content->getSubtitle(), $content->getAuthor()->getFullName(),$content->getCreationDate(),$allow, $content->getId());
+        LayoutRendering::postLayout($post,$content,$allow);
 
 
     }
@@ -111,7 +118,8 @@ class ContentController
         // retrieve content
         $id = $_POST["cont_id"];
         $editor = new TemplateView("editor.php");
-
+        $categories =  (new CategoryDAO())->readAll();
+        $editor->categories = $categories;
         if(isset($id)){
             $content = ContentServiceImpl::getInstance()->editContent($id);
             if (!is_null($content)){
@@ -125,6 +133,8 @@ class ContentController
     }
     public static function newContent(){
         $editor = new TemplateView("editor.php");
+        $categories =  (new CategoryDAO())->readAll();
+        $editor->categories = $categories;
         LayoutRendering::simpleLayout($editor);
 
     }
