@@ -16,6 +16,7 @@ class ContentValidator
 {
     private $valid = true;
     private $userValidatedError = null;
+    private $categorySetError = null;
 
     public function __construct(Content $content = null)
     {
@@ -29,6 +30,10 @@ class ContentValidator
         if (!is_null($content)) {
             if ($content->getStatus() == Status::PUBLISHED AND !$content->getAuthor()->getVerfied()) {
                 $this->userValidatedError = 'You must first verify your e-mail address before you can publish.<br> Store your article as a draft until then.';
+                $this->valid = false;
+            }
+            if (empty($content->getCategory())) {
+                $this->categorySetError = 'You must select a category from the dropdown.';
                 $this->valid = false;
             }
 
@@ -53,5 +58,15 @@ class ContentValidator
     {
         return $this->userValidatedError;
     }
+    public function isCategorySetError()
+    {
+        return isset($this->categorySetError);
+    }
+
+    public function getCategorySetError()
+    {
+        return $this->categorySetError;
+    }
+
 
 }
