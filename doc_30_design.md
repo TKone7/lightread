@@ -19,6 +19,8 @@ nav_order: 30
 
 ## Class Diagram / Domain Model
 
+## Router
+
 ## Data Access Objects (DAO)
 
 ## Use Case Diagrams
