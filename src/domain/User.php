@@ -11,6 +11,10 @@ namespace domain;
 
 use services\UserServiceImpl;
 
+/**
+ * This is a summary.
+ *
+ */
 class User
 {
     /**

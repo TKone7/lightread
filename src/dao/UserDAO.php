@@ -12,6 +12,12 @@ use domain\User;
 
 class UserDAO extends BasicDAO
 {
+    /**
+     * Creates a new user
+     *
+     * @param User $user
+     * @return User
+     */
     public function create(User $user) : User
     {
         $withemail= !is_null($user->getEmail());
@@ -19,7 +25,7 @@ class UserDAO extends BasicDAO
         INSERT INTO tbl_user (fld_role_id,fld_user_firstname, fld_user_lastname,fld_user_email, fld_user_pwhash, fld_user_nickname,fld_user_locked, fld_user_creationpit,fld_user_verified)
           SELECT :role_id,:firstname,:lastname,:email,:password,:username,:locked,:creation,:verified
         WHERE NOT EXISTS (
-        SELECT fld_user_nickname FROM tbl_user WHERE fld_user_nickname = :usercheck';
+        SELECT fld_user_nickname FROM tbl_user WHERE fld_user_nickname = :usercheck)';
         if($withemail){
             $sqlstmt .= ' or fld_user_email = :emailcheck';
         }
@@ -43,6 +49,13 @@ class UserDAO extends BasicDAO
         $stmt->execute();
         return $this->read($this->pdoInstance->lastInsertId());
     }
+
+    /**
+     * Updates existing user.
+     *
+     * @param User $user
+     * @return User|null
+     */
     public function update(User $user){
         $stmt = $this->pdoInstance->prepare('
         UPDATE tbl_user set fld_user_firstname = :firstname, fld_user_lastname = :lastname, fld_user_email = :email, fld_user_verified = :verified
@@ -63,6 +76,12 @@ class UserDAO extends BasicDAO
         $stmt->bindValue(':password', $user->getPassword());
         $stmt->execute();
     }
+
+    /**
+     * Reads a user from DB by ID
+     * @param $userid
+     * @return User|null
+     */
     public function read($userid){
         $stmt = $this->pdoInstance->prepare('
             SELECT * FROM tbl_user WHERE fld_user_id = :id;');

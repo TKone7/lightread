@@ -11,7 +11,14 @@ namespace services;
 
 use config\Config;
 use dao\PriceDAO;
+use DateTime;
+use DateTimeZone;
+use Exception;
 
+/**
+ * Class MarketDataServiceImpl serves Bitcoin price related functions
+ * @package services
+ */
 class MarketDataServiceImpl implements MarketDataService
 {
     private static $instance = NULL;
@@ -26,26 +33,41 @@ class MarketDataServiceImpl implements MarketDataService
         return self::$instance;
     }
 
-    private function getPriceCached($crypto,$fiat):float{
-        //try chached first. If it's within 15 min it's still ok.
-        $tolerance = Config::get('price.tolerance');
-        // database access to check if cached is still valid : return
+    /**
+     * Current price
+     *
+     * Current price either cached (during time specified in price.tolerance) or retrieved from an API.
+     * @param $crypto
+     * @param $fiat
+     * @return float price of the given currency pair
+     * @throws Exception
+     */
+    private function getPriceCached($crypto, $fiat):float{
+        $tolerance_in_min = Config::get('price.tolerance');
         $last_record = (new PriceDAO())->readLast($crypto,$fiat);
+        $diff_in_min = 0;
         if(!is_null($last_record)){
-            $now = new \DateTime('now', new \DateTimeZone(date_default_timezone_get()));
-            $last_time = date_create_from_format('Y-m-d H:i:s',$last_record['fld_pric_pit']);
-            $diff = $now->diff($last_time);
-            $min_diff = $diff->i;
+            $now = new DateTime('now', new DateTimeZone(date_default_timezone_get()));
+            $last = date_create_from_format('Y-m-d H:i:s',$last_record['fld_pric_pit']);
+            $diff = $now->diff($last);
+            $diff_in_min = $diff->i;
         }
 
-        if(is_null($last_record) || $min_diff > $tolerance){
+        if(is_null($last_record) || $diff_in_min > $tolerance_in_min){
             return $this->getFromApi($crypto,$fiat);
         }else{
             return floatval($last_record['fld_pric_value']);
         }
     }
 
-    private function getFromApi($crypto,$fiat):float {
+    /**
+     * Reads current price from an API
+     * @param $crypto
+     * @param $fiat
+     * @return float
+     * @throws Exception
+     */
+    private function getFromApi($crypto, $fiat):float {
         // $crypto must be bitcoin
         $crypto_id = 1;
         // $fiat must be USD see ref: https://coinmarketcap.com/api/documentation/v1/#section/Standards-and-Conventions
@@ -73,12 +95,12 @@ class MarketDataServiceImpl implements MarketDataService
         ));
 
         $response = curl_exec($curl); // Send the request, save the response
-        $arr = json_decode($response); // print json decoded response
+        $arr = json_decode($response); // store json decoded response
         if($arr->status->error_code == 0){
             // OK
             $usd_quote = $arr->data->{$crypto_id}->quote->{$fiat_id};
             $price = $usd_quote->price;
-            $last_updated = (new \DateTime('@' .strtotime($usd_quote->last_updated)))->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+            $last_updated = (new DateTime('@' .strtotime($usd_quote->last_updated)))->setTimezone(new DateTimeZone(date_default_timezone_get()));
 
             // write new price to the database
             (new PriceDAO())->insert($price,$crypto,$fiat,$last_updated);
@@ -91,11 +113,19 @@ class MarketDataServiceImpl implements MarketDataService
         curl_close($curl); // Close request
     }
 
+    /**
+     * Serves current market price
+     * @param bool $force_refresh forces to retrieve a fresh price from the API and not cached
+     * @param string $crypto
+     * @param string $fiat
+     * @return float
+     * @throws Exception
+     */
     public function getPrice(bool $force_refresh = false, $crypto = 'BTC', $fiat = 'USD'): float
     {
         // @todo implement other currencies than BTC and USD
         if (!($crypto==='BTC' and $fiat==='USD')) {
-            throw new \Exception('Currently only BTC and USD are allowed, input was ' . $crypto . " and " . $fiat);
+            throw new Exception('Currently only BTC and USD are allowed, input was ' . $crypto . " and " . $fiat);
         }
         if ($force_refresh){
             return $this->getFromApi($crypto,$fiat);
@@ -103,12 +133,27 @@ class MarketDataServiceImpl implements MarketDataService
         return $this->getPriceCached($crypto,$fiat);
     }
 
+
+    /**
+     * Converts any given satoshi value to USD
+     * @param int $sat_val
+     * @return float
+     * @throws Exception
+     */
     public function convertSatToUsd($sat_val){
         $price_btc = $this->getPrice();
         $price_sat = $price_btc / self::SATS_PER_BTC;
         $usd_val = $price_sat * $sat_val;
         return $usd_val;
     }
+
+    /**
+     * Converts a satoshi value to USD and does some string formatting
+     *
+     * @param $sat_val
+     * @return String
+     * @throws Exception
+     */
     public function convertSatToUsdFormat($sat_val): String
     {
         $usd_val = $this->convertSatToUsd($sat_val);

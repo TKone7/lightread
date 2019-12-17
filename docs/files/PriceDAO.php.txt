@@ -39,7 +39,7 @@ class PriceDAO extends BasicDAO
     /**
      * @param string $sym1 ISO currency symbol for currency 1
      * @param string $sym2 ISO currency symbol for currency 2
-     * @return int|null
+     * @return array|null
      */
     public function readLast($sym1, $sym2){
         $stmt = $this->pdoInstance->prepare('

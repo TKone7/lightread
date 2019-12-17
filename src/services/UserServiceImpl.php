@@ -8,8 +8,6 @@
 
 namespace services;
 
-
-use dao\InvoiceDAO;
 use dao\PaymentDAO;
 use dao\WithdrawalDAO;
 use domain\Purpose;
@@ -33,6 +31,13 @@ class UserServiceImpl implements UserService
         return self::$instance;
     }
 
+    /**
+     * Create a new user.
+     *
+     * Creates a new user into the db and triggers a verification email when address is supplied.
+     * @param User $user
+     * @return User
+     */
     public function createUser(User $user) {
         $userdao = new UserDAO();
         $new_user = $userdao->create($user);
@@ -42,6 +47,15 @@ class UserServiceImpl implements UserService
         return $new_user;
     }
 
+    /**
+     * Update a user.
+     *
+     * Updates the user on the database. If email address has changed, a re-verification is triggered.
+     * @param User $olduser
+     * @param User $user
+     * @return User|null
+     * @throws HTTPException
+     */
     public function updateUser(User $olduser, User $user)
     {
         if(AuthServiceImpl::getInstance()->verifyAuth()){
@@ -65,12 +79,25 @@ class UserServiceImpl implements UserService
         }
         throw new HTTPException(HTTPStatusCode::HTTP_401_UNAUTHORIZED);
     }
+
+    /**
+     * Get user object by ID
+     *
+     * @param $id
+     * @return User|null
+     */
     public function readUser($id)
     {
         $userdao = new UserDAO();
         return $userdao->read($id);
     }
 
+
+    /**
+     * @param User $user
+     * @param Purpose|NULL $purpose
+     * @return float
+     */
     public function getTurnover(User $user, Purpose $purpose = NULL){
         $paym_dao = new PaymentDAO();
         return $paym_dao->selectUserTurnover($user,$purpose);
@@ -97,6 +124,11 @@ class UserServiceImpl implements UserService
         return $purchaseHist;
     }
 
+    /**
+     * Send a verfication email to the user.
+     *
+     * @param User $user
+     */
     public function sendVerificationMail(User $user){
         $url = $GLOBALS["ROOT_URL"] . '/confirm_mail/?cfm=' . $this->getUserHash($user) . '&id=' . $user->getId();
         $body = 'Thank you very much for your registration. <br>In order to use the full range of our features you will need to verfy your e-mail address on lightread: <br>
@@ -104,6 +136,15 @@ class UserServiceImpl implements UserService
                    ' . $url;
         EmailServiceClient::sendEmail($user->getEmail(), 'Verify your email on Lightread',$body);
     }
+
+    /**
+     * Create a deterministic user hash.
+     *
+     * Creates a hash for a given user that includes email address, users creation date and id.
+     * This allows the comparison later to verify hash provided by the user.
+     * @param User $user
+     * @return string
+     */
     public function getUserHash(User $user)
     {
         $hash_msg = array(
@@ -113,6 +154,14 @@ class UserServiceImpl implements UserService
         return hash('sha256', json_encode($hash_msg));
     }
 
+    /**
+     * Validates a hash provided by the user.
+     *
+     * Checks if the provided hash is valid for this user and email address.
+     * @param User $user
+     * @param string $hash
+     * @return bool
+     */
     public function validateMailHash(User $user, $hash){
         $result =  hash_equals($this->getUserHash($user), $hash);
         if ($result){
