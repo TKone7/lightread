@@ -3,8 +3,13 @@ layout: default
 title: Home
 nav_order: 1
 ---
+# lightread
+{: .no_toc }
 
-Some introduction text
+Online publishing platform where users can reward content providers with micro-bitcoin payments. The main goal is, that content consumers are able to directly reward content providers.
+
+## Table of contents
+{: .no_toc .text-delta }
 
 1. TOC
 {:toc}

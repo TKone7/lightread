@@ -4,3 +4,7 @@ log.txt
 config.env
 /vendor/
 /db/custom_scripts/
+debugger.php
+lndtest.php
+/.jekyll-cache
+/_site
