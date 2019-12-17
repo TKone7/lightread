@@ -19,10 +19,6 @@ isset($this->userValidator) ? $userValidator = $this->userValidator : $userValid
             <h1>Edit Profile</h1>
             <form method="post" action="edit-profile">
                 <input type="hidden" name="id" value="<?php echo $user->getId(); ?>">
-
-                <div class="text-center clearfix cont"><img class="profilepic_edit" src="assets/img/rb.jpeg">
-                    <div class="img-overlay"><label>Edit picture</label></div>
-                </div>
                 <?php if(!$userValidator->isValid()): ?>
                     <div class="alert alert-warning">
                         <?php echo $userValidator->isDuplEmailError() ? $userValidator->getDuplEmailError() . '<br>': '' ?>
