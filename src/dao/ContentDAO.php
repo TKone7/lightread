@@ -16,8 +16,8 @@ class ContentDAO extends BasicDAO
 {
     public function create(Content $content){
         $stmt = $this->pdoInstance->prepare('
-        INSERT INTO tbl_content (fld_user_id,fld_cont_title,fld_cont_subtitle, fld_cont_body,fld_cont_creationpit,fld_cont_satoshis,fld_accc_id,fld_scon_id)
-          values(:user_id, :title, :subtitle, :body, :creation, :sats, :access, :status)');
+        INSERT INTO tbl_content (fld_user_id,fld_cont_title,fld_cont_subtitle, fld_cont_body,fld_cont_creationpit,fld_cont_satoshis,fld_accc_id,fld_scon_id,fld_cont_slug)
+          values(:user_id, :title, :subtitle, :body, :creation, :sats, :access, :status, :slug)');
         $stmt->bindValue(':user_id', $content->getAuthor()->getId());
         $stmt->bindValue(':title', $content->getTitle());
         $stmt->bindValue(':subtitle', $content->getSubtitle());
@@ -25,6 +25,7 @@ class ContentDAO extends BasicDAO
         $stmt->bindValue(':sats', $content->getPrice());
         $stmt->bindValue(':access', $this->readAccessId($content->getAccess()->getKey())['fld_accc_id']);
         $stmt->bindValue(':status', $this->readStatusId($content->getStatus()->getKey())['fld_scon_id']);
+        $stmt->bindValue(':slug', $content->getSlug());
         date_default_timezone_set('Europe/Zurich');
         $stmt->bindValue(':creation', $timestamp = date('Y-m-d H:i:s'));
         $stmt->execute();
@@ -39,6 +40,21 @@ class ContentDAO extends BasicDAO
               on c.fld_scon_id = s.fld_scon_id 
               WHERE c.fld_cont_id = :id;');
         $stmt->bindValue(':id', $contentid);
+        $stmt->execute();
+        if ($stmt->rowCount() > 0) {
+            return $stmt->fetchAll(\PDO::FETCH_CLASS, "domain\Content")[0];
+        }
+        return null;
+    }
+    public function findBySlug($slug){
+        $stmt = $this->pdoInstance->prepare('
+            SELECT c.*, a.fld_accc_key, s.fld_scon_key FROM tbl_content c 
+            inner join tbl_accesscontraint a
+              on c.fld_accc_id = a.fld_accc_id
+            inner join tbl_statuscontent s
+              on c.fld_scon_id = s.fld_scon_id 
+              WHERE c.fld_cont_slug = :slug;');
+        $stmt->bindValue(':slug', $slug);
         $stmt->execute();
         if ($stmt->rowCount() > 0) {
             return $stmt->fetchAll(\PDO::FETCH_CLASS, "domain\Content")[0];
@@ -113,6 +129,21 @@ class ContentDAO extends BasicDAO
         $stmt->execute();
         if ($stmt->rowCount() > 0) {
             return $stmt->fetch(\PDO::FETCH_ASSOC);
+        }
+        return null;
+    }
+
+    public function duplicateSlug($slug)
+    {
+        $sql = '
+            SELECT fld_cont_slug FROM tbl_content WHERE fld_cont_slug LIKE :slug';
+
+        $stmt = $this->pdoInstance->prepare($sql);
+        $stmt->bindValue(':slug', $slug . '%');
+
+        $stmt->execute();
+        if ($stmt->rowCount() > 0) {
+            return $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
         }
         return null;
     }

@@ -31,6 +31,11 @@ class Content
     /**
      * @AttributeType String
      */
+    private $slug;
+
+    /**
+     * @AttributeType String
+     */
     private $body;
     /**
      * @AttributeType date
@@ -163,6 +168,22 @@ class Content
     /**
      * @return mixed
      */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    /**
+     * @param mixed $slug
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getSubtitle()
     {
         return $this->subtitle;
@@ -256,6 +277,8 @@ class Content
             $this->setTitle($value);
         }elseif ($name=='fld_cont_subtitle'){
             $this->setSubtitle($value);
+        }elseif ($name=='fld_cont_slug'){
+            $this->setSlug($value);
         }elseif ($name=='fld_cont_body'){
             $this->setBody($value);
         }elseif ($name=='fld_cont_creationpit'){

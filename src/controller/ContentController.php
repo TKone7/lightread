@@ -55,7 +55,7 @@ class ContentController
                 // create
                 $res = $contsvc->createContent($cont);
             }
-            Router::redirect("/article?id=" . $res->getId());
+            Router::redirect("/article?title=" . $res->getSlug());
         }else{
             $editorView = new TemplateView("editor.php");
             $editorView->content=$cont;
@@ -67,8 +67,8 @@ class ContentController
     }
     public static function showContent(){
         $restricted = false;
-        $id = $_GET["id"];
-        $content = ContentServiceImpl::getInstance()->readContent($id);
+        $slug = $_GET["title"];
+        $content = ContentServiceImpl::getInstance()->readBySlug($slug);
         $post = new TemplateView("post.php");
         // show not found
         if (is_null($content)) {
@@ -109,7 +109,7 @@ class ContentController
     }
     public static function editContent(){
         // retrieve content
-        $id = $_GET["id"];
+        $id = $_POST["cont_id"];
         $editor = new TemplateView("editor.php");
 
         if(isset($id)){
@@ -120,6 +120,11 @@ class ContentController
                 Router::redirect("/article-not-found");
             }
         }
+        LayoutRendering::simpleLayout($editor);
+
+    }
+    public static function newContent(){
+        $editor = new TemplateView("editor.php");
         LayoutRendering::simpleLayout($editor);
 
     }

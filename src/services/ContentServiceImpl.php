@@ -32,12 +32,18 @@ class ContentServiceImpl implements ContentService
         return self::$instance;
     }
 
+    /**
+     * @param Content $content
+     * @return Content|null
+     * @throws HTTPException
+     */
     public function createContent(Content $content)
     {
         $auth = AuthServiceImpl::getInstance();
         if($auth->verifyAuth()){
             $contentdao = new ContentDAO();
             $content->setAuthor($auth->readUser());
+            $content->setSlug($this->calcSlug($content));
             return $contentdao->create($content);
         }
         throw new HTTPException(HTTPStatusCode::HTTP_401_UNAUTHORIZED);
@@ -66,6 +72,12 @@ class ContentServiceImpl implements ContentService
     {
         $contdao = new ContentDAO();
         $content = $contdao->read($content_id);
+        return $content;
+    }
+    public function readBySlug($slug) : Content
+    {
+        $contdao = new ContentDAO();
+        $content = $contdao->findBySlug($slug);
         return $content;
     }
     public function getTurnover(Content $content, Purpose $purpose = NULL){
@@ -131,5 +143,17 @@ class ContentServiceImpl implements ContentService
             $tags.= str_replace("<","</",array_pop($stack)) ;
         }
         return substr($html,0,$restr+1).$tags;
+    }
+
+    public function calcSlug(Content $content)
+    {
+        $slug = preg_replace('/[^a-z0-9]+/i', '-', trim(strtolower($content->getTitle())));
+        $dupl_slug = (new ContentDAO())->duplicateSlug($slug);
+        if(!empty($dupl_slug) AND in_array($slug, $dupl_slug)){
+            $count = 0;
+            while( in_array( ($slug . '-' . ++$count ), $dupl_slug) );
+            $slug = $slug . '-' . $count;
+        }
+        return $slug;
     }
 }

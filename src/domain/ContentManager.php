@@ -27,6 +27,12 @@ class ContentManager
     public function addContent(Content $content){
         $this->articles[] = $content;
     }
+
+    /**
+     * @param Status|NULL $status
+     * @param Access|NULL $access
+     * @return Content[]|NULL
+     */
     public function getContent(Status $status = NULL, Access $access = NULL) : array
     {
         $filtered = [];

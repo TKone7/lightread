@@ -95,8 +95,11 @@ Router::route_auth("GET", "/logout", $softauthFunction, function () {
 Router::route_auth("GET", "/article", $softauthFunction, function () {
     ContentController::showContent();
 });
-Router::route_auth("GET", "/edit", $authFunction, function () {
+Router::route_auth("POST", "/edit", $authFunction, function () {
     ContentController::editContent();
+});
+Router::route_auth("GET", "/new", $authFunction, function () {
+    ContentController::newContent();
 });
 Router::route_auth("POST", "/publish", $authFunction, function () {
     ContentController::store(Status::PUBLISHED());

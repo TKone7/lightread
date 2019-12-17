@@ -20,7 +20,7 @@ isset($this->mgr) ? $mgr = $this->mgr : $mgr = new ContentManager();
             $articles = $mgr->getContent(Status::PUBLISHED());
             foreach ($articles as $item) { ?>
                 <div class="post-preview">
-                    <a href="<?php echo $GLOBALS["ROOT_URL"] . "/article?id=" . $item->getId(); ?>">
+                    <a href="<?php echo $GLOBALS["ROOT_URL"] . "/article?title=" . $item->getSlug(); ?>">
                         <h2 class="post-title"><?php echo $item->getTitle(); ?></h2>
                         <h3 class="post-subtitle"><?php echo $item->getSubtitle(); ?></h3>
                     </a>

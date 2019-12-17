@@ -42,7 +42,7 @@ isset($this->mgr) ? $mgr = $this->mgr : $mgr = new ContentManager();
                 <button class="btn btn-primary" onclick="window.location.href='<?php echo $GLOBALS["ROOT_URL"]; ?>/edit-profile'">Edit profile / Change password</button>
                 <button class="btn btn-light" onclick="window.location.href='<?php echo $GLOBALS["ROOT_URL"]; ?>/logout'">Logout</button>
             </div>
-            <h3 class="profile-title">Your articles -&nbsp;<a href="<?php echo $GLOBALS["ROOT_URL"]; ?>/edit"><i class="icon ion-android-add-circle"></i></a></h3><table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
+            <h3 class="profile-title">Your articles -&nbsp;<a href="<?php echo $GLOBALS["ROOT_URL"]; ?>/new"><i class="icon ion-android-add-circle"></i></a></h3><table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
                 <thead>
                 <tr>
                     <th style="width:20%">Title</th>
@@ -58,7 +58,15 @@ isset($this->mgr) ? $mgr = $this->mgr : $mgr = new ContentManager();
                 foreach ($articles as $item) { ?>
 
                     <tr>
-                    <td><a href="<?php echo $GLOBALS["ROOT_URL"] . "/edit?id=" . $item->getId(); ?>"><?php echo $item->getTitle(); ?></a></td>
+                    <td>
+
+                        <form method="post" action="<?php echo $GLOBALS["ROOT_URL"]; ?>/edit">
+                            <div style="margin: 0px;">
+                                <input type="hidden" name="cont_id" value="<?php echo $item->getId(); ?>">
+                                <input type="submit" value="<?php echo $item->getTitle(); ?>" style="background: none; border: none; text-decoration: underline; cursor: pointer;">
+                            </div>
+                        </form>
+                    </td>
                     <td><?php echo $item->getStatus()->getValue(); ?></td>
                     <td>-</td>
                     <td><?php echo $item->getRevenue(); ?> sats</td>
