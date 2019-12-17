@@ -80,11 +80,16 @@ class InvoiceController
             $inv_svc = InvoiceServiceImpl::getInstance();
 
             if($inv_svc->checkPayment($_POST["pay_req"])){
-                echo "Status: payment successful";
+                $response->paid= true;
+                $response->text= "Status: payment successful";
             }
             else{
-                echo "Status: unpaid";
+                $response->paid= false;
+                $response->text= "Status: unpaid";
             }
+
+            $json_response = json_encode($response);
+            echo $json_response;
             exit;
         }
     }
