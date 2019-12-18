@@ -15,19 +15,18 @@ date_default_timezone_set("Europe/Zurich");
 use controller\AuthController;
 use controller\ContentController;
 use controller\InvoiceController;
+use controller\NodeController;
 use controller\UserController;
 use controller\WithdrawalController;
 
 use domain\Status;
 
 use services\ContentServiceImpl;
-use services\InvoiceServiceImpl;
 use services\AuthServiceImpl;
 use view\TemplateView;
 use view\LayoutRendering;
 use router\Router;
 use http\HTTPException;
-use rpcclient\RpcClient;
 
 ini_set( 'session.cookie_httponly', 1 );
 session_start();
@@ -123,25 +122,7 @@ Router::route_auth("POST", "/preview", $authFunction, function () {
     ContentController::store(Status::DRAFT());
 });
 Router::route_auth("GET", "/node", $authAdmin, function () {
-    $client = RpcClient::connect();
-    $getInfoRequest = new Lnrpc\GetInfoRequest();
-    $WalletbalanceRequest = new Lnrpc\WalletBalanceRequest();
-    $ChannelbalanceRequest = new Lnrpc\ChannelBalanceRequest();
-    $channelreq = new Lnrpc\ListChannelsRequest();
-    $pendchannelreq = new Lnrpc\PendingChannelsRequest();
-    list($reply, $status) = $client->GetInfo($getInfoRequest)->wait();
-    list($wallet_bal, $status) = $client->WalletBalance($WalletbalanceRequest)->wait();
-    list($channel_bal, $status) = $client->ChannelBalance($ChannelbalanceRequest)->wait();
-    list($ListChannelsResp, $status) = $client->ListChannels($channelreq)->wait();
-    list($PendingChannelsResp, $status) = $client->PendingChannels($pendchannelreq)->wait();
-
-    $node_content = new TemplateView("node.php");
-    $node_content->getinforesponse = $reply;
-    $node_content->walletbalance = $wallet_bal;
-    $node_content->channelbalance = $channel_bal;
-    $node_content->ListChannelsResp = $ListChannelsResp;
-    $node_content->PendingChannelsResp = $PendingChannelsResp;
-    LayoutRendering::headerLayout($node_content,"Your Node","See if it's healthy");
+    NodeController::showNodeinfo();
 });
 
 Router::route_auth("GET", "/admin", $authFunction, function () {

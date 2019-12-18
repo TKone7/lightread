@@ -56,6 +56,9 @@ isset($this->user) ? $user = $this->user : $user = new User();
                 <?php if (!($loggedin)): ?>
                     <li class="nav-item" role="presentation" id="login"><a class="nav-link" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/login">Login</a></li>
                 <?php else: ?>
+                    <?php if($user->getIsAdmin()): ?>
+                        <li class="nav-item" role="presentation"><a class="nav-link" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/node">Nodeinfo</a></li>
+                    <?php endif; ?>
                     <li class="nav-item post-subtitle" role="presentation" id="login">
                         <a class="nav-link" id="login" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/profile"><i class="fa fa-user-circle-o" style="font-size: 16px;vertical-align: middle;"></i>&nbsp;
                             <?php echo $user->getUsername(); ?>
