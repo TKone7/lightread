@@ -23,5 +23,5 @@ $channelpoint = $channel->getChannelPoint();
 </span>
 
 <div class="progress" style="height: 22px;">
-    <div class="progress-bar" aria-valuenow="<?php echo $localperc; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $localperc; ?>%;"><?php echo $localperc; ?>%</div>
+    <div class="progress-bar" aria-valuenow="<?php echo $localperc; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $localperc; ?>%;"><?php echo floor($localperc); ?>%</div>
 </div>
