@@ -22,10 +22,10 @@ class UserDAO extends BasicDAO
     {
         $withemail= !is_null($user->getEmail());
         $sqlstmt = '
-        INSERT INTO tbl_user (fld_role_id,fld_user_firstname, fld_user_lastname,fld_user_email, fld_user_pwhash, fld_user_nickname,fld_user_locked, fld_user_creationpit,fld_user_verified)
-          SELECT :role_id,:firstname,:lastname,:email,:password,:username,:locked,:creation,:verified
+        INSERT INTO tbl_user (fld_role_id,fld_user_firstname, fld_user_lastname,fld_user_email, fld_user_pwhash, fld_user_nickname,fld_user_locked, fld_user_creationpit,fld_user_verified, fld_user_isadmin)
+          SELECT :role_id,:firstname,:lastname,:email,:password,:username,:locked,:creation,:verified,:isadmin
         WHERE NOT EXISTS (
-        SELECT fld_user_nickname FROM tbl_user WHERE fld_user_nickname = :usercheck)';
+        SELECT fld_user_nickname FROM tbl_user WHERE fld_user_nickname = :usercheck';
         if($withemail){
             $sqlstmt .= ' or fld_user_email = :emailcheck';
         }
@@ -42,6 +42,11 @@ class UserDAO extends BasicDAO
         $stmt->bindValue(':locked', 0);
         $stmt->bindValue(':verified', 0);
         $stmt->bindValue(':email', $user->getEmail());
+        if(!empty($user->getIsAdmin())){
+            $stmt->bindValue(':isadmin', $user->getIsAdmin());
+        }else{
+            $stmt->bindValue(':isadmin', 0);
+        }
 
         if($withemail){
             $stmt->bindValue(':emailcheck', $user->getEmail());
@@ -58,12 +63,13 @@ class UserDAO extends BasicDAO
      */
     public function update(User $user){
         $stmt = $this->pdoInstance->prepare('
-        UPDATE tbl_user set fld_user_firstname = :firstname, fld_user_lastname = :lastname, fld_user_email = :email, fld_user_verified = :verified
+        UPDATE tbl_user set fld_user_firstname = :firstname, fld_user_lastname = :lastname, fld_user_email = :email, fld_user_verified = :verified, fld_user_isadmin = :isadmin
          where 	fld_user_id	 = :id;');
         $stmt->bindValue(':id', $user->getId());
         $stmt->bindValue(':firstname', $user->getFirstname());
         $stmt->bindValue(':lastname', $user->getLastname());
         $stmt->bindValue(':email', $user->getEmail());
+        $stmt->bindValue(':isadmin', $user->getIsAdmin());
         $stmt->bindValue(':verified',intval($user->getVerfied()));
         $stmt->execute();
         return $this->read($user->getId());

@@ -12,6 +12,7 @@ use domain\AuthType;
 use services\AuthServiceImpl;
 use router\Router;
 use services\InvoiceServiceImpl;
+use services\UserServiceImpl;
 use view\LayoutRendering;
 use view\TemplateView;
 
@@ -26,6 +27,16 @@ class AuthController
         }
         if (isset($_COOKIE["token"])) {
             if(AuthServiceImpl::getInstance()->validateToken($_COOKIE["token"])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static function authenticateAdmin()
+    {
+        if (self::authenticate()){
+            if(AuthServiceImpl::getInstance()->readUser()->getIsAdmin()){
                 return true;
             }
         }

@@ -32,6 +32,14 @@ use rpcclient\RpcClient;
 ini_set( 'session.cookie_httponly', 1 );
 session_start();
 
+$authAdmin = function () {
+    if (AuthController::authenticateAdmin()) {
+        return true;
+    }
+    Router::redirect("/login");
+    return false;
+};
+
 $authFunction = function () {
     if (AuthController::authenticate()) {
        return true;
@@ -114,7 +122,7 @@ Router::route_auth("POST", "/geninvoice", $softauthFunction, function () {
 Router::route_auth("POST", "/preview", $authFunction, function () {
     ContentController::store(Status::DRAFT());
 });
-Router::route_auth("GET", "/node", $authFunction, function () {
+Router::route_auth("GET", "/node", $authAdmin, function () {
     $client = RpcClient::connect();
     $getInfoRequest = new Lnrpc\GetInfoRequest();
     $WalletbalanceRequest = new Lnrpc\WalletBalanceRequest();

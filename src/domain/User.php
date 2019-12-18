@@ -62,6 +62,27 @@ class User
     private $creation_date;
 
     /**
+     * @AttributeType bool
+     */
+    private $is_admin;
+
+    /**
+     * @return mixed
+     */
+    public function getIsAdmin()
+    {
+        return $this->is_admin;
+    }
+
+    /**
+     * @param mixed $is_admin
+     */
+    public function setIsAdmin($is_admin)
+    {
+        $this->is_admin = $is_admin;
+    }
+
+    /**
      * @return mixed
      */
     public function getCreationDate()
@@ -271,6 +292,8 @@ class User
             $this->setVerfied($value);
         }elseif ($name=='fld_user_creationpit'){
             $this->setCreationDate(date_create_from_format('Y-m-d H:i:s',$value)  );
+        }elseif ($name=='fld_user_isadmin'){
+            $this->setIsAdmin($value);
         }
     }
 
