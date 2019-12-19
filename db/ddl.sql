@@ -68,6 +68,14 @@ PRIMARY KEY(fld_ROLE_ID));
 
 
 
+CREATE TABLE tbl_Keyword (
+  fld_KEYW_ID SERIAL  NOT NULL ,
+  fld_KEYW_Name VARCHAR(255)      ,
+PRIMARY KEY(fld_KEYW_ID));
+
+
+
+
 CREATE TABLE tbl_Category (
   fld_CATE_ID SERIAL  NOT NULL ,
   fld_CATE_Name VARCHAR(255)      ,
@@ -81,14 +89,6 @@ CREATE TABLE tbl_AccessContraint (
   fld_ACCC_Key VARCHAR(255)    ,
   fld_ACCC_Name VARCHAR(255)      ,
 PRIMARY KEY(fld_ACCC_ID));
-
-
-
-
-CREATE TABLE tbl_Keyword (
-  fld_KEYW_ID SERIAL  NOT NULL ,
-  fld_KEYW_Name VARCHAR(255)      ,
-PRIMARY KEY(fld_KEYW_ID));
 
 
 
@@ -125,10 +125,28 @@ CREATE INDEX tbl_User_FKIndex1 ON tbl_User (fld_ROLE_ID);
 CREATE INDEX IFK_defines ON tbl_User (fld_ROLE_ID);
 
 
+CREATE TABLE tbl_auth_token (
+  fld_AUTH_ID SERIAL  NOT NULL ,
+  fld_USER_ID INT   NOT NULL ,
+  fld_AUTH_selector VARCHAR(255)   NOT NULL ,
+  fld_AUTH_validator VARCHAR(255)   NOT NULL ,
+  fld_AUTH_expiration VARCHAR(255)   NOT NULL ,
+  fld_AUTH_type INT   NOT NULL   ,
+PRIMARY KEY(fld_AUTH_ID)  ,
+  FOREIGN KEY(fld_USER_ID)
+    REFERENCES tbl_User(fld_USER_ID));
+
+
+CREATE INDEX tbl_auth_token_FKIndex1 ON tbl_auth_token (fld_USER_ID);
+
+
+CREATE INDEX IFK_tokenized ON tbl_auth_token (fld_USER_ID);
+
+
 CREATE TABLE tbl_Content (
   fld_CONT_ID SERIAL  NOT NULL ,
   fld_USER_ID INT   NOT NULL ,
-  fld_CATE_ID INT   ,
+  fld_CATE_ID INT    ,
   fld_ACCC_ID INT   NOT NULL ,
   fld_SCON_ID INT   NOT NULL ,
   fld_CONT_Title VARCHAR(255)    ,
@@ -168,6 +186,7 @@ CREATE INDEX IFK_specifies ON tbl_Content (fld_CATE_ID);
 
 CREATE TABLE tbl_Invoice (
   fld_INVC_ID SERIAL  NOT NULL ,
+  fld_AUTH_ID INT   NOT NULL ,
   fld_USER_ID1 INT    ,
   fld_USER_ID2 INT    ,
   fld_CONT_ID INT    ,
@@ -179,8 +198,10 @@ CREATE TABLE tbl_Invoice (
   fld_INVC_Satoshis INT    ,
   fld_INVC_CreationPIT TIMESTAMP    ,
   fld_INVC_SettlePIT TIMESTAMP    ,
-  fld_INVC_Expiry INT      ,
-PRIMARY KEY(fld_INVC_ID)          ,
+  fld_INVC_Expiry INT    ,
+  fld_INVC_lnurl_challenge VARCHAR(510)    ,
+  fld_INVC_lnurl_secret VARCHAR(510)      ,
+PRIMARY KEY(fld_INVC_ID)                ,
   FOREIGN KEY(fld_USER_ID1)
     REFERENCES tbl_User(fld_USER_ID),
   FOREIGN KEY(fld_CONT_ID)
@@ -190,7 +211,9 @@ PRIMARY KEY(fld_INVC_ID)          ,
   FOREIGN KEY(fld_PURP_ID)
     REFERENCES tbl_Purpose(fld_PURP_ID),
   FOREIGN KEY(fld_USER_ID2)
-    REFERENCES tbl_User(fld_USER_ID));
+    REFERENCES tbl_User(fld_USER_ID),
+  FOREIGN KEY(fld_AUTH_ID)
+    REFERENCES tbl_auth_token(fld_AUTH_ID));
 
 
 CREATE INDEX tbl_Invoice_FKIndex1 ON tbl_Invoice (fld_USER_ID1);
@@ -198,6 +221,9 @@ CREATE INDEX tbl_Invoice_FKIndex2 ON tbl_Invoice (fld_CONT_ID);
 CREATE INDEX tbl_Invoice_FKIndex3 ON tbl_Invoice (fld_PURP_ID);
 CREATE INDEX tbl_Invoice_FKIndex4 ON tbl_Invoice (fld_SINV_ID);
 CREATE INDEX tbl_Invoice_FKIndex5 ON tbl_Invoice (fld_USER_ID2);
+CREATE INDEX tbl_Invoice_FKIndex6 ON tbl_Invoice (fld_AUTH_ID);
+CREATE INDEX tbl_Invoice_FKIndex7 ON tbl_Invoice (fld_INVC_lnurl_challenge);
+CREATE INDEX tbl_Invoice_FKIndex8 ON tbl_Invoice (fld_INVC_lnurl_secret);
 
 
 
@@ -211,6 +237,7 @@ CREATE INDEX IFK_causes ON tbl_Invoice (fld_CONT_ID);
 CREATE INDEX IFK_indicates1 ON tbl_Invoice (fld_SINV_ID);
 CREATE INDEX IFK_reasons ON tbl_Invoice (fld_PURP_ID);
 CREATE INDEX IFK_receives ON tbl_Invoice (fld_USER_ID2);
+CREATE INDEX IFK_tokenizes ON tbl_Invoice (fld_AUTH_ID);
 
 
 CREATE TABLE tbl_Attachment (
@@ -230,25 +257,6 @@ CREATE INDEX tbl_Attachment_FKIndex1 ON tbl_Attachment (fld_CONT_ID);
 
 
 CREATE INDEX IFK_includes ON tbl_Attachment (fld_CONT_ID);
-
-
-CREATE TABLE tbl_ContentKeyword (
-  fld_COKE_IT SERIAL  NOT NULL ,
-  fld_CONT_ID INT   NOT NULL ,
-  fld_KEYW_ID INT   NOT NULL   ,
-PRIMARY KEY(fld_COKE_IT)    ,
-  FOREIGN KEY(fld_KEYW_ID)
-    REFERENCES tbl_Keyword(fld_KEYW_ID),
-  FOREIGN KEY(fld_CONT_ID)
-    REFERENCES tbl_Content(fld_CONT_ID));
-
-
-CREATE INDEX tbl_ContentKeyword_FKIndex1 ON tbl_ContentKeyword (fld_KEYW_ID);
-CREATE INDEX tbl_ContentKeyword_FKIndex2 ON tbl_ContentKeyword (fld_CONT_ID);
-
-
-CREATE INDEX IFK_describes ON tbl_ContentKeyword (fld_KEYW_ID);
-CREATE INDEX IFK_has ON tbl_ContentKeyword (fld_CONT_ID);
 
 
 CREATE TABLE tbl_Views (
@@ -281,6 +289,23 @@ CREATE INDEX IFK_counts ON tbl_Views (fld_CONT_ID);
 CREATE INDEX IFK_raises ON tbl_Views (fld_USER_ID);
 
 
+CREATE TABLE tbl_ContentKeyword (
+  fld_COKE_IT SERIAL  NOT NULL ,
+  fld_CONT_ID INT   NOT NULL ,
+  fld_KEYW_ID INT   NOT NULL   ,
+PRIMARY KEY(fld_COKE_IT)    ,
+  FOREIGN KEY(fld_KEYW_ID)
+    REFERENCES tbl_Keyword(fld_KEYW_ID),
+  FOREIGN KEY(fld_CONT_ID)
+    REFERENCES tbl_Content(fld_CONT_ID));
+
+
+CREATE INDEX tbl_ContentKeyword_FKIndex1 ON tbl_ContentKeyword (fld_KEYW_ID);
+CREATE INDEX tbl_ContentKeyword_FKIndex2 ON tbl_ContentKeyword (fld_CONT_ID);
+
+
+CREATE INDEX IFK_describes ON tbl_ContentKeyword (fld_KEYW_ID);
+CREATE INDEX IFK_has ON tbl_ContentKeyword (fld_CONT_ID);
 
 
 
