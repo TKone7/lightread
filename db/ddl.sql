@@ -157,6 +157,7 @@ CREATE TABLE tbl_Content (
   fld_CONT_Satoshis INT    ,
   fld_CONT_ETR INT      ,
   fld_CONT_Slug VARCHAR(255)      ,
+  fld_CONT_PreviewLen INT      ,
 PRIMARY KEY(fld_CONT_ID)        ,
   FOREIGN KEY(fld_USER_ID)
     REFERENCES tbl_User(fld_USER_ID),
@@ -190,7 +191,6 @@ CREATE TABLE tbl_Invoice (
   fld_INVC_ID SERIAL  NOT NULL ,
   fld_AUTH_ID INT   NOT NULL ,
   fld_USER_ID1 INT    ,
-  fld_USER_ID2 INT    ,
   fld_CONT_ID INT    ,
   fld_PURP_ID INT   NOT NULL ,
   fld_SINV_ID INT   NOT NULL ,

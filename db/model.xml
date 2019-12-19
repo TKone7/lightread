@@ -437,6 +437,12 @@
 <OPTIONSELECT Value="0" />
 </OPTIONSELECTED>
 </COLUMN>
+<COLUMN ID="1411" ColName="fld_CONT_PreviewLen" PrevColName="" Pos="12" idDatatype="4" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="0" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="0" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
 </COLUMNS>
 <RELATIONS_START>
 <RELATION_START ID="1072" />
@@ -557,6 +563,12 @@
 <OPTIONSELECT Value="0" />
 </OPTIONSELECTED>
 </COLUMN>
+<COLUMN ID="1414" ColName="fld_USER_ID2" PrevColName="" Pos="1" idDatatype="4" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="0" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
 <COLUMN ID="1391" ColName="fld_AUTH_ID" PrevColName="" Pos="1" idDatatype="4" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="1" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="">
 <OPTIONSELECTED>
 <OPTIONSELECT Value="0" />
@@ -564,12 +576,6 @@
 </OPTIONSELECTED>
 </COLUMN>
 <COLUMN ID="1240" ColName="fld_USER_ID1" PrevColName="" Pos="1" idDatatype="4" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="0" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="sender (buyer)">
-<OPTIONSELECTED>
-<OPTIONSELECT Value="0" />
-<OPTIONSELECT Value="0" />
-</OPTIONSELECTED>
-</COLUMN>
-<COLUMN ID="1237" ColName="fld_USER_ID2" PrevColName="" Pos="1" idDatatype="4" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="0" AutoInc="0" IsForeignKey="1" DefaultValue="" Comments="receiver">
 <OPTIONSELECTED>
 <OPTIONSELECT Value="0" />
 <OPTIONSELECT Value="0" />
@@ -671,11 +677,6 @@
 <INDEX ID="1210" IndexName="tbl_Invoice_FKIndex4" IndexKind="1" FKRefDef_Obj_id="1116">
 <INDEXCOLUMNS>
 <INDEXCOLUMN idColumn="1152" LengthParam="0" />
-</INDEXCOLUMNS>
-</INDEX>
-<INDEX ID="1236" IndexName="tbl_Invoice_FKIndex5" IndexKind="1" FKRefDef_Obj_id="1234">
-<INDEXCOLUMNS>
-<INDEXCOLUMN idColumn="1237" LengthParam="0" />
 </INDEXCOLUMNS>
 </INDEX>
 <INDEX ID="1387" IndexName="tbl_Invoice_FKIndex6" IndexKind="1" FKRefDef_Obj_id="1385">
