@@ -79,6 +79,7 @@ PRIMARY KEY(fld_KEYW_ID));
 CREATE TABLE tbl_Category (
   fld_CATE_ID SERIAL  NOT NULL ,
   fld_CATE_Name VARCHAR(255)      ,
+  fld_CATE_Key VARCHAR(255)      ,
 PRIMARY KEY(fld_CATE_ID));
 
 
@@ -155,6 +156,7 @@ CREATE TABLE tbl_Content (
   fld_CONT_CreationPIT TIMESTAMP    ,
   fld_CONT_Satoshis INT    ,
   fld_CONT_ETR INT      ,
+  fld_CONT_Slug VARCHAR(255)      ,
 PRIMARY KEY(fld_CONT_ID)        ,
   FOREIGN KEY(fld_USER_ID)
     REFERENCES tbl_User(fld_USER_ID),
