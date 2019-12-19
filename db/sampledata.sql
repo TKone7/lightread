@@ -7,13 +7,13 @@ INSERT INTO "tbl_user" ("fld_role_id", "fld_user_email", "fld_user_pwhash", "fld
 ((SELECT fld_role_id FROM tbl_role where fld_role_name='admin'),	'wdcoqxmx@zjubm.com',	'$2y$10$ocee0rWa6Tm/E32KIf2yquAQ3SxK.M4K9XS3CUJFO.oV7rjsnaFSy',	'2019-11-24 15:38:43',	't',	NULL,	NULL,	'toby',	NULL,	NULL,	'f',	NULL,	NULL),
 ((SELECT fld_role_id FROM tbl_role where fld_role_name='user'),	'mail@21isenough.me', '$2y$10$TC2YWy/4abt8me/pPl.HOusRxwmSK0TitE0k6XeZeT8wj5zjxv456', '2019-11-20 22:58:37.000000', 't', null, null, '21isenough', null, null, 'f',	NULL,	NULL);
 
-INSERT INTO "tbl_category" ("fld_cate_name") VALUES
-('Lifestyle'),
-('Food'),
-('Travel'),
-('Technology'),
-('Love'),
-('Finance');
+INSERT INTO "tbl_category" ("fld_cate_name", "fld_cate_key") VALUES
+('Lifestyle', 'lifestyle'),
+('Food', 'food'),
+('Travel', 'travel'),
+('Technology', 'technology'),
+('Love', 'love'),
+('Finance', 'finance');
 
 
 INSERT INTO "tbl_content" ("fld_user_id", "fld_cate_id", "fld_accc_id", "fld_scon_id", "fld_cont_title", "fld_cont_subtitle", "fld_cont_body", "fld_cont_creationpit", "fld_cont_satoshis", "fld_cont_etr") VALUES
