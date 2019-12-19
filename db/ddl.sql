@@ -212,8 +212,6 @@ PRIMARY KEY(fld_INVC_ID)                ,
     REFERENCES tbl_StatusInvoice(fld_SINV_ID),
   FOREIGN KEY(fld_PURP_ID)
     REFERENCES tbl_Purpose(fld_PURP_ID),
-  FOREIGN KEY(fld_USER_ID2)
-    REFERENCES tbl_User(fld_USER_ID),
   FOREIGN KEY(fld_AUTH_ID)
     REFERENCES tbl_auth_token(fld_AUTH_ID));
 
@@ -222,7 +220,6 @@ CREATE INDEX tbl_Invoice_FKIndex1 ON tbl_Invoice (fld_USER_ID1);
 CREATE INDEX tbl_Invoice_FKIndex2 ON tbl_Invoice (fld_CONT_ID);
 CREATE INDEX tbl_Invoice_FKIndex3 ON tbl_Invoice (fld_PURP_ID);
 CREATE INDEX tbl_Invoice_FKIndex4 ON tbl_Invoice (fld_SINV_ID);
-CREATE INDEX tbl_Invoice_FKIndex5 ON tbl_Invoice (fld_USER_ID2);
 CREATE INDEX tbl_Invoice_FKIndex6 ON tbl_Invoice (fld_AUTH_ID);
 CREATE INDEX tbl_Invoice_FKIndex7 ON tbl_Invoice (fld_INVC_lnurl_challenge);
 CREATE INDEX tbl_Invoice_FKIndex8 ON tbl_Invoice (fld_INVC_lnurl_secret);
@@ -238,7 +235,6 @@ CREATE INDEX IFK_pays ON tbl_Invoice (fld_USER_ID1);
 CREATE INDEX IFK_causes ON tbl_Invoice (fld_CONT_ID);
 CREATE INDEX IFK_indicates1 ON tbl_Invoice (fld_SINV_ID);
 CREATE INDEX IFK_reasons ON tbl_Invoice (fld_PURP_ID);
-CREATE INDEX IFK_receives ON tbl_Invoice (fld_USER_ID2);
 CREATE INDEX IFK_tokenizes ON tbl_Invoice (fld_AUTH_ID);
 
 
