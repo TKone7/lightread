@@ -326,3 +326,12 @@ INSERT INTO public.tbl_statusinvoice (fld_sinv_key, fld_sinv_name) VALUES ('ACCE
 
 INSERT INTO public.tbl_role (fld_role_key, fld_role_name) VALUES ('ADMIN', 'admin');
 INSERT INTO public.tbl_role (fld_role_key, fld_role_name) VALUES ('USER', 'user');
+
+
+INSERT INTO "tbl_category" ("fld_cate_name", "fld_cate_key") VALUES
+('Lifestyle', 'lifestyle'),
+('Food', 'food'),
+('Travel', 'travel'),
+('Technology', 'technology'),
+('Love', 'love'),
+('Finance', 'finance');
