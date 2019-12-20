@@ -19,7 +19,8 @@ isset($this->user) ? $user = $this->user : $user = new User();
                 take control of your earnings and lose dependency from our platform.</p>
 
             <p>Please paste a valid lightning invoice in the textfield below. Your maximum amount to withdraw is <?php echo $user->getBalance() ?> satoshis.
-            <div class="text-center clearfix">
+            <div class="text-center clearfix" style="display: flex;">
+              <div style="float:left;margin:20px;width:50%;">
                 <div class="form-group">
                     <h2>Lightning Invoice</h2>
                     <input id="pay_req" name="pay_req" class="form-control" type="text" placeholder="lnbc..." style="display:block;margin:0 auto">
@@ -30,8 +31,9 @@ isset($this->user) ? $user = $this->user : $user = new User();
                 <div id="pralert" class="alert" style="display: none">
 
                 </div>
+              </div>
                 <hr>
-
+              <div style="float:left;margin:20px;flex: 1;">
                 <div class="form-group">
                     <h2>LNURL</h2>
                     <input min="1" max="<?php echo $user->getBalance() ?>" id="amount" name="amount" class="form-control" type="number" placeholder="1 - <?php echo $user->getBalance() ?> sats" style="display:block;margin:0 auto">
@@ -44,6 +46,7 @@ isset($this->user) ? $user = $this->user : $user = new User();
                 <div id="lnurlalert" class="alert" style="display: none">
 
                 </div>
+              </div>
 
             </div>
         </div>
