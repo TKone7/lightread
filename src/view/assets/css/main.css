@@ -19,6 +19,9 @@ header.masthead .overlayarticle {
 header.masthead .overlay {
   opacity: .7;
   background-color: #000000;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 600px;
 }
 
 #login .nav-link {

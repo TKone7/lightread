@@ -7,12 +7,13 @@
  */
 
 use domain\Content;
+use domain\Status;
 
 isset($this->content)?$content=$this->content:$content=new Content();
 
 ?>
 <header class="masthead" style="background-image:url('assets/img/<?php echo $content->getCategory()->getKey()?>.jpg');" xmlns="http://www.w3.org/1999/html">
-    <div class="overlayarticle overlay"></div>
+    <div class="overlayarticle overlay" <?php echo ($content->getStatus() == Status::DRAFT()) ? 'style="background-image:url(assets/img/draft.png);"' : 'NULL' ?>></div>
     <div class="container">
         <div class="row">
             <div class="col-md-10 col-lg-8 mx-auto">
