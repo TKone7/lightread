@@ -104,11 +104,11 @@ isset($this->mgr) ? $mgr = $this->mgr : $mgr = new ContentManager();
                 <label class="earning-value"><?php echo $user->getTurnover(Purpose::READ()); ?> sats</label>
                 <hr class="earning-hr"><span class="earning-title">Total earning</span>
                 <label class="earning-value"><?php echo $user->getTurnover(); ?> sats</label>
-                <span class="earning-title">Total earning USD (<?php echo MarketDataServiceImpl::getInstance()->getPrice(); ?> / BTC)</span>
+                <span class="earning-title">Total earning USD (<?php echo floor(MarketDataServiceImpl::getInstance()->getPrice()); ?> / BTC)</span>
                 <label class="earning-value"><?php echo MarketDataServiceImpl::getInstance()->convertSatToUsdFormat($user->getTurnover()); ?></label>
                 <hr class="earning-hr"><span class="earning-title">Withdrawals</span><label class="earning-value">- <?php echo $user->getWithdrawal(); ?> sats</label>
                 <hr class="earning-hr"><span class="earning-title">Current balance</span><label class="earning-value"><?php echo $user->getBalance(); ?> sats</label>
-                <span class="earning-title">Current balance USD (<?php echo MarketDataServiceImpl::getInstance()->getPrice(); ?> / BTC)</span>
+                <span class="earning-title">Current balance USD (<?php echo floor(MarketDataServiceImpl::getInstance()->getPrice()); ?> / BTC)</span>
                 <label class="earning-value"><?php echo MarketDataServiceImpl::getInstance()->convertSatToUsdFormat($user->getBalance()); ?></label>
                 <hr class="earning-hr">
             </div>
