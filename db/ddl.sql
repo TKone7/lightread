@@ -128,7 +128,7 @@ CREATE INDEX IFK_defines ON tbl_User (fld_ROLE_ID);
 
 CREATE TABLE tbl_auth_token (
   fld_AUTH_ID SERIAL  NOT NULL ,
-  fld_USER_ID INT   NOT NULL ,
+  fld_USER_ID INT ,
   fld_AUTH_selector VARCHAR(255)   NOT NULL ,
   fld_AUTH_validator VARCHAR(255)   NOT NULL ,
   fld_AUTH_expiration VARCHAR(255)   NOT NULL ,
