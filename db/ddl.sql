@@ -189,7 +189,7 @@ CREATE INDEX IFK_specifies ON tbl_Content (fld_CATE_ID);
 
 CREATE TABLE tbl_Invoice (
   fld_INVC_ID SERIAL  NOT NULL ,
-  fld_AUTH_ID INT   NOT NULL ,
+  fld_AUTH_ID INT,
   fld_USER_ID1 INT    ,
   fld_CONT_ID INT    ,
   fld_PURP_ID INT   NOT NULL ,
