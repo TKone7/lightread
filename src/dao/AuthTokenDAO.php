@@ -31,7 +31,7 @@ class AuthTokenDAO extends BasicDAO
             DELETE FROM tbl_auth_token
             WHERE fld_auth_id = :id
         ');
-        /*$stmt->bindValue(':id', $authToken->getId());*/
+        $stmt->bindValue(':id', $authToken->getId());
         $stmt->execute();
     }
 

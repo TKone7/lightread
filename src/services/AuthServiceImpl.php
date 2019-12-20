@@ -13,6 +13,7 @@ use dao\UserDAO;
 use domain\AuthToken;
 use domain\AuthType;
 use domain\User;
+use http\HTTPException;
 
 class AuthServiceImpl implements AuthService
 {
@@ -65,6 +66,9 @@ class AuthServiceImpl implements AuthService
             $timestamp = (new \DateTime('now'))->modify('+30 days');
         }elseif($type == AuthType::ANONYM_TOKEN()){
             $timestamp = (new \DateTime('now'))->modify('+365 days');
+        }elseif ($type == AuthType::RESET_TOKEN()){
+            $token->setUser((new UserDAO())->findByEmail($email));
+            $timestamp = (new \DateTime('now'))->modify('+1 hour');
         }
         $token->setExpiration($timestamp);
         $authTokenDAO = new AuthTokenDAO();
@@ -87,7 +91,7 @@ class AuthServiceImpl implements AuthService
         if(!empty($authToken)) {
             if(time()<=$authToken->getExpiration()->getTimestamp()){
                 if (hash_equals(hash('sha256', hex2bin($tokenArray[1])), $authToken->getValidator())) {
-                    if($authToken->getType()==AuthType::USER_TOKEN()){
+                    if($authToken->getType()==AuthType::USER_TOKEN() OR $authToken->getType()==AuthType::RESET_TOKEN()){
                         $this->currentUserId = $authToken->getUser()->getId();
                     }elseif($authToken->getType()==AuthType::ANONYM_TOKEN()){
                         $this->currentAnonymId = $authToken->getId();

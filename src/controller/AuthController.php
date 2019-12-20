@@ -8,11 +8,14 @@
 
 namespace controller;
 
+use dao\UserDAO;
 use domain\AuthType;
 use services\AuthServiceImpl;
 use router\Router;
+use services\EmailServiceClient;
 use services\InvoiceServiceImpl;
 use services\UserServiceImpl;
+use validator\UserUpdateValidator;
 use view\LayoutRendering;
 use view\TemplateView;
 
@@ -76,6 +79,71 @@ class AuthController
         setcookie("token","",time() - 3600, "/", "",false, true);
         Router::redirect("/");
 
+    }
+    public static function pwRequestView()
+    {
+        LayoutRendering::headerLayout(new TemplateView("passwordResetRequest.php"), "Password reset", "We will send you a reset link.");
+    }
+    public static function pwResetRequest()
+    {
+        $pwResetView = new TemplateView("passwordResetRequest.php");
+
+        $ref = $_POST["email"];
+        $userdao = new UserDAO();
+        $user = $userdao->findByEmail($ref) ?? $username = $userdao->findByUser($ref);
+        if(isset($user) AND !empty($user->getEmail())){
+            $token = AuthServiceImpl::getInstance()->issueToken(AuthType::RESET_TOKEN(), $user->getEmail());
+            $emailView = new TemplateView("passwordResetEmail.php");
+            $emailView->resetLink = $GLOBALS["ROOT_URL"] . "/password/reset?token=" . $token;
+            EmailServiceClient::sendEmail($user->getEmail(), "Password Reset Email", $emailView->render());
+
+            $pwResetView->success = true;
+
+        }else{
+            $pwResetView->failed = true;
+        }
+        LayoutRendering::headerLayout($pwResetView, "Password reset", "We will send you a reset link.");
+    }
+    public static function pwResetView()
+    {
+        $pwResetRequestView = new TemplateView("passwordReset.php");
+        $pwResetRequestView->token = $_GET["token"];
+
+        LayoutRendering::headerLayout($pwResetRequestView, "Change password", "Please enter your new password.");
+    }
+
+    public static function pwReset()
+    {
+        $invalidtoken = false;
+
+        if(AuthServiceImpl::getInstance()->validateToken($_POST["token"])){
+            $olduser = AuthServiceImpl::getInstance()->readUser();
+            $newuser = clone $olduser;
+            $newuser->setPassword($_POST["password"]);
+            $userValidator = new UserUpdateValidator($olduser, $newuser);
+
+            if($userValidator->isValid()){
+                $newuser->setPassword(password_hash($_POST["password"], PASSWORD_DEFAULT));
+                if(UserServiceImpl::getInstance()->updateUser($olduser,$newuser)){
+                    LayoutRendering::headerLayout(new TemplateView("login.php"),"Password changed","You can login with your new password");
+                    return true;
+                }
+            }
+            $newuser->setPassword("");
+
+
+
+        }else{
+            $invalidtoken = true;
+        }
+        $resetView = new TemplateView("passwordReset.php");
+        $resetView->token = $_POST["token"];
+        if(!empty($userValidator)){
+            $resetView->validator = $userValidator;
+        }
+        $resetView->invalidtoken = $invalidtoken;
+        LayoutRendering::headerLayout($resetView, "Change password", "Please enter your new password.");
+        return false;
     }
 
 

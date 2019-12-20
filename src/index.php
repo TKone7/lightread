@@ -87,6 +87,18 @@ Router::route_auth("GET", "/login", $softauthFunction, function () {
 Router::route_auth("POST", "/login", $softauthFunction, function () {
     AuthController::login();
 });
+Router::route_auth("GET", "/password/request-form", $softauthFunction, function () {
+    AuthController::pwRequestView();
+});
+Router::route_auth("POST", "/password/request", $softauthFunction, function () {
+    AuthController::pwResetRequest();
+});
+Router::route_auth("GET", "/password/reset", $softauthFunction, function () {
+    AuthController::pwResetView();
+});
+Router::route_auth("POST", "/password/reset", $softauthFunction, function () {
+    AuthController::pwReset();
+});
 Router::route_auth("GET", "/profile", $authFunction, function () {
     UserController::showProfile();
 });

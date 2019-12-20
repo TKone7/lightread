@@ -15,6 +15,7 @@ use domain\User;
 use dao\UserDAO;
 use http\HTTPException;
 use http\HTTPStatusCode;
+use view\TemplateView;
 
 class UserServiceImpl implements UserService
 {
@@ -130,11 +131,9 @@ class UserServiceImpl implements UserService
      * @param User $user
      */
     public function sendVerificationMail(User $user){
-        $url = $GLOBALS["ROOT_URL"] . '/confirm_mail/?cfm=' . $this->getUserHash($user) . '&id=' . $user->getId();
-        $body = 'Thank you very much for your registration. <br>In order to use the full range of our features you will need to verfy your e-mail address on lightread: <br>
-                   <a href=\'' . $url . '\'>Please click this link</a> or paste the following in your browser:<br>
-                   ' . $url;
-        EmailServiceClient::sendEmail($user->getEmail(), 'Verify your email on Lightread',$body);
+        $emailView = new TemplateView("emailVerificationEmail.php");
+        $emailView->verifyLink = $GLOBALS["ROOT_URL"] . "/confirm_mail/?cfm=" .$this->getUserHash($user) . '&id=' . $user->getId();
+        EmailServiceClient::sendEmail($user->getEmail(), 'Verify your email on Lightread',$emailView->render());
     }
 
     /**

@@ -99,6 +99,10 @@ class UserDAO extends BasicDAO
         return null;
     }
 
+    /**
+     * @param $email
+     * @return User|null
+     */
     public function findByEmail($email){
         $stmt = $this->pdoInstance->prepare('
             SELECT * FROM tbl_user WHERE fld_user_email = :email;');
@@ -109,6 +113,11 @@ class UserDAO extends BasicDAO
         }
         return null;
     }
+
+    /**
+     * @param $username
+     * @return User|null
+     */
     public function findByUser($username){
         $stmt = $this->pdoInstance->prepare('
             SELECT * FROM tbl_user WHERE fld_user_nickname = :username;');
