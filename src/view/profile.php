@@ -39,8 +39,8 @@ isset($this->mgr) ? $mgr = $this->mgr : $mgr = new ContentManager();
             </div>
             <div
                     class="text-center clearfix">
-                <button class="btn btn-primary" onclick="window.location.href='<?php echo $GLOBALS["ROOT_URL"]; ?>/edit-profile'">Edit profile / Change password</button>
-                <button class="btn btn-light" onclick="window.location.href='<?php echo $GLOBALS["ROOT_URL"]; ?>/logout'">Logout</button>
+                <a id="edit" class="btn btn-primary" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/edit-profile">Edit profile / Change password</a>
+                <a id="logout" class="btn btn-light" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/logout">Logout</a>
             </div>
             <h3 class="profile-title">Your articles -&nbsp;<a href="<?php echo $GLOBALS["ROOT_URL"]; ?>/new"><i class="icon ion-android-add-circle"></i></a></h3><table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
                 <thead>

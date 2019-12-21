@@ -1,0 +1,7 @@
+I WANT TO FRONTPAGE WORKS
+
+I am on page '/' 
+I see 'Home' 
+I see 'About' 
+I see 'Samarra'
+

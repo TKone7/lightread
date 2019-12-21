@@ -59,7 +59,7 @@ isset($this->userValidator) ? $userValidator = $this->userValidator : $userValid
 
                     </tr>
                 </table>
-                <div class="text-center clearfix"><button class="btn btn-primary" type="submit" value="submit">Save changes&nbsp;</button></div>
+                <div class="text-center clearfix"><button class="btn btn-primary" type="submit" value="submit">Save changes</button></div>
             </form>
         </div>
     </div>

@@ -1,0 +1,16 @@
+actor: AcceptanceTester
+modules:
+  enabled:
+    - PhpBrowser:
+        url: http://localhost:8080/lightread
+    - Db:
+        dsn: 'pgsql:host=127.0.0.1;port=5432;dbname=lightread'
+        user: 'postgres'
+        password: '7t6ZDXyfOOnzKIJb0OxV'
+        dump: 'tests/_data/dump.sql'
+        cleanup: false
+        populate: false
+        reconnect: true
+        waitlock: 10
+step_decorators:
+  - \Codeception\Step\ConditionalAssertion

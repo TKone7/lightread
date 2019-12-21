@@ -76,7 +76,10 @@ class AuthController
     public static function logout()
     {
         session_destroy();
-        setcookie("token","",time() - 3600, "/", "",false, true);
+        if (isset($_COOKIE['token'])) {
+            unset($_COOKIE['token']);
+            setcookie("token",null,time() - 3600, "/", "",false, true);
+        }
         Router::redirect("/");
 
     }
