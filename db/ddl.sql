@@ -131,7 +131,7 @@ CREATE TABLE tbl_auth_token (
   fld_USER_ID INT ,
   fld_AUTH_selector VARCHAR(255)   NOT NULL ,
   fld_AUTH_validator VARCHAR(255)   NOT NULL ,
-  fld_AUTH_expiration VARCHAR(255)   NOT NULL ,
+  fld_AUTH_expiration TIMESTAMP   NOT NULL ,
   fld_AUTH_type INT   NOT NULL   ,
 PRIMARY KEY(fld_AUTH_ID)  ,
   FOREIGN KEY(fld_USER_ID)
