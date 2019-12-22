@@ -115,20 +115,18 @@ class ContentController
 
 
     }
-    public static function editContent(){
+    public static function editContent($slug){
         // retrieve content
-        $id = $_POST["cont_id"];
+        $content = ContentServiceImpl::getInstance()->readBySlug($slug);
         $editor = new TemplateView("editor.php");
         $categories =  (new CategoryDAO())->readAll();
         $editor->categories = $categories;
-        if(isset($id)){
-            $content = ContentServiceImpl::getInstance()->editContent($id);
-            if (!is_null($content)){
-                $editor->content=$content;
-            }else {
-                Router::redirect("/article-not-found");
-            }
+        if(!empty($content)){
+            $editor->content=$content;
+        }else {
+            Router::redirect("/article-not-found");
         }
+
         LayoutRendering::simpleLayout($editor);
 
     }

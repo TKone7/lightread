@@ -8,6 +8,7 @@
 
 use domain\Content;
 use domain\Status;
+use router\Router;
 
 isset($this->content)?$content=$this->content:$content=new Content();
 
@@ -23,9 +24,8 @@ isset($this->content)?$content=$this->content:$content=new Content();
                     <span class="meta">Posted by&nbsp;<a href="#"><?php echo $content->getAuthor()->getFullName() ?></a>&nbsp;on  <?php echo $content->getCreationDate()->format('F d, Y')?>  </span>
                     <span class="meta"><?php echo $content->getCategory()->getName()?></span>
                     <?php if($edit): ?>
-                    <form method="post" action="<?php echo $GLOBALS["ROOT_URL"]; ?>/edit">
+                    <form method="get" action="<?php echo $GLOBALS["ROOT_URL"]; ?>/<?php echo Router::getInstance()->route('edit_slug', [$content->getSlug()]);?>">
                         <div style="margin-top: 20px">
-                            <input type="hidden" name="cont_id" value="<?php echo $content->getId(); ?>">
                             <input type="submit" class="btn btn-light" value="Edit article">
                         </div>
                     </form>

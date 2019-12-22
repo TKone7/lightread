@@ -66,8 +66,8 @@ $router->group(['before' => 'auth'], function($router){
     $router->post('/edit-profile', function () {
         UserController::editProfile();
     });
-    $router->post('/edit', function () {
-        ContentController::editContent();
+    $router->get(['/edit/{slug}', 'edit_slug'], function ($slug) {
+        ContentController::editContent($slug);
     });
     $router->get('/new', function () {
         ContentController::newContent();
