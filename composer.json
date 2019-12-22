@@ -6,7 +6,8 @@
     "grpc/grpc": "^v1.3.0",
     "google/protobuf": "^v3.3.0",
     "myclabs/php-enum": "^v1.7.2",
-    "tkijewski/php-lnurl": "^v0.0.1"
+    "tkijewski/php-lnurl": "^v0.0.1",
+    "phroute/phroute": "^2.1"
   },
   "autoload": {
     "psr-4": {
