@@ -72,9 +72,8 @@ class ContentController
 
 
     }
-    public static function showContent(){
+    public static function showContent($slug){
         $restricted = false;
-        $slug = $_GET["title"];
         $content = ContentServiceImpl::getInstance()->readBySlug($slug);
         $post = new TemplateView("post.php");
         // show not found

@@ -6,9 +6,11 @@
  * Date: 30.10.2019
  * Time: 17:49
  */
+require_once  dirname(__FILE__). '/../c3.php';
 
 require dirname(__FILE__).'/../vendor/autoload.php';
 require_once("config/Autoloader.php");
+
 // @todo should maybe not be hard-coded but be defined by the server config
 date_default_timezone_set("Europe/Zurich");
 
@@ -21,6 +23,7 @@ use controller\WithdrawalController;
 
 use domain\Status;
 
+use router\SlimRouter;
 use services\ContentServiceImpl;
 use services\AuthServiceImpl;
 use view\TemplateView;
@@ -28,9 +31,31 @@ use view\LayoutRendering;
 use router\Router;
 use http\HTTPException;
 
+use \Psr\Http\Message\ServerRequestInterface as Request;
+use \Psr\Http\Message\ResponseInterface as Response;
+use Slim\App;
+use function foo\func;
+
+
 ini_set( 'session.cookie_httponly', 1 );
 session_start();
 
+
+$app = SlimRouter::init();
+
+$app->get('/',function ($request, $response, $args){
+
+    ContentController::showContentList();
+});
+
+$app->get('/article/{slug}',function ($request, $response, $args){
+    ContentController::showContent($args['slug']);
+});
+
+
+$app->run();
+
+/*
 $authAdmin = function () {
     if (AuthController::authenticateAdmin()) {
         return true;
@@ -53,10 +78,7 @@ $softauthFunction = function () {
 };
 
 Router::route_auth("GET", "/", $softauthFunction, function () {
-    $home = new TemplateView("home.php");
-    $mgr = ContentServiceImpl::getInstance()->getContentMgr(true);
-    $home->mgr=$mgr;
-    LayoutRendering::simpleLayout($home);
+    ContentController::showContentList();
 
 });
 // Static pages
@@ -174,3 +196,4 @@ try {
     LayoutRendering::headerLayout(new TemplateView("404.php"),"404","page not found");
 
 }
+*/
