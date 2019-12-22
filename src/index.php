@@ -21,7 +21,6 @@ use controller\WithdrawalController;
 
 use domain\Status;
 
-use services\ContentServiceImpl;
 use services\AuthServiceImpl;
 use view\TemplateView;
 use view\LayoutRendering;
@@ -31,27 +30,138 @@ use http\HTTPException;
 ini_set( 'session.cookie_httponly', 1 );
 session_start();
 
-$authAdmin = function () {
-    if (AuthController::authenticateAdmin()) {
-        return true;
-    }
-    Router::redirect("/login");
-    return false;
-};
+$router = Router::getInstance();
 
-$authFunction = function () {
-    if (AuthController::authenticate()) {
-       return true;
+// Authentication filters
+$router->filter('authadmin', function(){
+    if (!AuthController::authenticateAdmin()) {
+        Router::redirect('/login');
+        return false;
     }
-    Router::redirect("/login");
-    return false;
-};
-$softauthFunction = function () {
-    //@todo find another solution to make show user name in nav bar
+});
+$router->filter('auth', function(){
+    if (!AuthController::authenticate()) {
+        Router::redirect('/login');
+        return false;
+    }
+});
+$router->filter('noauth', function(){
     AuthController::authenticate();
-    return true;
-};
+});
 
+// Admin
+$router->group(['before' => 'authadmin'], function($router){
+    $router->get('/node',function () {
+        NodeController::showNodeinfo();
+    });
+});
+// Auth
+$router->group(['before' => 'auth'], function($router){
+    $router->get('profile', function () {
+        UserController::showProfile();
+    });
+    $router->get('/edit-profile', function () {
+        UserController::loadProfile();
+    });
+    $router->post('/edit-profile', function () {
+        UserController::editProfile();
+    });
+    $router->post('/edit', function () {
+        ContentController::editContent();
+    });
+    $router->get('/new', function () {
+        ContentController::newContent();
+    });
+    $router->post('/publish', function () {
+        ContentController::store(Status::PUBLISHED());
+    });
+    $router->post('/preview', function () {
+        ContentController::store(Status::DRAFT());
+    });
+    $router->get('/transactions', function () {
+        $wdrw_view = new TemplateView("transactions.php");
+        $wdrw_view->user = $auth = AuthServiceImpl::getInstance()->readUser();
+        LayoutRendering::simpleLayout($wdrw_view);
+    });
+    $router->get('/withdraw', function () {
+        $wdrw_view = new TemplateView("withdraw.php");
+        $wdrw_view->user = $auth = AuthServiceImpl::getInstance()->readUser();
+        LayoutRendering::simpleLayout($wdrw_view);
+    });
+    $router->post('/withdraw', function () {
+        WithdrawalController::withdraw();;
+    });
+});
+$router->group(['before' => 'noauth'], function($router){
+
+    $router->get('/',function (){
+        ContentController::showContentList();
+    });
+    $router->get('/about', function () {
+        LayoutRendering::headerLayout(new TemplateView("about.php"),"About </br> lightread","This is how it works");
+    });
+    $router->get('/category', function () {
+        LayoutRendering::headerLayout(new TemplateView("category.php"),"Category","Find what you are looking for");
+    });
+    $router->get('/register', function () {
+        UserController::register();
+    });
+    $router->post('/register', function () {
+        UserController::submit_register();
+    });
+    $router->get('/confirm_mail', function () {
+        UserController::confirmmail();
+    });
+    $router->get('/password/request-form', function () {
+        AuthController::pwRequestView();
+    });
+    $router->post('/password/request', function () {
+        AuthController::pwResetRequest();
+    });
+    $router->get('/password/reset', function () {
+        AuthController::pwResetView();
+    });
+    $router->post('/password/reset', function () {
+        AuthController::pwReset();
+    });
+    $router->get('/logout', function () {
+        AuthController::logout();
+    });
+    $router->get('/article', function () {
+        ContentController::showContent();
+    });
+
+    $router->post('/checkinvoice', function () {
+        InvoiceController::checkInvoice();
+    });
+    $router->get('/lnurl/withdraw', function () {
+        WithdrawalController::lnUrlPaymentRequest();
+    });
+    $router->get('/lnurl/info_request', function () {
+        WithdrawalController::lnUrlInfoRequest();
+    });
+    $router->post('/geninvoice', function () {
+        InvoiceController::generateInvoice();
+    });
+    // named route for reverse routing. See https://github.com/mrjgreen/phroute#named-routes-for-reverse-routing
+    $router->get(['/article/{slug}', 'article_slug'],function ($slug){
+        ContentController::showContent($slug);
+    });
+    $router->get('/login', function () {
+        if(!(AuthServiceImpl::getInstance()->verifyAuth())) {
+            LayoutRendering::headerLayout(new TemplateView("login.php"), "Login", "Welcome back");
+        }else{
+            Router::redirect('/profile');
+        }
+    });
+    $router->post('/login', function () {
+        AuthController::login();
+    });
+});
+
+Router::call_route($_SERVER['REQUEST_METHOD'], $_SERVER['PATH_INFO']);
+
+/*
 Router::route_auth("GET", "/", $softauthFunction, function () {
     $home = new TemplateView("home.php");
     $mgr = ContentServiceImpl::getInstance()->getContentMgr(true);
@@ -59,118 +169,9 @@ Router::route_auth("GET", "/", $softauthFunction, function () {
     LayoutRendering::simpleLayout($home);
 
 });
-// Static pages
-Router::route_auth("GET", "/about", $softauthFunction, function () {
-    LayoutRendering::headerLayout(new TemplateView("about.php"),"About </br> lightread","This is how it works");
-});
-Router::route_auth("GET", "/category", $softauthFunction, function () {
-    LayoutRendering::headerLayout(new TemplateView("category.php"),"Category","Find what you are looking for");
-});
-// Login / registering
-
-Router::route_auth("GET", "/register", $softauthFunction, function () {
-    UserController::register();
-});
-Router::route_auth("POST", "/register", $softauthFunction, function () {
-    UserController::submit_register();
-});
-Router::route_auth("GET", "/confirm_mail", $softauthFunction, function () {
-    UserController::confirmmail();
-});
-
-Router::route_auth("GET", "/login", $softauthFunction, function () {
-    if(!(AuthServiceImpl::getInstance()->verifyAuth())) {
-        LayoutRendering::headerLayout(new TemplateView("login.php"), "Login", "Welcome back");
-    }
-    Router::redirect("/profile");
-});
-Router::route_auth("POST", "/login", $softauthFunction, function () {
-    AuthController::login();
-});
-Router::route_auth("GET", "/password/request-form", $softauthFunction, function () {
-    AuthController::pwRequestView();
-});
-Router::route_auth("POST", "/password/request", $softauthFunction, function () {
-    AuthController::pwResetRequest();
-});
-Router::route_auth("GET", "/password/reset", $softauthFunction, function () {
-    AuthController::pwResetView();
-});
-Router::route_auth("POST", "/password/reset", $softauthFunction, function () {
-    AuthController::pwReset();
-});
-Router::route_auth("GET", "/profile", $authFunction, function () {
-    UserController::showProfile();
-});
-Router::route_auth("GET", "/edit-profile", $authFunction, function () {
-    UserController::loadProfile();
-});
-Router::route_auth("POST", "/edit-profile", $authFunction, function () {
-    UserController::editProfile();
-});
-Router::route_auth("GET", "/logout", $softauthFunction, function () {
-    AuthController::logout();
-});
-Router::route_auth("GET", "/article", $softauthFunction, function () {
-    ContentController::showContent();
-});
-Router::route_auth("POST", "/edit", $authFunction, function () {
-    ContentController::editContent();
-});
-Router::route_auth("GET", "/new", $authFunction, function () {
-    ContentController::newContent();
-});
-Router::route_auth("POST", "/publish", $authFunction, function () {
-    ContentController::store(Status::PUBLISHED());
-});
-Router::route_auth("POST", "/checkinvoice", $softauthFunction, function () {
-        InvoiceController::checkInvoice();
-    });
-
-Router::route_auth("POST", "/geninvoice", $softauthFunction, function () {
-    InvoiceController::generateInvoice();
-});
-Router::route_auth("POST", "/preview", $authFunction, function () {
-    ContentController::store(Status::DRAFT());
-});
-Router::route_auth("GET", "/node", $authAdmin, function () {
-    NodeController::showNodeinfo();
-});
-
 Router::route_auth("GET", "/admin", $authFunction, function () {
         $admin_view = new TemplateView("admin.php");
         LayoutRendering::simpleLayout($admin_view);
 
 });
-
-Router::route_auth("GET", "/transactions", $authFunction, function () {
-    $wdrw_view = new TemplateView("transactions.php");
-    $wdrw_view->user = $auth = AuthServiceImpl::getInstance()->readUser();
-    LayoutRendering::simpleLayout($wdrw_view);
-
-});
-
-Router::route_auth("GET", "/withdraw", $authFunction, function () {
-    $wdrw_view = new TemplateView("withdraw.php");
-    $wdrw_view->user = $auth = AuthServiceImpl::getInstance()->readUser();
-    LayoutRendering::simpleLayout($wdrw_view);
-
-});
-Router::route_auth("GET", "/lnurl/withdraw", $softauthFunction, function () {
-    WithdrawalController::lnUrlPaymentRequest();
-});
-Router::route_auth("GET", "/lnurl/info_request", $softauthFunction, function () {
-    WithdrawalController::lnUrlInfoRequest();
-});
-
-Router::route_auth("POST", "/withdraw", $authFunction, function () {
-    WithdrawalController::withdraw();;
-});
-
-try {
-    Router::call_route($_SERVER['REQUEST_METHOD'], $_SERVER['PATH_INFO']);
-} catch (HTTPException $exception) {
-    $exception->getHeader();
-    LayoutRendering::headerLayout(new TemplateView("404.php"),"404","page not found");
-
-}
+*/

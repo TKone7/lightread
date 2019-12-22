@@ -60,7 +60,9 @@ class ContentController
                 // create
                 $res = $contsvc->createContent($cont);
             }
-            Router::redirect("/article?title=" . $res->getSlug());
+
+            $route = '/'.Router::getInstance()->route('article_slug', [$res->getSlug()]);
+            Router::redirect($route);
         }else{
             $editorView = new TemplateView("editor.php");
             $editorView->content=$cont;
@@ -72,9 +74,8 @@ class ContentController
 
 
     }
-    public static function showContent(){
+    public static function showContent($slug){
         $restricted = false;
-        $slug = $_GET["title"];
         $content = ContentServiceImpl::getInstance()->readBySlug($slug);
         $post = new TemplateView("post.php");
         // show not found
@@ -138,5 +139,22 @@ class ContentController
         LayoutRendering::simpleLayout($editor);
 
     }
+
+    public static function showContentList()
+    {
+        $home = new TemplateView("home.php");
+        $mgr = ContentServiceImpl::getInstance()->getContentMgr(true);
+        $home->mgr=$mgr;
+        LayoutRendering::simpleLayout($home);
+    }
+
+    public static function showContentListBy()
+    {
+        $home = new TemplateView("home.php");
+        $mgr = ContentServiceImpl::getInstance()->getContentMgr(true);
+        $home->mgr=$mgr;
+        LayoutRendering::simpleLayout($home);
+    }
+
 
 }

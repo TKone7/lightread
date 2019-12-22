@@ -12,12 +12,16 @@ use http\Exception;
 use http\HTTPException;
 use http\HTTPStatusCode;
 use http\HTTPHeader;
+use Phroute\Phroute\Dispatcher;
+use Phroute\Phroute\RouteCollector;
 
 class Router
 {
-    protected static $routes = [];
-
-    public static function init()
+    private static $instance = NULL;
+    /**
+     * @return RouteCollector
+     */
+    public static function getInstance()
     {
         $protocol = isset($_SERVER['HTTPS']) || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === "https") ? 'https' : 'http';
         $_SERVER['SERVER_PORT'] === "80" ? $serverPort = "" : $serverPort = ":" . $_SERVER['SERVER_PORT'];
@@ -29,8 +33,27 @@ class Router
         } else {
             $_SERVER['PATH_INFO'] = "/";
         }
+        if(!isset(self::$instance)){
+            self::$instance = new RouteCollector();
+        }
+        return self::$instance;
     }
 
+    public static function redirect($redirect_path)
+    {
+        HTTPHeader::redirect($redirect_path);
+    }
+
+    public static function call_route($method, $path)
+    {
+        $dispatcher = new Dispatcher(self::$instance->getData());
+
+        $response = $dispatcher->dispatch($method, $path);
+
+        echo $response;
+
+    }
+/*
     public static function route($method, $path, $routeFunction)
     {
         self::route_auth($method, $path, null, $routeFunction);
@@ -44,29 +67,13 @@ class Router
         self::$routes[$method][$path] = array("authFunction" => $authFunction, "routeFunction" => $routeFunction);
     }
 
-    public static function call_route($method, $path)
-    {
-        $path = trim(parse_url($path, PHP_URL_PATH), '/');
-        if (!array_key_exists($method, self::$routes) || !array_key_exists($path, self::$routes[$method])) {
-            throw new HTTPException(HTTPStatusCode::HTTP_404_NOT_FOUND);
-        }
-        $route = self::$routes[$method][$path];
-        if (isset($route["authFunction"])) {
-            if (!$route["authFunction"]()) {
-                return;
-            }
-        }
-        $route["routeFunction"]();
-    }
+
 
     public static function errorHeader()
     {
         HTTPHeader::setStatusHeader(HTTPStatusCode::HTTP_404_NOT_FOUND);
     }
 
-    public static function redirect($redirect_path)
-    {
-        HTTPHeader::redirect($redirect_path);
-    }
 
+*/
 }
