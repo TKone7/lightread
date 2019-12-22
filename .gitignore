@@ -9,3 +9,4 @@ lndtest.php
 /.jekyll-cache
 /_site
 tests/_data/dump.sql
+docs
