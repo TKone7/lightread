@@ -9,15 +9,17 @@
 namespace controller;
 
 
-use dao\CategoryDAO;
+use dao\UserDAO;
 use domain\Access;
 use domain\Content;
 use domain\Status;
 use parsedown\Parsedown;
 use router\Router;
 use services\AuthServiceImpl;
+use services\CategoryServiceImpl;
 use services\ContentServiceImpl;
 use services\InvoiceServiceImpl;
+use services\UserServiceImpl;
 use services\ViewServiceImpl;
 use validator\ContentValidator;
 use view\LayoutRendering;
@@ -35,7 +37,7 @@ class ContentController
         $cont->setSubtitle($_POST["subtitle"]);
         $category_id = filter_input(INPUT_POST, 'category', FILTER_VALIDATE_INT);
         if(!empty($category_id)){
-            $cont->setCategory((new CategoryDAO())->read($category_id));
+            $cont->setCategory(CategoryServiceImpl::getInstance()->getCategory($category_id));
         }
         $cont->setBody($_POST["editordata"]);
         $cont->setStatus($new_status);
@@ -67,7 +69,7 @@ class ContentController
             $editorView = new TemplateView("editor.php");
             $editorView->content=$cont;
             $editorView->contentValidator = $validator;
-            $categories =  (new CategoryDAO())->readAll();
+            $categories =  CategoryServiceImpl::getInstance()->getAll();
             $editorView->categories = $categories;
             LayoutRendering::simpleLayout($editorView);
         }
@@ -115,26 +117,24 @@ class ContentController
 
 
     }
-    public static function editContent(){
+    public static function editContent($slug){
         // retrieve content
-        $id = $_POST["cont_id"];
+        $content = ContentServiceImpl::getInstance()->readBySlug($slug);
         $editor = new TemplateView("editor.php");
-        $categories =  (new CategoryDAO())->readAll();
+        $categories =  CategoryServiceImpl::getInstance()->getAll();
         $editor->categories = $categories;
-        if(isset($id)){
-            $content = ContentServiceImpl::getInstance()->editContent($id);
-            if (!is_null($content)){
-                $editor->content=$content;
-            }else {
-                Router::redirect("/article-not-found");
-            }
+        if(!empty($content)){
+            $editor->content=$content;
+        }else {
+            Router::redirect("/article-not-found");
         }
+
         LayoutRendering::simpleLayout($editor);
 
     }
     public static function newContent(){
         $editor = new TemplateView("editor.php");
-        $categories =  (new CategoryDAO())->readAll();
+        $categories =  CategoryServiceImpl::getInstance()->getAll();
         $editor->categories = $categories;
         LayoutRendering::simpleLayout($editor);
 
@@ -148,10 +148,19 @@ class ContentController
         LayoutRendering::simpleLayout($home);
     }
 
-    public static function showContentListBy()
+    public static function showContentListByAuthor($author)
     {
+        $user_author = UserServiceImpl::getInstance()->readUserByUsername($author);
         $home = new TemplateView("home.php");
-        $mgr = ContentServiceImpl::getInstance()->getContentMgr(true);
+        $mgr = ContentServiceImpl::getInstance()->getContentMgr(true,NULL,NULL,[$user_author]);
+        $home->mgr=$mgr;
+        LayoutRendering::simpleLayout($home);
+    }
+    public static function showContentListByCategory($category_key)
+    {
+        $category = CategoryServiceImpl::getInstance()->getCategoryByKey($category_key);
+        $home = new TemplateView("home.php");
+        $mgr = ContentServiceImpl::getInstance()->getContentMgr(true,NULL,[$category],NULL);
         $home->mgr=$mgr;
         LayoutRendering::simpleLayout($home);
     }

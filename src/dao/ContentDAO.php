@@ -104,6 +104,8 @@ class ContentDAO extends BasicDAO
               where 1=1';
         if(!is_null($authors))
             $basic .= ' AND c.fld_user_id in ('.rtrim($authors, ',').')';
+        if(!is_null($category))
+            $basic .= ' AND c.fld_cate_id in ('.rtrim($category, ',').')';
         if($verified_only){
             $basic .= ' AND u.fld_user_verified';
         }

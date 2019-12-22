@@ -18,4 +18,6 @@ interface UserService
 
     public function readUser($id);
 
+    public function readUserByUsername($username);
+
 }

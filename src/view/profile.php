@@ -10,6 +10,7 @@ use domain\Access;
 use domain\ContentManager;
 use domain\Purpose;
 use domain\User;
+use router\Router;
 use services\MarketDataServiceImpl;
 use validator\UserValidator;
 
@@ -45,7 +46,7 @@ isset($this->mgr) ? $mgr = $this->mgr : $mgr = new ContentManager();
             <h3 class="profile-title">Your articles -&nbsp;<a href="<?php echo $GLOBALS["ROOT_URL"]; ?>/new"><i class="icon ion-android-add-circle"></i></a></h3><table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
                 <thead>
                 <tr>
-                    <th style="width:20%">Title</th>
+                    <th style="min-width:50%">Title</th>
                     <th>Status</th>
                     <th>Views</th>
                     <th>Turnover</th>
@@ -58,15 +59,7 @@ isset($this->mgr) ? $mgr = $this->mgr : $mgr = new ContentManager();
                 foreach ($articles as $item) { ?>
 
                     <tr>
-                    <td>
-
-                        <form method="post" action="<?php echo $GLOBALS["ROOT_URL"]; ?>/edit">
-                            <div style="margin: 0px;">
-                                <input type="hidden" name="cont_id" value="<?php echo $item->getId(); ?>">
-                                <input type="submit" value="<?php echo $item->getTitle(); ?>" style="background: none; border: none; text-decoration: underline; cursor: pointer;">
-                            </div>
-                        </form>
-                    </td>
+                        <td><a href="<?php echo $GLOBALS["ROOT_URL"] . "/" . Router::getInstance()->route('edit_slug', [$item->getSlug()]); ?>"><?php echo $item->getTitle(); ?></a></td>
                     <td><?php echo $item->getStatus()->getValue(); ?></td>
                     <td>-</td>
                     <td><?php echo $item->getRevenue(); ?> sats</td>

@@ -13,14 +13,26 @@ use dao\CategoryDAO;
 
 class CategoryServiceImpl implements CategoryService
 {
+    private static $instance = NULL;
+
+    public static function getInstance(){
+        if(!isset(self::$instance)){
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
 
     public function getAll()
     {
-        // TODO: Implement getAll() method.
+        return (new CategoryDAO())->readAll();
     }
 
     public function getCategory($id)
     {
         return (new CategoryDAO())->read($id);
+    }
+    public function getCategoryByKey($key)
+    {
+        return (new CategoryDAO())->readByKey($key);
     }
 }

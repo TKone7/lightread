@@ -66,8 +66,8 @@ $router->group(['before' => 'auth'], function($router){
     $router->post('/edit-profile', function () {
         UserController::editProfile();
     });
-    $router->post('/edit', function () {
-        ContentController::editContent();
+    $router->get(['/edit/{slug}', 'edit_slug'], function ($slug) {
+        ContentController::editContent($slug);
     });
     $router->get('/new', function () {
         ContentController::newContent();
@@ -147,6 +147,12 @@ $router->group(['before' => 'noauth'], function($router){
     $router->get(['/article/{slug}', 'article_slug'],function ($slug){
         ContentController::showContent($slug);
     });
+    $router->get(['/author/{author}', 'article_author'],function ($author){
+        ContentController::showContentListByAuthor($author);
+    });
+    $router->get(['/category/{category}', 'article_category'],function ($category){
+        ContentController::showContentListByCategory($category);
+    });
     $router->get('/login', function () {
         if(!(AuthServiceImpl::getInstance()->verifyAuth())) {
             LayoutRendering::headerLayout(new TemplateView("login.php"), "Login", "Welcome back");
@@ -162,13 +168,7 @@ $router->group(['before' => 'noauth'], function($router){
 Router::call_route($_SERVER['REQUEST_METHOD'], $_SERVER['PATH_INFO']);
 
 /*
-Router::route_auth("GET", "/", $softauthFunction, function () {
-    $home = new TemplateView("home.php");
-    $mgr = ContentServiceImpl::getInstance()->getContentMgr(true);
-    $home->mgr=$mgr;
-    LayoutRendering::simpleLayout($home);
 
-});
 Router::route_auth("GET", "/admin", $authFunction, function () {
         $admin_view = new TemplateView("admin.php");
         LayoutRendering::simpleLayout($admin_view);
