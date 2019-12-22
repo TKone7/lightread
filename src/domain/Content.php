@@ -9,9 +9,9 @@
 namespace domain;
 
 
-use dao\CategoryDAO;
 use dao\UserDAO;
 use parsedown\Parsedown;
+use services\CategoryServiceImpl;
 use services\ContentServiceImpl;
 use services\MarketDataServiceImpl;
 
@@ -311,7 +311,7 @@ class Content
         }elseif ($name=='fld_cont_satoshis'){
             $this->setPrice($value);
         }elseif ($name=='fld_cate_id'){
-            $this->setCategory((new CategoryDAO())->read($value));
+            $this->setCategory(CategoryServiceImpl::getInstance()->getCategory($value));
         }
     }
 

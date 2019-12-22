@@ -88,6 +88,7 @@ class ContentServiceImpl implements ContentService
     public function getContentMgr($verified_only = false, array $keyword = NULL, array $category = NULL, array $author = NULL): ContentManager
     {
         $authorslist = NULL;
+        $categorylist=NULL;
         $contentdao = new ContentDAO();
         if(!is_null($author)){
 
@@ -95,7 +96,13 @@ class ContentServiceImpl implements ContentService
                 $authorslist .= $a->getId().",";
             }
         }
-        $contents = $contentdao->filter($verified_only,NULL,NULL,$authorslist);
+        if(!is_null($category)){
+
+            foreach ($category as $c){
+                $categorylist .= $c->getId().",";
+            }
+        }
+        $contents = $contentdao->filter($verified_only,NULL,$categorylist,$authorslist);
         $cm = new ContentManager($contents);
         return $cm;
     }

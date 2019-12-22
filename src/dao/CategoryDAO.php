@@ -28,6 +28,20 @@ class CategoryDAO extends BasicDAO
     }
 
     /**
+     * @return Category|null
+     */
+    public function readByKey($key){
+        $stmt = $this->pdoInstance->prepare('
+            SELECT * FROM tbl_category WHERE fld_cate_key = :key;');
+        $stmt->bindValue(':key', $key);
+        $stmt->execute();
+        if ($stmt->rowCount() > 0) {
+            return $stmt->fetchAll(\PDO::FETCH_CLASS, "domain\Category")[0];
+        }
+        return null;
+    }
+
+    /**
      * @return Category[]|null
      */
     public function readAll(){

@@ -93,6 +93,12 @@ class UserServiceImpl implements UserService
         return $userdao->read($id);
     }
 
+    public function readUserByUsername($username)
+    {
+        $userdao = new UserDAO();
+        return $userdao->findByUser($username);
+    }
+
 
     /**
      * @param User $user
