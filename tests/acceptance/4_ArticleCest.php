@@ -37,7 +37,24 @@ class ArticleCest
         $I->click('Publish');
         $I->seeInCurrentUrl('this-is-an-automated-test');
         $I->see('reduced Text dramatically');
-
-
     }
+    public function filterCategory(AcceptanceTester $I)
+    {
+        $I->amOnPage('/profile');
+        $I->click('This is an automated Test');
+        $I->click('Publish');
+        $I->click('Lifestyle');
+        $I->seeInCurrentUrl('/category/lifestyle');
+    }
+
+    public function filterUser(AcceptanceTester $I)
+    {
+        $I->amOnPage('/profile');
+        $I->click('This is an automated Test');
+        $I->click('Publish');
+        $I->click('Acceptance Tester');
+        $I->seeInCurrentUrl('/author/'.$this->newuser['username']);
+    }
+
+
 }
