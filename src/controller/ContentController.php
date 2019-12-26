@@ -107,7 +107,7 @@ class ContentController
         }
         $body = $content->getHTMLBody();
         if($restricted){
-            $body =ContentServiceImpl::getInstance()->trimHTML($body,$_GET["len"]??300);
+            $body = ContentServiceImpl::getInstance()->trimHTML($body,$_GET["len"]??300);
         }
         $post->content = $content;
         $post->body = $body;
