@@ -288,10 +288,10 @@ CREATE INDEX IFK_raises ON tbl_Views (fld_USER_ID);
 
 
 CREATE TABLE tbl_ContentKeyword (
-  fld_COKE_IT SERIAL  NOT NULL ,
+  fld_COKE_ID SERIAL  NOT NULL ,
   fld_CONT_ID INT   NOT NULL ,
   fld_KEYW_ID INT   NOT NULL   ,
-PRIMARY KEY(fld_COKE_IT)    ,
+PRIMARY KEY(fld_COKE_ID)    ,
   FOREIGN KEY(fld_KEYW_ID)
     REFERENCES tbl_Keyword(fld_KEYW_ID),
   FOREIGN KEY(fld_CONT_ID)
