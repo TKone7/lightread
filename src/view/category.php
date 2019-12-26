@@ -5,92 +5,43 @@
  * Date: 30.10.2019
  * Time:
  */
+use domain\Category;
+use router\Router;
+
+(isset($this->categories)) ? $categories = $this->categories: array(new Category());
+$cols = 2;
+
 ?>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-10 col-lg-8 mx-auto"><section class="cms-boxes">
-   <div class="container-fluid">
-      <div class="row">
-         <div class="col-md-4 cms-boxes-outer">
-            <a href="index.html" class="tile">
-            <div class="cms-boxes-items cms-pink">
-               <div class="boxes-align">
-                  <div class="small-box">
-                     <h3>Data Management</h3>
-                  </div>
-               </div>
+
+
+<div class="container">
+
+    <?php
+    $rowcount = 0;
+    foreach ($categories as $cat) { ?>
+
+        <?php if($rowcount % $cols == 0){ ?>
+            <div class="row category_row">
+        <?php } ?>
+
+                <div class="col category_col">
+                    <div class="category_container">
+                        <a href="<?php echo $GLOBALS["ROOT_URL"] .'/'. Router::getInstance()->route('article_category', [$cat->getKey()]);?>">
+                            <img class="category_img" src='assets/img/<?php echo $cat->getKey()?>.jpg' )>
+                            <div class="category_name">
+                                <h1 class="category_h1"><?php echo $cat->getName(); ?></h1>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+        <?php if(($rowcount +1) % $cols == 0){ ?>
             </div>
-            </a>
-         </div>
-         <div class="col-md-4 cms-boxes-outer">
-            <div class="cms-boxes-items cms-purple">
-               <div class="boxes-align">
-                  <div class="small-box">
-                     <h3>Artificial<br> Intelligence</h3>
-                  </div>
-               </div>
-            </div>
-         </div>
-         <div class="col-md-4 cms-boxes-outer">
-            <div class="cms-boxes-items cms-pink">
-               <div class="boxes-align">
-                  <div class="small-box">
-                     <h3>Astrology</h3>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </div>
-      <div class="row">
-         <div class="col-md-6 cms-boxes-outer">
-            <div class="cms-boxes-items cms-purple">
-               <div class="boxes-align">
-                  <div class="large-box">
-                     <h3>Programming</h3>
-                  </div>
-               </div>
-            </div>
-         </div>
-         <div class="col-md-6 cms-boxes-outer">
-            <div class="cms-boxes-items cms-pink">
-               <div class="boxes-align">
-                  <div class="large-box">
-                     <h3>Travel</h3>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </div>
-       <div class="row">
-         <div class="col-md-4 cms-boxes-outer">
-            <div class="cms-boxes-items cms-purple">
-               <div class="boxes-align">
-                  <div class="small-box">
-                     <h3>Blockchain ;-)</h3>
-                  </div>
-               </div>
-            </div>
-         </div>
-         <div class="col-md-4 cms-boxes-outer">
-            <div class="cms-boxes-items cms-pink">
-               <div class="boxes-align">
-                  <div class="small-box">
-                     <h3>Movies</h3>
-                  </div>
-               </div>
-            </div>
-         </div>
-         <div class="col-md-4 cms-boxes-outer">
-            <div class="cms-boxes-items cms-purple">
-               <div class="boxes-align">
-                  <div class="small-box">
-                     <h3>Politics</h3>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </div>
-   </div>
-</section></div>
-        </div>
-    </div>
+        <?php } ?>
+        <?php $rowcount++  ?>
+    <?php } ?>
+
+</div>
+
+
+

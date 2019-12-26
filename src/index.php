@@ -13,12 +13,15 @@ require_once("config/Autoloader.php");
 date_default_timezone_set("Europe/Zurich");
 
 use controller\AuthController;
+use controller\CategoryController;
 use controller\ContentController;
 use controller\InvoiceController;
 use controller\NodeController;
 use controller\UserController;
 use controller\WithdrawalController;
 
+
+use domain\Category;
 use domain\Status;
 
 use services\AuthServiceImpl;
@@ -101,7 +104,8 @@ $router->group(['before' => 'noauth'], function($router){
         LayoutRendering::headerLayout(new TemplateView("about.php"),"About </br> lightread","This is how it works");
     });
     $router->get('/category', function () {
-        LayoutRendering::headerLayout(new TemplateView("category.php"),"Category","Find what you are looking for");
+        //LayoutRendering::headerLayout(new TemplateView("category.php"),"Category","Find what you are looking for");
+        CategoryController::showCategoryTiles();
     });
     $router->get('/register', function () {
         UserController::register();
