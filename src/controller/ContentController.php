@@ -18,7 +18,9 @@ use router\Router;
 use services\AuthServiceImpl;
 use services\CategoryServiceImpl;
 use services\ContentServiceImpl;
+use services\ContentKeywordServiceImpl;
 use services\InvoiceServiceImpl;
+use services\KeywordServiceImpl;
 use services\UserServiceImpl;
 use services\ViewServiceImpl;
 use validator\ContentValidator;
@@ -31,7 +33,6 @@ class ContentController
         $auth = AuthServiceImpl::getInstance();
         $cont = new Content();
         $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
-
         $cont->setId($id);
         $cont->setTitle($_POST["title"]);
         $cont->setSubtitle($_POST["subtitle"]);
@@ -50,6 +51,8 @@ class ContentController
             $cont->setAccess(Access::FREE());
             $cont->setPrice(0);
         }
+
+
         $validator = new ContentValidator($cont);
         if ($validator->isValid()){
             $contsvc = ContentServiceImpl::getInstance();
@@ -57,11 +60,16 @@ class ContentController
                 // update
                 $cont->setId($id);
                 $res = $contsvc->updateContent($cont);
-
             }else{
                 // create
                 $res = $contsvc->createContent($cont);
             }
+
+            //todo keywords
+            $keywsvc = KeywordServiceImpl::getInstance();
+            $keywords = $keywsvc->syncKeywords(str_getcsv($_POST["keywords"]));
+            $keywsvc->associate($cont, $keywords);
+
 
             $route = '/'.Router::getInstance()->route('article_slug', [$res->getSlug()]);
             Router::redirect($route);
@@ -112,6 +120,7 @@ class ContentController
         $post->content = $content;
         $post->body = $body;
         $post->restricted = $restricted;
+        $post->keywords = KeywordServiceImpl::getInstance()->getKeywords($content);
         $allow = $content->getAuthor()->getId()==AuthServiceImpl::getInstance()->getCurrentUserId();
         LayoutRendering::postLayout($post,$content,$allow);
 
@@ -123,6 +132,9 @@ class ContentController
         $editor = new TemplateView("editor.php");
         $categories =  CategoryServiceImpl::getInstance()->getAll();
         $editor->categories = $categories;
+        $keywsvc = KeywordServiceImpl::getInstance();
+        $editor->keywordvalues = $keywsvc->getValues($content);;
+        $editor->keywordsuggestions = $keywsvc->getSuggestions($content);
         if(!empty($content)){
             $editor->content=$content;
         }else {

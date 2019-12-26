@@ -9,6 +9,7 @@
 use domain\Access;
 use domain\Category;
 use domain\Content;
+use domain\Keyword;
 use services\MarketDataServiceImpl;
 use validator\ContentValidator;
 
@@ -16,7 +17,10 @@ $load = isset($this->content);
 (isset($this->content)) ? $content = $this->content : $content = new Content();
 (isset($this->categories)) ? $categories = $this->categories: array(new Category());
 (isset($this->contentValidator)) ? $contentValidator = $this->contentValidator : $contentValidator = new ContentValidator();
+(isset($this->keywordvalues)) ? $keywordvalues = $this->keywordvalues: "";
+(isset($this->keywordsuggestions)) ? $keywordsuggestions = $this->keywordsuggestions: "";
 ?>
+
 <div class="container">
         <div class="row articlerow">
             <div class="col-md-10 col-lg-8 mx-auto">
@@ -62,6 +66,15 @@ $load = isset($this->content);
 
                             </select>
                         </div>
+
+
+                        <div class="form-group">
+                            <div class="amsify-suggestags-input">
+                                <input name="keywords" type="text" class="form-control" value="<?php echo $keywordvalues ?>" placeholder="Give up to 6 tags" />
+                            </div>
+                        </div>
+
+
                         <div class="form-group">
                             <button formaction="<?php echo $GLOBALS["ROOT_URL"]; ?>/preview" class="btn btn-light" type="submit">Store as draft</button>
                             <button class="btn btn-primary" type="submit">Publish</button>
@@ -73,6 +86,7 @@ $load = isset($this->content);
     </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script>
     $(document).ready(function (){
         $('#price').on('input',function(e){
@@ -88,6 +102,14 @@ $load = isset($this->content);
                 $('#fiat').text('~$' + (usdval).toFixed(2));
             }
         });
+
+        $('input[name="keywords"]').amsifySuggestags({
+            suggestions: <?php echo $keywordsuggestions ?>,
+            tagLimit: 6
+        });
+
     });
+
+
 
 </script>

@@ -40,6 +40,7 @@
 <script src="assets/js/login-bootstrap.bundle.min.js"></script>
 <script src="assets/js/jquery-qrcode-0.17.0.js"></script>
 <script src="assets/js/jquery-qrcode-0.17.0.min.js"></script>
+<script src="assets/js/jquery.amsify.suggestags.js"></script>
 <!--<script src="assets/js/login-jquery.slim.js"></script>-->
 </body>
 

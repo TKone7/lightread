@@ -6,12 +6,15 @@
  * Time:
  */
 
+
 use domain\Content;
-use services\ContentServiceImpl;
+use domain\Keyword;
+
 
 isset($this->body)?$body=$this->body:$body="Article not found";
 isset($this->content)?$content=$this->content:$content=new Content();
 isset($this->restricted)?$restricted=$this->restricted:$restricted=false;
+(isset($this->keywords)) ? $keywords = $this->keywords: array(new Keyword());
 
 ?>
 <article>
@@ -24,6 +27,18 @@ isset($this->restricted)?$restricted=$this->restricted:$restricted=false;
 
         </div>
     <?php endif; ?>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10 col-lg-8 mx-auto">
+
+                <?php foreach($keywords as $keyword) { ?>
+                    <button class="btn btn-sm rounded border-primary btn-keyword text-lowercase" type="button"><?php echo $keyword->getName(); ?></button>
+                <?php  } ?>
+
+            </div>
+        </div>
+    </div>
 
     <div class="container">
             <div class="row">
