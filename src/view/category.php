@@ -29,7 +29,7 @@ $cols = 2;
                         <a href="<?php echo $GLOBALS["ROOT_URL"] .'/'. Router::getInstance()->route('article_category', [$cat->getKey()]);?>">
                             <img class="category_img" src='assets/img/<?php echo $cat->getKey()?>.jpg' )>
                             <div class="category_name">
-                                <h1 class="category_h1"><?php echo $cat->getName(); ?></h1>
+                                <h1 class="h1 category_h1"><?php echo $cat->getName(); ?></h1>
                             </div>
                         </a>
                     </div>
