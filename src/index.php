@@ -100,6 +100,9 @@ $router->group(['before' => 'noauth'], function($router){
     $router->get('/',function (){
         ContentController::showContentList();
     });
+    $router->post('/search', function () {
+        ContentController::showContentListSearched();
+    });
     $router->get('/about', function () {
         LayoutRendering::headerLayout(new TemplateView("about.php"),"About </br> lightread","This is how it works");
     });

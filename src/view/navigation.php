@@ -17,7 +17,7 @@ isset($this->user) ? $user = $this->user : $user = new User();
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title><?php echo TemplateView::noHTML($title); ?></title>
+    <title>Lightread</title>
     <link rel="icon" type="image/png" sizes="32x33" href="assets/img/lightread.png">
     <link rel="icon" type="image/png" sizes="16x16" href="assets/img/lightread16.png">
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
@@ -50,6 +50,20 @@ isset($this->user) ? $user = $this->user : $user = new User();
     <div class="container"><a class="navbar-brand lrlogo <?php echo ($this->simple) ? "lrlogo-index" : "" ?>" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/">light<i class="fa fa-flash" style="color: #ffc81e;"></i>read</a><button data-toggle="collapse" data-target="#navbarResponsive" class="navbar-toggler" aria-controls="navbarResponsive" aria-expanded="false"
                                                                                                                                                     aria-label="Toggle navigation"><i class="fa fa-bars"></i></button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
+            <?php
+            $uri = $_SERVER[REQUEST_URI];
+            if ($uri === "/lightread/" || $uri  === "/lightread/search") { ?>
+                <ul class="nav navbar-nav ml-auto">
+                    <li role="presentation" class="nav-item">
+                        <form method="post" action="<?php echo $GLOBALS["ROOT_URL"]; ?>/search">
+                            <input id="strm" name="searchterm" type="search" class="border rounded form-control" style="width: 333px;" placeholder="search..." />
+<!--                            <button class="btn btn-primary" type="submit" >search</button>-->
+                            <input type="submit" id="mySubmit" style="display: none;" />
+                        </form>
+                    </li>
+                </ul>
+            <?php } ?>
+
             <ul class="nav navbar-nav ml-auto">
                 <li class="nav-item" role="presentation"><a class="nav-link" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/">Home</a></li>
                 <li class="nav-item" role="presentation"><a class="nav-link" href="<?php echo $GLOBALS["ROOT_URL"]; ?>/about">About</a></li>
@@ -70,3 +84,21 @@ isset($this->user) ? $user = $this->user : $user = new User();
         </div>
     </div>
 </nav>
+
+<script>
+    $(document).ready(function (){
+
+        $('#mySubmit').click(function() {
+            alert('Submitted!');
+            return false;
+        });
+
+        $('#strm').on('keyup', function(e) {
+            if (e.keyCode === 13) { //13 = Enter
+                $('#mySubmit').click();
+            }
+        });
+
+    });
+
+</script>

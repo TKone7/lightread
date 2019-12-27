@@ -107,6 +107,7 @@ class ContentServiceImpl implements ContentService
         return $cm;
     }
 
+
     public function trimHTML($html, $length){
         $len = strlen($html);
         $restr = $length;

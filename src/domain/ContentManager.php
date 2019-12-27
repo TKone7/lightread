@@ -28,6 +28,10 @@ class ContentManager
         $this->articles[] = $content;
     }
 
+    public function updateContentList(array $cont_list){
+        $this->articles=$cont_list;
+    }
+
     /**
      * @param Status|NULL $status
      * @param Access|NULL $access

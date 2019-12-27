@@ -21,6 +21,8 @@ use services\ContentServiceImpl;
 use services\ContentKeywordServiceImpl;
 use services\InvoiceServiceImpl;
 use services\KeywordServiceImpl;
+use services\SearchService;
+use services\SearchServiceImpl;
 use services\UserServiceImpl;
 use services\ViewServiceImpl;
 use validator\ContentValidator;
@@ -158,6 +160,17 @@ class ContentController
         $mgr = ContentServiceImpl::getInstance()->getContentMgr(true);
         $home->mgr=$mgr;
         LayoutRendering::simpleLayout($home);
+    }
+
+    public static function showContentListSearched()
+    {
+        $home = new TemplateView("home.php");
+        $mgr = ContentServiceImpl::getInstance()->getContentMgr(true);
+        $findings = SearchServiceImpl::getInstance()->getFindings($_POST["searchterm"], $mgr->getContent());
+        $mgr->updateContentList($findings);
+        $home->mgr=$mgr;
+        LayoutRendering::simpleLayout($home);
+
     }
 
     public static function showContentListByAuthor($author)
