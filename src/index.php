@@ -100,8 +100,30 @@ $router->group(['before' => 'noauth'], function($router){
     $router->get('/',function (){
         ContentController::showContentList();
     });
-    $router->post('/search', function () {
-        ContentController::showContentListSearched();
+    $router->post('/', function () {
+        ContentController::showContentList();
+    });
+    // named route for reverse routing. See https://github.com/mrjgreen/phroute#named-routes-for-reverse-routing
+    $router->get(['/article/{slug}', 'article_slug'],function ($slug){
+        ContentController::showContent($slug);
+    });
+    $router->get(['/author/{author}', 'article_author'],function ($author){
+        ContentController::showContentListByAuthor($author);
+    });
+    $router->post(['/author/{author}', 'article_author'],function ($author){
+        ContentController::showContentListByAuthor($author);
+    });
+    $router->get(['/category/{category}', 'article_category'],function ($category){
+        ContentController::showContentListByCategory($category);
+    });
+    $router->post(['/category/{category}', 'article_category'],function ($category){
+        ContentController::showContentListByCategory($category);
+    });
+    $router->get(['/tag/{keyword}', 'article_keyword'],function ($keyword){
+        ContentController::showContentListByKeyword($keyword);
+    });
+    $router->post(['/tag/{keyword}', 'article_keyword'],function ($keyword){
+        ContentController::showContentListByKeyword($keyword);
     });
     $router->get('/about', function () {
         LayoutRendering::headerLayout(new TemplateView("about.php"),"About </br> lightread","This is how it works");
@@ -149,16 +171,6 @@ $router->group(['before' => 'noauth'], function($router){
     });
     $router->post('/geninvoice', function () {
         InvoiceController::generateInvoice();
-    });
-    // named route for reverse routing. See https://github.com/mrjgreen/phroute#named-routes-for-reverse-routing
-    $router->get(['/article/{slug}', 'article_slug'],function ($slug){
-        ContentController::showContent($slug);
-    });
-    $router->get(['/author/{author}', 'article_author'],function ($author){
-        ContentController::showContentListByAuthor($author);
-    });
-    $router->get(['/category/{category}', 'article_category'],function ($category){
-        ContentController::showContentListByCategory($category);
     });
     $router->get('/login', function () {
         if(!(AuthServiceImpl::getInstance()->verifyAuth())) {
