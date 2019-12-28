@@ -29,7 +29,8 @@ class SearchServiceImpl implements SearchService
         $Q = explode(' ', $searchterms);
         $keywsvc = KeywordServiceImpl::getInstance();
         foreach ($cont_list as $c){
-            $doc = $c->getTitle() . " " . $c->getSubtitle() . " " . $keywsvc->getValues($c); // . " " . $c->getBody();
+            $doc = $c->getTitle() . " " . $c->getSubtitle() . " " . $keywsvc->getValues($c) . " " .
+                   $c->getAuthor()->getFullName()  . " " . $c->getCategory()->getKey() ; // . " " . $c->getBody();
             $doc = $this->removeStopwords($doc);
             $doc_list[] = $doc;
         }
