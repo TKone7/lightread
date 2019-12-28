@@ -9,6 +9,7 @@
 
 use domain\Content;
 use domain\Keyword;
+use router\Router;
 
 
 isset($this->body)?$body=$this->body:$body="Article not found";
@@ -33,7 +34,9 @@ isset($this->restricted)?$restricted=$this->restricted:$restricted=false;
             <div class="col-md-10 col-lg-8 mx-auto">
 
                 <?php foreach($keywords as $keyword) { ?>
-                    <button class="btn btn-sm rounded border-primary btn-keyword text-lowercase" type="button"><?php echo $keyword->getName(); ?></button>
+                    <a href="<?php echo $GLOBALS["ROOT_URL"] .'/'. Router::getInstance()->route('article_keyword', [$keyword->getName()]);?>">
+                        <button class="btn btn-sm rounded border-primary btn-keyword text-lowercase" type="button" ><?php echo $keyword->getName(); ?></button>
+                    </a>
                 <?php  } ?>
 
             </div>
