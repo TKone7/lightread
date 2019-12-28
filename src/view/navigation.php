@@ -9,6 +9,9 @@
 use domain\User;
 use view\TemplateView;
 isset($this->user) ? $user = $this->user : $user = new User();
+isset($this->allowSearch) ? $allowSearch = $this->allowSearch : False;
+isset($this->SearchPlaceholder) ? $SearchPlaceholder = $this->SearchPlaceholder : "search...";
+
 // echo $user->getUsername();
 ?>
 <!DOCTYPE html>
@@ -51,13 +54,11 @@ isset($this->user) ? $user = $this->user : $user = new User();
                                                                                                                                                     aria-label="Toggle navigation"><i class="fa fa-bars"></i></button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <?php
-            $uri = $_SERVER[REQUEST_URI];
-            if ($uri === "/lightread/" || $uri  === "/lightread/search") { ?>
+            if ($this->allowSearch) { ?>
                 <ul class="nav navbar-nav ml-auto">
                     <li role="presentation" class="nav-item">
-                        <form method="post" action="<?php echo $GLOBALS["ROOT_URL"]; ?>/search">
-                            <input id="strm" name="searchterm" type="search" class="border rounded form-control" style="width: 333px;" placeholder="search..." />
-<!--                            <button class="btn btn-primary" type="submit" >search</button>-->
+                        <form method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
+                            <input id="strm" name="searchterm" type="search" class="border rounded form-control" style="width: 333px;" placeholder="<?php echo $this->SearchPlaceholder; ?>" />
                             <input type="submit" id="mySubmit" style="display: none;" />
                         </form>
                     </li>
