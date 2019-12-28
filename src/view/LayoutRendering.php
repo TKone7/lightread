@@ -15,13 +15,17 @@ use view\TemplateView;
 
 class LayoutRendering
 {
-    public static function simpleLayout(TemplateView $content){
-        $navigation = new TemplateView('navigation.php');
+    public static function simpleLayout(TemplateView $content, TemplateView $navigation = Null){
+        if(!(isset($navigation))){
+            $navigation = new TemplateView('navigation.php');
+            $navigation->allowSearch = false;
+        }
         $navigation->simple = true;
         self::LayoutRender($navigation, $content);
     }
     public static function headerLayout(TemplateView $content, $title = Null, $subtitle = Null){
         $navigation = new TemplateView('navigation.php');
+        $navigation->allowSearch = false;
         $header = new TemplateView('header.php');
         // set the tile if they are specified
         $header->title = $title;
@@ -30,6 +34,7 @@ class LayoutRendering
     }
     public static function postLayout(TemplateView $content, Content $article, $allowEdit){
         $navigation = new TemplateView('navigation.php');
+        $navigation->allowSearch = false;
         $header = new TemplateView('post_header.php');
         // set the tile if they are specified
         //@todo change this whole ugly structure and somehow pass a content into the header directly
