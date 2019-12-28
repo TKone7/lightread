@@ -89,6 +89,7 @@ class ContentServiceImpl implements ContentService
     {
         $authorslist = NULL;
         $categorylist=NULL;
+        $keywordlist=NULL;
         $contentdao = new ContentDAO();
         if(!is_null($author)){
 
@@ -102,7 +103,13 @@ class ContentServiceImpl implements ContentService
                 $categorylist .= $c->getId().",";
             }
         }
-        $contents = $contentdao->filter($verified_only,NULL,$categorylist,$authorslist);
+        if(!is_null($keyword)){
+
+            foreach ($keyword as $k){
+                $keywordlist .= $k->getId().",";
+            }
+        }
+        $contents = $contentdao->filter($verified_only,$keywordlist,$categorylist,$authorslist);
         $cm = new ContentManager($contents);
         return $cm;
     }

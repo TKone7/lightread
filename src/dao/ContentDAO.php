@@ -101,11 +101,15 @@ class ContentDAO extends BasicDAO
               on c.fld_scon_id = s.fld_scon_id 
             inner join tbl_user u 
               on u.fld_user_id = c.fld_user_id
-              where 1=1';
+            where 1=1';
         if(!is_null($authors))
             $basic .= ' AND c.fld_user_id in ('.rtrim($authors, ',').')';
         if(!is_null($category))
             $basic .= ' AND c.fld_cate_id in ('.rtrim($category, ',').')';
+        if(!is_null($keyword))
+            $basic .= ' AND c.fld_cont_id in ('. 'SELECT fld_cont_id from tbl_contentkeyword ck
+                                                 WHERE ck.fld_keyw_id in (' . rtrim($keyword, ','). ')
+                                                 GROUP BY fld_cont_id' . ')';
         if($verified_only){
             $basic .= ' AND u.fld_user_verified';
         }
