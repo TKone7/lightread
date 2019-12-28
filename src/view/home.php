@@ -19,6 +19,7 @@ isset($this->mgr) ? $mgr = $this->mgr : $mgr = new ContentManager();
         <div class="col-md-10 col-lg-8 mx-auto">
             <?php
             $articles = $mgr->getContent(Status::PUBLISHED());
+
             foreach ($articles as $item) { ?>
                 <div class="post-preview">
                     <a href="<?php echo $GLOBALS["ROOT_URL"] . "/". Router::getInstance()->route('article_slug', [$item->getSlug()]) ; ?>">
@@ -38,8 +39,12 @@ isset($this->mgr) ? $mgr = $this->mgr : $mgr = new ContentManager();
                 <?php
             }
             if(sizeof($articles)==0): ?>
-
-                <p>No articles found</p>
+                <div class="post-preview" style="padding: 40px">
+                    <a href="<?php echo $GLOBALS["ROOT_URL"] . "/"; ?>">
+                        <h2 class="post-title">We're Sorry!</h2>
+                        <h3 class="post-subtitle">There are no articles matching your search...</h3>
+                    </a>
+                </div>
             <?php endif; ?>
 
             <!--
