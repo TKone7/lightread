@@ -21,7 +21,6 @@ use services\ContentServiceImpl;
 use services\ContentKeywordServiceImpl;
 use services\InvoiceServiceImpl;
 use services\KeywordServiceImpl;
-use services\SearchService;
 use services\SearchServiceImpl;
 use services\UserServiceImpl;
 use services\ViewServiceImpl;
@@ -156,39 +155,67 @@ class ContentController
 
     public static function showContentList()
     {
+        $navigation = new TemplateView('navigation.php');
+        $navigation->allowSearch = true;
+        $navigation->SearchPlaceholder = "search...";
         $home = new TemplateView("home.php");
         $mgr = ContentServiceImpl::getInstance()->getContentMgr(true);
+        if(isset($_POST["searchterm"])){
+            $findings = SearchServiceImpl::getInstance()->getFindings($_POST["searchterm"], $mgr->getContent());
+            $mgr->updateContentList($findings);
+        }
         $home->mgr=$mgr;
-        LayoutRendering::simpleLayout($home);
+        LayoutRendering::simpleLayout($home, $navigation);
     }
 
-    public static function showContentListSearched()
-    {
-        $home = new TemplateView("home.php");
-        $mgr = ContentServiceImpl::getInstance()->getContentMgr(true);
-        $findings = SearchServiceImpl::getInstance()->getFindings($_POST["searchterm"], $mgr->getContent());
-        $mgr->updateContentList($findings);
-        $home->mgr=$mgr;
-        LayoutRendering::simpleLayout($home);
-
-    }
 
     public static function showContentListByAuthor($author)
     {
         $user_author = UserServiceImpl::getInstance()->readUserByUsername($author);
+        $navigation = new TemplateView('navigation.php');
+        $navigation->allowSearch = true;
+        $navigation->SearchPlaceholder = "search by " . $user_author->getFullName()  . " ...";
         $home = new TemplateView("home.php");
         $mgr = ContentServiceImpl::getInstance()->getContentMgr(true,NULL,NULL,[$user_author]);
+        if(isset($_POST["searchterm"])){
+            $findings = SearchServiceImpl::getInstance()->getFindings($_POST["searchterm"], $mgr->getContent());
+            $mgr->updateContentList($findings);
+        }
         $home->mgr=$mgr;
-        LayoutRendering::simpleLayout($home);
+        LayoutRendering::simpleLayout($home, $navigation);
     }
+
     public static function showContentListByCategory($category_key)
     {
         $category = CategoryServiceImpl::getInstance()->getCategoryByKey($category_key);
+        $navigation = new TemplateView('navigation.php');
+        $navigation->allowSearch = true;
+        $navigation->SearchPlaceholder = "search in " . $category->getName() . " ...";
         $home = new TemplateView("home.php");
         $mgr = ContentServiceImpl::getInstance()->getContentMgr(true,NULL,[$category],NULL);
+        if(isset($_POST["searchterm"])){
+            $findings = SearchServiceImpl::getInstance()->getFindings($_POST["searchterm"], $mgr->getContent());
+            $mgr->updateContentList($findings);
+        }
         $home->mgr=$mgr;
-        LayoutRendering::simpleLayout($home);
+        LayoutRendering::simpleLayout($home, $navigation);
     }
 
+
+    public static function showContentListByKeyword($keywordname)
+    {
+        $keyword = KeywordServiceImpl::getInstance()->getKeywordByName($keywordname);
+        $navigation = new TemplateView('navigation.php');
+        $navigation->allowSearch = true;
+        $navigation->SearchPlaceholder = "search with " . $keyword->getName() . " tag ...";
+        $home = new TemplateView("home.php");
+        $mgr = ContentServiceImpl::getInstance()->getContentMgr(true,[$keyword],NULL,NULL);
+        if(isset($_POST["searchterm"])){
+            $findings = SearchServiceImpl::getInstance()->getFindings($_POST["searchterm"], $mgr->getContent());
+            $mgr->updateContentList($findings);
+        }
+        $home->mgr=$mgr;
+        LayoutRendering::simpleLayout($home, $navigation);
+    }
 
 }

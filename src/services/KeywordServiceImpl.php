@@ -31,9 +31,14 @@ class KeywordServiceImpl implements KeywordService
         return (new KeywordDAO())->readAll();
     }
 
-    public function getKeyword($id)
+    public function getKeywordByID($id)
     {
         return (new KeywordDAO())->read($id);
+    }
+
+    public function getKeywordByName($name)
+    {
+        return (new KeywordDAO())->readByName($name);
     }
 
     public function getKeywords(Content $content){

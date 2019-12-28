@@ -14,6 +14,6 @@ interface KeywordService
 {
     public function getAll();
 
-    public function getKeyword($id);
+    public function getKeywordByID($id);
 
 }
