@@ -161,7 +161,7 @@ class ContentController
         $home = new TemplateView("home.php");
         $mgr = ContentServiceImpl::getInstance()->getContentMgr(true);
         if(isset($_POST["searchterm"])){
-            $findings = SearchServiceImpl::getInstance()->getFindings($_POST["searchterm"], $mgr->getContent());
+            $findings = SearchServiceImpl::getInstance()->getFindingsTNT($_POST["searchterm"], $mgr->getContent());
             $mgr->updateContentList($findings);
         }
         $home->mgr=$mgr;
@@ -178,7 +178,7 @@ class ContentController
         $home = new TemplateView("home.php");
         $mgr = ContentServiceImpl::getInstance()->getContentMgr(true,NULL,NULL,[$user_author]);
         if(isset($_POST["searchterm"])){
-            $findings = SearchServiceImpl::getInstance()->getFindings($_POST["searchterm"], $mgr->getContent());
+            $findings = SearchServiceImpl::getInstance()->getFindingsTNT($_POST["searchterm"], $mgr->getContent());
             $mgr->updateContentList($findings);
         }
         $home->mgr=$mgr;
@@ -194,7 +194,7 @@ class ContentController
         $home = new TemplateView("home.php");
         $mgr = ContentServiceImpl::getInstance()->getContentMgr(true,NULL,[$category],NULL);
         if(isset($_POST["searchterm"])){
-            $findings = SearchServiceImpl::getInstance()->getFindings($_POST["searchterm"], $mgr->getContent());
+            $findings = SearchServiceImpl::getInstance()->getFindingsTNT($_POST["searchterm"], $mgr->getContent());
             $mgr->updateContentList($findings);
         }
         $home->mgr=$mgr;
@@ -211,7 +211,7 @@ class ContentController
         $home = new TemplateView("home.php");
         $mgr = ContentServiceImpl::getInstance()->getContentMgr(true,[$keyword],NULL,NULL);
         if(isset($_POST["searchterm"])){
-            $findings = SearchServiceImpl::getInstance()->getFindings($_POST["searchterm"], $mgr->getContent());
+            $findings = SearchServiceImpl::getInstance()->getFindingsTNT($_POST["searchterm"], $mgr->getContent());
             $mgr->updateContentList($findings);
         }
         $home->mgr=$mgr;
