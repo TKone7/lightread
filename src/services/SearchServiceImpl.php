@@ -9,6 +9,7 @@
 namespace services;
 
 
+use domain\Content;
 use searcheng\PorterStemmer; //do not remove (used in Lambda expression)
 use TeamTNT\TNTSearch\TNTSearch;
 use config\Config;
@@ -67,7 +68,7 @@ class SearchServiceImpl implements SearchService
         /*returns an array of Content objects in descending relevancy order*/
 
         if(self::initRequired()){
-            $this->initIndex(self::$indexname);
+            $this->initIndex();
         }
 
         $tnt = new TNTSearch;
@@ -115,25 +116,77 @@ class SearchServiceImpl implements SearchService
     }
 
 
-    private function initIndex($indexname){
+    private function initIndex(){
 
         $tnt = new TNTSearch;
 
         $tnt->loadConfig($this->getTNTConfig());
 
-        $indexer = $tnt->createIndex($indexname);
+        $indexer = $tnt->createIndex(self::$indexname);
 
-        $sql = 'SELECT cont.fld_cont_id, REPEAT(CONCAT(cont.fld_cont_title, \' \'), 5) as title,  REPEAT(CONCAT(cont.fld_cont_subtitle, \' \'), 3) as subtitle, cate.fld_cate_key, keyw.keywords, cont.fld_cont_body
+        $sql = 'SELECT cont.fld_cont_id as id, REPEAT(CONCAT(cont.fld_cont_title, \' \'), 5) as title,  REPEAT(CONCAT(cont.fld_cont_subtitle, \' \'), 3) as subtitle, cate.fld_cate_key as category, keyw.keyw_name as keywords, cont.fld_cont_body as body
                 FROM tbl_content cont
-                LEFT JOIN (SELECT coke.fld_cont_id, string_agg(keyw.fld_keyw_name, \' ; \'  ORDER BY keyw.fld_keyw_name) as keywords
+                LEFT JOIN (SELECT coke.fld_cont_id, string_agg(keyw.fld_keyw_name, \' ; \'  ORDER BY keyw.fld_keyw_name) as keyw_name
                            FROM tbl_keyword keyw INNER JOIN tbl_contentkeyword coke on keyw.fld_keyw_id = coke.fld_keyw_id
                            GROUP BY coke.fld_cont_id) keyw on keyw.fld_cont_id = cont.fld_cont_id
                 LEFT JOIN tbl_category cate on cont.fld_cate_id = cate.fld_cate_id;'   ;
 
         $indexer->query($sql);
-        $indexer->setPrimaryKey('fld_cont_id');
+        //$indexer->setPrimaryKey('fld_cont_id'); /*not needed if PK is named «id»*/
         //$indexer->setLanguage('english'); // default is PorterStemmer
         $indexer->run();
+    }
+
+
+    public function insertInIndex(Content $c){
+
+        $tnt = new TNTSearch;
+
+        $tnt->loadConfig($this->getTNTConfig());
+        $tnt->selectIndex(self::$indexname);
+
+        $index = $tnt->getIndex();
+
+        //to insert a new document to the index
+        $index->insert([    'id' => $c->getId(),
+                            'title'       => $c->getTitle(),
+                            'subtitle'    => $c->getSubtitle(),
+                            'body'        => $c->getBody(),
+                            'category'    => $c->getCategory()->getKey(),
+                            'keywords'    =>  KeywordServiceImpl::getInstance()->getSeparated($c," ; ")    ]);
+
+    }
+
+    public function updateInIndex(Content $c){
+        $tnt = new TNTSearch;
+
+        $tnt->loadConfig($this->getTNTConfig());
+        $tnt->selectIndex(self::$indexname);
+
+        $index = $tnt->getIndex();
+
+        //to update an existing document
+        $keyws = KeywordServiceImpl::getInstance()->getSeparated($c," ; ");
+        $index->update($c->getId(), [   'id' => $c->getId(),
+                                        'title'       => $c->getTitle(),
+                                        'subtitle'    => $c->getSubtitle(),
+                                        'body'        => $c->getBody(),
+                                        'category'    => $c->getCategory()->getKey(),
+                                        'keywords'    =>  KeywordServiceImpl::getInstance()->getSeparated($c," ; ")    ]);
+
+    }
+
+
+    public function deleteInIndex(Content $c){
+        $tnt = new TNTSearch;
+
+        $tnt->loadConfig($this->getTNTConfig());
+        $tnt->selectIndex(self::$indexname);
+
+        $index = $tnt->getIndex();
+
+        $index->delete($c->getId());
+
     }
 
     private static function initRequired(){
