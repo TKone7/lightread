@@ -49,15 +49,19 @@ class KeywordServiceImpl implements KeywordService
 
         //get keyw_ids (create if not exists)
         $kdao = new KeywordDAO();
+        $keywords = null;
         foreach ($tags as $tag) {
-            $k = $kdao->readByName($tag);
-            if(empty($k)){
-                //keyword does not yet exist
-                $keyword = new Keyword();
-                $keyword->setName($tag);
-                $k = $kdao->create($keyword);;
+            $t = trim($tag);
+            if(strlen($t) > 0){
+                $k = $kdao->readByName($tag);
+                if(empty($k)){
+                    //keyword does not yet exist
+                    $keyword = new Keyword();
+                    $keyword->setName($tag);
+                    $k = $kdao->create($keyword);;
+                }
+                $keywords[] = $k;
             }
-            $keywords[] = $k;
         }
 
         return $keywords;
@@ -81,9 +85,19 @@ class KeywordServiceImpl implements KeywordService
 
     }
 
+    public function getSeparated(Content $content, $separation){
+        //returns a String in form of "xxx, xxx"
+        $keywords = (new KeywordDAO())->readAllofContent($content);
+        $cReturn = "";
+        foreach ($keywords as $keyword){
+            $cReturn .= $keyword->getName() . $separation ;
+        }
+        $cReturn = substr($cReturn,0, - strlen($separation));
+        return $cReturn;
+    }
 
     public function getValues(Content $content){
-        //returns a String in form of "xxx,xxx"
+        //returns a String in form of "xxx, xxx"
         $keywords = (new KeywordDAO())->readAllofContent($content);
         $cReturn = "";
         foreach ($keywords as $keyword){

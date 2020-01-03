@@ -41,6 +41,10 @@ class ContentController
         if(!empty($category_id)){
             $cont->setCategory(CategoryServiceImpl::getInstance()->getCategory($category_id));
         }
+        $kws = str_getcsv($_POST["keywords"]);
+        if(!$kws[0] == Null){
+            $cont->setKeywords(KeywordServiceImpl::getInstance()->syncKeywords($kws));
+        }
         $cont->setBody($_POST["editordata"]);
         $cont->setStatus($new_status);
         $cont->setAuthor($auth->readUser());
@@ -61,15 +65,13 @@ class ContentController
                 // update
                 $cont->setId($id);
                 $res = $contsvc->updateContent($cont);
+                SearchServiceImpl::getInstance()->updateInIndex($res);
             }else{
                 // create
                 $res = $contsvc->createContent($cont);
+                SearchServiceImpl::getInstance()->insertInIndex($res);
             }
 
-            //todo keywords
-            $keywsvc = KeywordServiceImpl::getInstance();
-            $keywords = $keywsvc->syncKeywords(str_getcsv($_POST["keywords"]));
-            $keywsvc->associate($cont, $keywords);
 
 
             $route = '/'.Router::getInstance()->route('article_slug', [$res->getSlug()]);
