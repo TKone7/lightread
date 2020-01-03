@@ -19,6 +19,10 @@ nav_order: 30
 
 ## Class Diagram / Domain Model
 
+![use cases for publishers and consumers](resources/UCD1.png)
+
+![use cases for admins](resources/UCD2.png)
+
 ## Router
 
 ## Data Access Objects (DAO)
