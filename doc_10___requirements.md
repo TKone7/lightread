@@ -22,7 +22,7 @@ Other Lightning node administrators who are interested in opening channels with 
 
 
 ## Requirements
-The following lists show the requirement of this web project, grouped using the [MoSCoW method](https://en.wikipedia.org/wiki/MoSCoW_method). The check box indicates whether a requirement is fulfilled in the current implementation or not.
+The following lists show the requirement of this web project, grouped using the [MoSCoW method](https://en.wikipedia.org/wiki/MoSCoW_method). The check box indicates whether a requirement is fulfilled in the running version or not.
 ### Must-haves
 - [x] Visitors must be able to become an User by creating an account.
 - [x] Users must be able to search for articles.
@@ -30,7 +30,8 @@ The following lists show the requirement of this web project, grouped using the 
 - [x] Publishers must be able to write content using a markdown editor.
 - [x] Publishers must be able to associate an article with a category.
 - [x] Publishers must have the option to offer their content for free (free content).
-- [x] Publishers must be able to restrict the access to the full content until the consumer paid a predefined fee for it (paid content). The fee can be set by the publisher itself and will be represented in amount of Satoshis.
+- [x] Publishers must be able to restrict the access to the full content until the consumer paid a predefined fee for it (paid content).
+- [x] Publisher must be able to self-define the access fee of their content in amount of Satoshis.
 - [x] Visitors and Users must be able to read free content.
 - [x] Visitors and Users must be able to read paid content after the corresponding fee is paid via the Lightning Network.
 - [x] Users must be able to re-access already paid content without paying again.
@@ -50,6 +51,7 @@ The following lists show the requirement of this web project, grouped using the 
 - [x] Visitors could be able to re-access already paid content without paying again, as long their browser cookies still exist.
 - [x] Visitors that decide to create an account and hence become an User could have their already paid content be transferred as long as their browser cookies still exist.
 - [x] Written content could be stored as draft in order to work on content without publishing it directly.
+- [x] Content views could be registered in order to allow statistics regarding its popularity.
 - [ ] Publisher could be able to examine the views and revenue per content over time in form of charts.
 - [ ] Users could be able to set up their profile, including enter some descriptive text about themselves and upload a profile picture.
 - [ ] Admins could be able to manage user accounts via web interface.
@@ -57,5 +59,5 @@ The following lists show the requirement of this web project, grouped using the 
 - [ ] The platform shall publicly show the information of the connected Lightning node in order to allow other Lightning node administrators to open channels with it.
 
 ### Won't- and Would-haves
-- [x] The platform will not allow to directly sending Satoshis to a Publisher. Transactions are always realized on the basis of a specific content.
+- [x] The platform will not allow to directly send Satoshis to a Publisher. Transactions are always realized on the basis of a specific content.
 - [x] Publisher will not be able to upload audio or video files.

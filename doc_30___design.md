@@ -1,10 +1,10 @@
 ---
 layout: default
-title: PHP Design Decisions
+title: Architecture and Design
 has_children: false
 nav_order: 30
 ---
-# Architecture and Design Decisions
+# Architecture and Design
 {: .no_toc }
 
 ## Table of contents
@@ -23,18 +23,6 @@ nav_order: 30
 
 ![use cases for admins](resources/UCD2.png)
 
-## Router
-
 ## Data Access Objects (DAO)
 
 ## Use Case Diagrams
-
-## Services
-
-## Template View
-
-## XSS prevention
-
-## Email verification
-
-## jQuery polling

@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Lightning
+title: Lightning Network
 has_children: true
 nav_order: 20
 ---

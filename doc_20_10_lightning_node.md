@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Full Node
-parent: Lightning
+parent: Lightning Network
 has_children: false
 nav_order: 1
 ---
