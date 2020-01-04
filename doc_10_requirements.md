@@ -25,36 +25,37 @@ Other Lightning node administrators who are interested in opening channels with 
 The following lists show the requirement of this web project, grouped using the [MoSCoW method](https://en.wikipedia.org/wiki/MoSCoW_method). The check box indicates whether a requirement is fulfilled in the current implementation or not.
 ### Must-haves
 - [x] Visitors must be able to become an User by creating an account.
-- [] Users must be able to search for articles.
-- [] Publishers must be able to write content using a markdown editor.
-- [] Publishers must be able to associate an article with a category.
-- [] Publishers must have the option to offer their content for free (free content).
-- [] Publishers must be able to restrict the access to the full content until the consumer paid a predefined fee for it (paid content). The fee can be set by the publisher itself and will be represented in amount of Satoshis.
-- [] Visitors and Users must be able to read free content.
-- [] Visitors and Users must be able to read paid content after the corresponding fee is paid via the Lightning Network.
-- [] Users must be able to re-access already paid content without paying again.
-- [] Publishers must be able to withdraw a specific amount their generated revenue in Satoshis to their own-controlled Lightning wallet.
-- [] Publishers must be able to see their current balance of received payments and donations as well as realized withdrawals on their personal profile page.
+- [x] Users must be able to search for articles.
+- [x] Users must be able to verify their account by indicating a valid email address in order to become Publisher.
+- [x] Publishers must be able to write content using a markdown editor.
+- [x] Publishers must be able to associate an article with a category.
+- [x] Publishers must have the option to offer their content for free (free content).
+- [x] Publishers must be able to restrict the access to the full content until the consumer paid a predefined fee for it (paid content). The fee can be set by the publisher itself and will be represented in amount of Satoshis.
+- [x] Visitors and Users must be able to read free content.
+- [x] Visitors and Users must be able to read paid content after the corresponding fee is paid via the Lightning Network.
+- [x] Users must be able to re-access already paid content without paying again.
+- [x] Publishers must be able to withdraw a specific amount their generated revenue in Satoshis to their own-controlled Lightning wallet.
+- [x] Publishers must be able to see their current balance of received payments and donations as well as realized withdrawals on their personal profile page.
 
 ### Should-haves
-- [] Publishers should be able to store articles as draft.
-- [] Visitors and Users should have the option to tip on paid or free content by donating some Satoshis via the Lightning Network.
-- [] Publishers should have the option to incorporate simple media such as images or links in their markdown articles.
-- [] Publishers should be able to tag an article using up to 6 keywords.
-- [] Publishers should see the transaction history of all payments and donations.
-- [] Ability to sign up without using an e-mail address.
-- [] Publishers should be forced to withdraw revenues once they excited a certain balance.
+- [x] Users should be able to sign up without using an email address.
+- [x] Visitors and Users should have the option to tip on paid or free content by donating some Satoshis via the Lightning Network.
+- [x] Publishers should be able to store articles as draft.
+- [x] Publishers should have the option to incorporate simple media such as images or links in their markdown articles.
+- [x] Publishers should be able to tag an article using up to 6 keywords.
+- [x] Publishers should see the transaction history of all payments and donations.
+- [ ] Publishers should be forced to withdraw revenues once they excited a certain balance.
 
 ### Could-haves
-- [] Visitors must be able to re-access already paid content without paying again, as long their browser cookies still exist.
-- [] Visitors that decide to create an account and hence become an user could have their already paid content be transferred as long as their browser cookies still exist.
-- [] Written content could be stored as draft which does not publish it.
-- [] Publisher could be able to examine the views and revenue per content over time in form of charts.
-- [] Allow Users to set up their profile, including enter some descriptive text about themselves and upload a profile picture.
-- [] Admins could be able to manage user accounts via web interface.
-- [] Admins could be able to monitor all Lightning transactions happening on the platform via web interface.
-- [] The platform shall show the information of the connected Lightning node in order to allow other node administrators to open channels with it.
+- [x] Visitors could be able to re-access already paid content without paying again, as long their browser cookies still exist.
+- [x] Visitors that decide to create an account and hence become an User could have their already paid content be transferred as long as their browser cookies still exist.
+- [x] Written content could be stored as draft in order to work on content without publishing it directly.
+- [ ] Publisher could be able to examine the views and revenue per content over time in form of charts.
+- [ ] Users could be able to set up their profile, including enter some descriptive text about themselves and upload a profile picture.
+- [ ] Admins could be able to manage user accounts via web interface.
+- [ ] Admins could be able to monitor all Lightning transactions happening on the platform via web interface.
+- [ ] The platform shall publicly show the information of the connected Lightning node in order to allow other Lightning node administrators to open channels with it.
 
 ### Won't- and Would-haves
-- [] The platform will not allow to directly sending Satoshis to a Publisher. Transactions are always realized on the basis of a specific content.
-- [] Publisher will not be able to upload audio or video files.
+- [x] The platform will not allow to directly sending Satoshis to a Publisher. Transactions are always realized on the basis of a specific content.
+- [x] Publisher will not be able to upload audio or video files.
