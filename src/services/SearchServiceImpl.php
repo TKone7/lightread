@@ -23,11 +23,6 @@ class SearchServiceImpl implements SearchService
     private static $indexlocation = 'searcheng/tntsearch/indexes';
     private static $indexname = 'content.index';
 
-    public $fuzzy_prefix_length   =  2;
-    public $fuzzy_max_expansions  = 50;
-    public $fuzzy_distance        =  2;  //represents the Levenshtein distance;
-
-
 
     public static function getInstance(){
         if(!isset(self::$instance)){
@@ -195,7 +190,7 @@ class SearchServiceImpl implements SearchService
         if ( !file_exists($file) ) {
             $return = true;
         } else {
-            if(time()- filemtime($file) > 43200){  //43200 seconds = 12h
+            if(time()- filemtime($file) > 1) {  //43200 seconds = 12h
                $return = true;
             }
         }
