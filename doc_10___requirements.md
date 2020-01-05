@@ -6,6 +6,10 @@ nav_order: 10
 # Requirements
 
 ## Actors
+The following diagram shows the actors conceptually. Important to notice is, that the Node Admins represent actors of the Lightning Network which is outside of lightread's system boundaries. Furthermore, no class-based distinction is made between Consumer, Publisher, or Admin. Since they are all stored in the same database table, they are also represented by the same class called Users.
+
+![class diagram describing participants](resources/participants.png)
+
 ### 0 User
 Someone who signed up on the platform and hence has an account. An User becomes a Publisher after successful verification by indicating a valid email address. Unverified Users are deemed as Consumers. Some special Users are deemed as Admins. Platform visitors who do not login are deemed as Visitors.
 ### 1 Consumer
@@ -14,14 +18,12 @@ A Consumer is an unverified User that only can consume content on the platform b
 A Publisher is a verified user that can consume and publish content on the platform. Consequently, Publishers are able to earn Satoshis. Consumer specific requirements are also applicable to Publisher. Synonym for Publisher is Author.
 ### 3 Admins
 An Admin is a verified User that is able to see insights about the platform's activities and the platform's Lightning nodes. They are also administrators of the platform's Lightning node.
-### 4 Lightning Network Participant
-Other Lightning node administrators who are interested in opening channels with our platform's Lightning node.
+### 4 Node Admins
+Node Admins represent other Lightning node administrators (or Lightning network participants) who are interested in opening channels with our platform's Lightning node.
 
 
-![class diagram describing participants](resources/participants.png)
 
-
-## Requirements
+## Individual Requirements
 The following lists show the requirement of this web project, grouped using the [MoSCoW method](https://en.wikipedia.org/wiki/MoSCoW_method). The check box indicates whether a requirement is fulfilled in the running version or not.
 ### Must-haves
 - [x] Visitors must be able to become an User by creating an account.
@@ -40,6 +42,8 @@ The following lists show the requirement of this web project, grouped using the 
 
 ### Should-haves
 - [x] Users should be able to sign up without using an email address.
+- [x] The platform should provide remember me function using the browser's cookies.
+- [x] Users should be able to change their password.
 - [x] Visitors and Users should have the option to tip on paid or free content by donating some Satoshis via the Lightning Network.
 - [x] Publishers should be able to store articles as draft.
 - [x] Publishers should have the option to incorporate simple media such as images or links in their markdown articles.
