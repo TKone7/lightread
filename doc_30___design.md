@@ -5,8 +5,19 @@ has_children: true
 nav_order: 30
 ---
 # Architecture and Design
+{: .no_toc }
+
 This chapter provides insights in the programming concept of lightread.
 ![System Landscape](resources/landscape.png)
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
 
 
 ## ERD

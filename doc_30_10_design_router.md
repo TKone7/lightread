@@ -7,7 +7,19 @@ nav_order: 1
 ---
 
 # Router
+{: .no_toc }
+
 Lightread uses a special router called [PHRoute](https://github.com/mrjgreen/phroute) which allows simple a routing implementation, modifications, and additional features.
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+
 
 ## Groups and Filters
 The grouping enables to normalize common actions that must be performed when certain routes are used. The route groups we have are:

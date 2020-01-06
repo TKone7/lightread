@@ -7,13 +7,18 @@ nav_order: 2
 ---
 
 # Services
-The business logic is incorporated in different services. This chapter explains each of them.
+{: .no_toc }
+
+The business logic is incorporated in different services. Some interesting services are further explained in this chapter.
 ![Services](resources/services.png)
 
 TODO: should we explain stuff about each individual service? I suggest not.
 {: .label .label-red }
 
+
+
 ## AuthServiceImpl
+
 
 ## CategoryServiceImpl
 

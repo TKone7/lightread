@@ -4,6 +4,16 @@ title: Requirements
 nav_order: 10
 ---
 # Requirements
+{: .no_toc }
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
 
 ## Actors
 The following diagram shows the actors conceptually. Important to notice is, that the Node Admins represent actors of the Lightning Network which is outside of lightread's system boundaries. Furthermore, no class-based distinction is made between Consumer, Publisher, or Admin. Since they are all stored in the same database table, they are also represented by the same class called Users.
@@ -49,6 +59,7 @@ The following lists show the requirement of this web project, grouped using the 
 - [x] Publishers should have the option to incorporate simple media such as images or links in their markdown articles.
 - [x] Publishers should be able to tag an article using up to 6 keywords.
 - [x] Publishers should see the transaction history of all payments and donations.
+- [x] Publishers should not be able to change their (verified) email address while they have balance greater than zero or any published articles at the moment.
 - [ ] Publishers should be forced to withdraw revenues once they excited a certain balance.
 
 ### Could-haves
