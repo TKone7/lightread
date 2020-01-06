@@ -136,8 +136,8 @@ class ContentController
         $categories =  CategoryServiceImpl::getInstance()->getAll();
         $editor->categories = $categories;
         $keywsvc = KeywordServiceImpl::getInstance();
-        $editor->keywordvalues = $keywsvc->getValues($content);;
-        $editor->keywordsuggestions = $keywsvc->getSuggestions($content);
+        $editor->keywordvalues = $keywsvc->getValues($content);
+        $editor->keywordsuggestions = $keywsvc->getSuggestions();
         if(!empty($content)){
             $editor->content=$content;
         }else {
@@ -151,6 +151,8 @@ class ContentController
         $editor = new TemplateView("editor.php");
         $categories =  CategoryServiceImpl::getInstance()->getAll();
         $editor->categories = $categories;
+        $editor->keywordvalues = "";
+        $editor->keywordsuggestions = KeywordServiceImpl::getInstance()->getSuggestions();
         LayoutRendering::simpleLayout($editor);
 
     }

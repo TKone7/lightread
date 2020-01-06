@@ -33,10 +33,13 @@ isset($this->restricted)?$restricted=$this->restricted:$restricted=false;
         <div class="row">
             <div class="col-md-10 col-lg-8 mx-auto">
 
-                <?php foreach($keywords as $keyword) { ?>
-                    <a href="<?php echo $GLOBALS["ROOT_URL"] .'/'. Router::getInstance()->route('article_keyword', [$keyword->getName()]);?>">
-                        <button class="btn btn-sm rounded border-primary btn-keyword text-lowercase" type="button" ><?php echo $keyword->getName(); ?></button>
-                    </a>
+                <?php
+                if (is_array($keywords) || is_object($keywords)){
+                    foreach($keywords as $keyword) { ?>
+                        <a href="<?php echo $GLOBALS["ROOT_URL"] .'/'. Router::getInstance()->route('article_keyword', [$keyword->getName()]);?>">
+                            <button class="btn btn-sm rounded border-primary btn-keyword text-lowercase" type="button" ><?php echo $keyword->getName(); ?></button>
+                        </a>
+                    <?php  } ?>
                 <?php  } ?>
 
             </div>

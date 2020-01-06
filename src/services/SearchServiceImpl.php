@@ -73,7 +73,7 @@ class SearchServiceImpl implements SearchService
         $tnt->fuzziness = true;
 
         $res = $tnt->search($searchterms);
-        $foundIDs = $res[ids];
+        $foundIDs = $res['ids'];
         $candidateIDs = array_map(function($c){return $c->getId();}, $cont_list);
 
         $return_list = [];
@@ -149,8 +149,8 @@ class SearchServiceImpl implements SearchService
                             'body'        => $c->getBody(),
                             'category'    => $c->getCategory()->getKey(),
                             'keywords'    =>  KeywordServiceImpl::getInstance()->getSeparated($c," ; ")    ]);
-
     }
+
 
     public function updateInIndex(Content $c){
         $tnt = new TNTSearch;
@@ -161,7 +161,6 @@ class SearchServiceImpl implements SearchService
         $index = $tnt->getIndex();
 
         //to update an existing document
-        $keyws = KeywordServiceImpl::getInstance()->getSeparated($c," ; ");
         $index->update($c->getId(), [   'id' => $c->getId(),
                                         'title'       => $c->getTitle(),
                                         'subtitle'    => $c->getSubtitle(),
@@ -190,7 +189,7 @@ class SearchServiceImpl implements SearchService
         if ( !file_exists($file) ) {
             $return = true;
         } else {
-            if(time()- filemtime($file) > 1) {  //43200 seconds = 12h
+            if(time()- filemtime($file) > 43200) {  //43200 seconds = 12h
                $return = true;
             }
         }
