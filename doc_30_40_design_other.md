@@ -90,16 +90,40 @@ This technique allows to search a subset of articles, for instance a clicket tag
 
 
 
-
 ## Email Verification
 Lightread sends emails to users because of two reasons. One is the user verification which is mandatory in order to publish content. The other is the possibility to reset the password. The emails are sent via [SendGrid](https://sendgrid.com/docs/).
 
 
+
 ## Tokenization
+Tokens are issues either when an user logs in or someone pays an invoice without being logged in (anonymous user). A token objects holds a hash value, a selector, a type, and an expiration.
 
-TODO
+```php
+public function issueToken(AuthType $type, $email = null) {
+    $token = new AuthToken();
+    $validator = random_bytes(20);
+    $token->setValidator(hash('sha256', $validator));
+    $token->setSelector(bin2hex(random_bytes(5)));
+    $token->setType($type);
+
+    if($type == AuthType::USER_TOKEN()){
+        $token->setUser($this->readUser());
+        $timestamp = (new \DateTime('now'))->modify('+30 days');
+    }elseif($type == AuthType::ANONYM_TOKEN()){
+        $timestamp = (new \DateTime('now'))->modify('+365 days');
+    }elseif ($type == AuthType::RESET_TOKEN()){
+        $token->setUser((new UserDAO())->findByEmail($email));
+        $timestamp = (new \DateTime('now'))->modify('+1 hour');
+    }
+    $token->setExpiration($timestamp);
+    $authTokenDAO = new AuthTokenDAO();
+    $authTokenDAO->create($token);
+    return $token->getSelector() .":". bin2hex($validator);
+}
+```
+
+TODO: Should this sections be extended?
 {: .label .label-red }
-
 
 
 ## jQuery Polling
@@ -158,3 +182,9 @@ public static function checkInvoice()
     }
 }
 ```
+
+## Views Registration
+When a content is shown, lighread registers a view. This data can later be used to inform user about their content's popularity or to optimize the search engine. Ideally, the viewer is logged in which allows unique identification. Otherwise, the viewer is identified by its combination of IP address, operating system, device type, and browser type. To avoid falsification in this data, recurring content views of the viewers is tried to be suppressed using a timeout of 20 minutes.
+
+TODO: show screenshot of tbl_views
+{: .label .label-red }
