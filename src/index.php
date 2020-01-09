@@ -6,7 +6,6 @@
  * Date: 30.10.2019
  * Time: 17:49
  */
-
 require dirname(__FILE__).'/../vendor/autoload.php';
 require_once("config/Autoloader.php");
 // @todo should maybe not be hard-coded but be defined by the server config
@@ -23,7 +22,7 @@ use controller\WithdrawalController;
 
 use domain\Category;
 use domain\Status;
-
+use Phroute\Phroute\Exception\HttpRouteNotFoundException;
 use services\AuthServiceImpl;
 use view\TemplateView;
 use view\LayoutRendering;
@@ -156,10 +155,6 @@ $router->group(['before' => 'noauth'], function($router){
     $router->get('/logout', function () {
         AuthController::logout();
     });
-    $router->get('/article', function () {
-        ContentController::showContent();
-    });
-
     $router->post('/checkinvoice', function () {
         InvoiceController::checkInvoice();
     });
@@ -184,7 +179,11 @@ $router->group(['before' => 'noauth'], function($router){
     });
 });
 
-Router::call_route($_SERVER['REQUEST_METHOD'], $_SERVER['PATH_INFO']);
+try {
+    Router::call_route($_SERVER['REQUEST_METHOD'], $_SERVER['PATH_INFO']);
+} catch (HttpRouteNotFoundException $exception) {
+    LayoutRendering::headerLayout(new TemplateView("404.php"), "404", "page not found");
+}
 
 /*
 
