@@ -49,16 +49,23 @@ class KeywordServiceImpl implements KeywordService
 
         //get keyw_ids (create if not exists)
         $kdao = new KeywordDAO();
-        foreach ($tags as $tag) {
-            $k = $kdao->readByName($tag);
-            if(empty($k)){
-                //keyword does not yet exist
-                $keyword = new Keyword();
-                $keyword->setName($tag);
-                $k = $kdao->create($keyword);;
+        $keywords = null;
+        if (is_array($tags) || is_object($tags)){
+            foreach ($tags as $tag) {
+                $t = trim($tag);
+                if(strlen($t) > 0){
+                    $k = $kdao->readByName($tag);
+                    if(empty($k)){
+                        //keyword does not yet exist
+                        $keyword = new Keyword();
+                        $keyword->setName($tag);
+                        $k = $kdao->create($keyword);;
+                    }
+                    $keywords[] = $k;
+                }
             }
-            $keywords[] = $k;
         }
+
 
         return $keywords;
     }
@@ -72,18 +79,30 @@ class KeywordServiceImpl implements KeywordService
         $cokeDAO->deleteAll($content);
 
         //create new associations
-        foreach ($keywords as $keyword){
-            $coke = new ContentKeyword();
-            $coke->setContID($content->getId());
-            $coke->setKeywID($keyword->getId());
-            $cokeDAO->create($coke);
+        if (is_array($keywords) || is_object($keywords)){
+            foreach ($keywords as $keyword){
+                $coke = new ContentKeyword();
+                $coke->setContID($content->getId());
+                $coke->setKeywID($keyword->getId());
+                $cokeDAO->create($coke);
+            }
         }
 
     }
 
+    public function getSeparated(Content $content, $separation){
+        //returns a String in form of "xxx, xxx"
+        $keywords = (new KeywordDAO())->readAllofContent($content);
+        $cReturn = "";
+        foreach ($keywords as $keyword){
+            $cReturn .= $keyword->getName() . $separation ;
+        }
+        $cReturn = substr($cReturn,0, - strlen($separation));
+        return $cReturn;
+    }
 
     public function getValues(Content $content){
-        //returns a String in form of "xxx,xxx"
+        //returns a String in form of "xxx, xxx"
         $keywords = (new KeywordDAO())->readAllofContent($content);
         $cReturn = "";
         foreach ($keywords as $keyword){

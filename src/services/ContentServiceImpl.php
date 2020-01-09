@@ -44,7 +44,9 @@ class ContentServiceImpl implements ContentService
             $contentdao = new ContentDAO();
             $content->setAuthor($auth->readUser());
             $content->setSlug($this->calcSlug($content));
-            return $contentdao->create($content);
+            $return = $contentdao->create($content);
+            KeywordServiceImpl::getInstance()->associate($return, $content->getKeywords());
+            return $return;
         }
         throw new HTTPException(HTTPStatusCode::HTTP_401_UNAUTHORIZED);
     }
@@ -54,7 +56,9 @@ class ContentServiceImpl implements ContentService
         $auth = AuthServiceImpl::getInstance();
         if(AuthServiceImpl::getInstance()->verifyAuth()){
             $contentdao = new ContentDAO();
-            return $contentdao->update($content);
+            $return = $contentdao->update($content);
+            KeywordServiceImpl::getInstance()->associate($return, $content->getKeywords());
+            return $return;
         }
         throw new HTTPException(HTTPStatusCode::HTTP_401_UNAUTHORIZED);
     }

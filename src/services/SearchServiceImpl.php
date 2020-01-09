@@ -10,11 +10,19 @@ namespace services;
 
 
 use domain\Content;
-use searcheng\PorterStemmer;
+use searcheng\PorterStemmer; //do not remove (used in Lambda expression)
+use TeamTNT\TNTSearch\TNTSearch;
+use config\Config;
+
 
 class SearchServiceImpl implements SearchService
 {
+
+
     private static $instance = NULL;
+    private static $indexlocation = 'searcheng/tntsearch/indexes';
+    private static $indexname = 'content.index';
+
 
     public static function getInstance(){
         if(!isset(self::$instance)){
@@ -23,8 +31,9 @@ class SearchServiceImpl implements SearchService
         return self::$instance;
     }
 
-    public function getFindings(String $searchterms, array $cont_list)
-    { //returns an array of Content objects in descending relevancy order
+    public function getFindings(String $searchterms, array $cont_list){
+        /*returns an array of Content objects in descending relevancy order*/
+
         $searchterms = $this->removeStopwords($searchterms);
         $Q = explode(' ', $searchterms);
         $keywsvc = KeywordServiceImpl::getInstance();
@@ -50,6 +59,142 @@ class SearchServiceImpl implements SearchService
     }
 
 
+    public function getFindingsTNT(String $searchterms, array $cont_list){
+        /*returns an array of Content objects in descending relevancy order*/
+
+        if(self::initRequired()){
+            $this->initIndex();
+        }
+
+        $tnt = new TNTSearch;
+
+        $tnt->loadConfig($this->getTNTConfig());
+        $tnt->selectIndex(self::$indexname);
+        $tnt->fuzziness = true;
+
+        $res = $tnt->search($searchterms);
+        $foundIDs = $res['ids'];
+        $candidateIDs = array_map(function($c){return $c->getId();}, $cont_list);
+
+        $return_list = [];
+        foreach($foundIDs as $id){
+            if(in_array($id, $candidateIDs)){
+                $key = array_keys($candidateIDs, $id)[0];
+                $return_list[] = $cont_list[$key];
+            }
+        }
+
+        return $return_list;
+
+    }
+
+
+    private function getTNTConfig(){
+
+
+
+        // create new directory with 744 permissions if it does not exist yet
+        // owner will be the user/group the PHP script is run under
+        if ( !file_exists(self::$indexlocation) ) {
+            mkdir (self::$indexlocation, 0744,true);
+        }
+
+        $config = [     'driver'    => 'pgsql',
+                        'host'      => Config::get("database.host"),
+                        'port'      => Config::get("database.port"),
+                        'database'  => Config::get("database.name"),
+                        'username'  => Config::get("database.user"),
+                        'password'  => Config::get("database.password"),
+                        'storage'   => self::$indexlocation                    ];
+
+        return $config;
+    }
+
+
+    private function initIndex(){
+
+        $tnt = new TNTSearch;
+
+        $tnt->loadConfig($this->getTNTConfig());
+
+        $indexer = $tnt->createIndex(self::$indexname);
+
+        $sql = 'SELECT cont.fld_cont_id as id, REPEAT(CONCAT(cont.fld_cont_title, \' \'), 5) as title,  REPEAT(CONCAT(cont.fld_cont_subtitle, \' \'), 3) as subtitle, cate.fld_cate_key as category, keyw.keyw_name as keywords, cont.fld_cont_body as body
+                FROM tbl_content cont
+                LEFT JOIN (SELECT coke.fld_cont_id, string_agg(keyw.fld_keyw_name, \' ; \'  ORDER BY keyw.fld_keyw_name) as keyw_name
+                           FROM tbl_keyword keyw INNER JOIN tbl_contentkeyword coke on keyw.fld_keyw_id = coke.fld_keyw_id
+                           GROUP BY coke.fld_cont_id) keyw on keyw.fld_cont_id = cont.fld_cont_id
+                LEFT JOIN tbl_category cate on cont.fld_cate_id = cate.fld_cate_id;'   ;
+
+        $indexer->query($sql);
+        //$indexer->setPrimaryKey('fld_cont_id'); /*not needed if PK is named «id»*/
+        //$indexer->setLanguage('english'); // default is PorterStemmer
+        $indexer->run();
+    }
+
+
+    public function insertInIndex(Content $c){
+
+        $tnt = new TNTSearch;
+
+        $tnt->loadConfig($this->getTNTConfig());
+        $tnt->selectIndex(self::$indexname);
+
+        $index = $tnt->getIndex();
+
+        //to insert a new document to the index
+        $index->insert([    'id' => $c->getId(),
+                            'title'       => $c->getTitle(),
+                            'subtitle'    => $c->getSubtitle(),
+                            'body'        => $c->getBody(),
+                            'category'    => $c->getCategory()->getKey(),
+                            'keywords'    =>  KeywordServiceImpl::getInstance()->getSeparated($c," ; ")    ]);
+    }
+
+
+    public function updateInIndex(Content $c){
+        $tnt = new TNTSearch;
+
+        $tnt->loadConfig($this->getTNTConfig());
+        $tnt->selectIndex(self::$indexname);
+
+        $index = $tnt->getIndex();
+
+        //to update an existing document
+        $index->update($c->getId(), [   'id' => $c->getId(),
+                                        'title'       => $c->getTitle(),
+                                        'subtitle'    => $c->getSubtitle(),
+                                        'body'        => $c->getBody(),
+                                        'category'    => $c->getCategory()->getKey(),
+                                        'keywords'    =>  KeywordServiceImpl::getInstance()->getSeparated($c," ; ")    ]);
+
+    }
+
+
+    public function deleteInIndex(Content $c){
+        $tnt = new TNTSearch;
+
+        $tnt->loadConfig($this->getTNTConfig());
+        $tnt->selectIndex(self::$indexname);
+
+        $index = $tnt->getIndex();
+
+        $index->delete($c->getId());
+
+    }
+
+    private static function initRequired(){
+        $return = false;
+        $file = self::$indexlocation . '/' . self::$indexname;
+        if ( !file_exists($file) ) {
+            $return = true;
+        } else {
+            if(time()- filemtime($file) > 43200) {  //43200 seconds = 12h
+               $return = true;
+            }
+        }
+        return $return;
+    }
 
 
 
@@ -167,7 +312,6 @@ class SearchServiceImpl implements SearchService
         arsort($score);
         return ($score);
     }
-
 
 
     private function removeStopwords(String $string){

@@ -37,6 +37,9 @@ class Config
             self::$config["database.dsn"] = "pgsql" . ":host=" . $dbopts["host"] . ";port=" . $dbopts["port"] . "; dbname=" . ltrim($dbopts["path"], '/') ;
             self::$config["database.user"] = $dbopts["user"];
             self::$config["database.password"] = $dbopts["pass"];
+            self::$config["database.host"] = $dbopts["host"];
+            self::$config["database.port"] = $dbopts["port"];
+            self::$config["database.name"] = ltrim($dbopts["path"], '/');
         }
         if (isset($_ENV["CMC_APIKEY"])) {
             self::$config["api.key"] = $_ENV["CMC_APIKEY"] ;

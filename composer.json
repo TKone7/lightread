@@ -7,7 +7,8 @@
     "google/protobuf": "^v3.3.0",
     "myclabs/php-enum": "^v1.7.2",
     "tkijewski/php-lnurl": "^v0.0.1",
-    "phroute/phroute": "^2.1"
+    "phroute/phroute": "^2.1",
+    "teamtnt/tntsearch": "^2.2"
   },
   "autoload": {
     "psr-4": {

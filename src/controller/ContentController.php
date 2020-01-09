@@ -41,6 +41,10 @@ class ContentController
         if(!empty($category_id)){
             $cont->setCategory(CategoryServiceImpl::getInstance()->getCategory($category_id));
         }
+        $kws = str_getcsv($_POST["keywords"]);
+        if(!$kws[0] == Null){
+            $cont->setKeywords(KeywordServiceImpl::getInstance()->syncKeywords($kws));
+        }
         $cont->setBody($_POST["editordata"]);
         $cont->setStatus($new_status);
         $cont->setAuthor($auth->readUser());
@@ -61,15 +65,13 @@ class ContentController
                 // update
                 $cont->setId($id);
                 $res = $contsvc->updateContent($cont);
+                SearchServiceImpl::getInstance()->updateInIndex($res);
             }else{
                 // create
                 $res = $contsvc->createContent($cont);
+                SearchServiceImpl::getInstance()->insertInIndex($res);
             }
 
-            //todo keywords
-            $keywsvc = KeywordServiceImpl::getInstance();
-            $keywords = $keywsvc->syncKeywords(str_getcsv($_POST["keywords"]));
-            $keywsvc->associate($cont, $keywords);
 
 
             $route = '/'.Router::getInstance()->route('article_slug', [$res->getSlug()]);
@@ -134,8 +136,8 @@ class ContentController
         $categories =  CategoryServiceImpl::getInstance()->getAll();
         $editor->categories = $categories;
         $keywsvc = KeywordServiceImpl::getInstance();
-        $editor->keywordvalues = $keywsvc->getValues($content);;
-        $editor->keywordsuggestions = $keywsvc->getSuggestions($content);
+        $editor->keywordvalues = $keywsvc->getValues($content);
+        $editor->keywordsuggestions = $keywsvc->getSuggestions();
         if(!empty($content)){
             $editor->content=$content;
         }else {
@@ -149,6 +151,8 @@ class ContentController
         $editor = new TemplateView("editor.php");
         $categories =  CategoryServiceImpl::getInstance()->getAll();
         $editor->categories = $categories;
+        $editor->keywordvalues = "";
+        $editor->keywordsuggestions = KeywordServiceImpl::getInstance()->getSuggestions();
         LayoutRendering::simpleLayout($editor);
 
     }
@@ -161,7 +165,7 @@ class ContentController
         $home = new TemplateView("home.php");
         $mgr = ContentServiceImpl::getInstance()->getContentMgr(true);
         if(isset($_POST["searchterm"])){
-            $findings = SearchServiceImpl::getInstance()->getFindings($_POST["searchterm"], $mgr->getContent());
+            $findings = SearchServiceImpl::getInstance()->getFindingsTNT($_POST["searchterm"], $mgr->getContent());
             $mgr->updateContentList($findings);
         }
         $home->mgr=$mgr;
@@ -178,7 +182,7 @@ class ContentController
         $home = new TemplateView("home.php");
         $mgr = ContentServiceImpl::getInstance()->getContentMgr(true,NULL,NULL,[$user_author]);
         if(isset($_POST["searchterm"])){
-            $findings = SearchServiceImpl::getInstance()->getFindings($_POST["searchterm"], $mgr->getContent());
+            $findings = SearchServiceImpl::getInstance()->getFindingsTNT($_POST["searchterm"], $mgr->getContent());
             $mgr->updateContentList($findings);
         }
         $home->mgr=$mgr;
@@ -194,7 +198,7 @@ class ContentController
         $home = new TemplateView("home.php");
         $mgr = ContentServiceImpl::getInstance()->getContentMgr(true,NULL,[$category],NULL);
         if(isset($_POST["searchterm"])){
-            $findings = SearchServiceImpl::getInstance()->getFindings($_POST["searchterm"], $mgr->getContent());
+            $findings = SearchServiceImpl::getInstance()->getFindingsTNT($_POST["searchterm"], $mgr->getContent());
             $mgr->updateContentList($findings);
         }
         $home->mgr=$mgr;
@@ -211,7 +215,7 @@ class ContentController
         $home = new TemplateView("home.php");
         $mgr = ContentServiceImpl::getInstance()->getContentMgr(true,[$keyword],NULL,NULL);
         if(isset($_POST["searchterm"])){
-            $findings = SearchServiceImpl::getInstance()->getFindings($_POST["searchterm"], $mgr->getContent());
+            $findings = SearchServiceImpl::getInstance()->getFindingsTNT($_POST["searchterm"], $mgr->getContent());
             $mgr->updateContentList($findings);
         }
         $home->mgr=$mgr;
