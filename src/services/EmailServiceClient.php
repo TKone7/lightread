@@ -45,7 +45,7 @@ class EmailServiceClient
             }
           ],
           "from": {
-            "email": "noreply@tobiaskoller.ch",
+            "email": "noreply@lightread.ch",
             "name": "Lightread"
           },
           "subject": "subject",
