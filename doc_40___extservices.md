@@ -26,3 +26,6 @@ The market price is periodically polled from [CoinMarketCap](https://coinmarketc
 
 TODO: are there any further?
 {: .label .label-red }
+
+Email service?
+{: .label .label-yellow }

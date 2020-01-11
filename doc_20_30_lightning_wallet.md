@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Wallets
+title: Mobile Wallets
 parent: Lightning Network
 has_children: false
 nav_order: 3
