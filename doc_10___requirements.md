@@ -21,7 +21,7 @@ The following diagram shows the actors conceptually. Important to notice is, tha
 ![class diagram describing participants](resources/participants.png)
 
 ### 0 User
-Someone who signed up on the platform and hence has an account. An User becomes a Publisher after successful verification by indicating a valid email address. Unverified Users are deemed as Consumers. Some special Users are deemed as Admins. Platform visitors who do not login are deemed as Visitors.
+Someone who signed up on the platform and hence has an account. A User becomes a Publisher after successful verification by indicating a valid email address. Unverified Users are deemed as Consumers. Some special Users are deemed as Admins. Platform visitors who do not login are deemed as Visitors.
 ### 1 Consumer
 A Consumer is an unverified User that only can consume content on the platform but is not allowed to publish any content so far. Consequently, Consumers are not able to earn Satoshis. Once they become verified, they become a Publisher and hence may start earning Satoshis. Synonym for Consumer is Reader.
 ### 2 Publisher
@@ -36,7 +36,7 @@ Node Admins represent other Lightning node administrators (or Lightning network 
 ## Individual Requirements
 The following lists show the requirement of this web project, grouped using the [MoSCoW method](https://en.wikipedia.org/wiki/MoSCoW_method). The check box indicates whether a requirement is fulfilled in the running version or not.
 ### Must-haves
-- [x] Visitors must be able to become an User by creating an account.
+- [x] Visitors must be able to become a User by creating an account.
 - [x] Users must be able to search for articles.
 - [x] Users must be able to verify their account by indicating a valid email address in order to become Publisher.
 - [x] Publishers must be able to write content using a markdown editor.
@@ -65,7 +65,7 @@ The following lists show the requirement of this web project, grouped using the 
 
 ### Could-haves
 - [x] Visitors could be able to re-access already paid content without paying again, as long their browser cookies still exist.
-- [x] Visitors that decide to create an account and hence become an User could have their already paid content be transferred as long as their browser cookies still exist.
+- [x] Visitors that decide to create an account and hence become a User could have their already paid content be transferred as long as their browser cookies still exist.
 - [x] Written content could be stored as draft in order to work on content without publishing it directly.
 - [x] Content views could be registered in order to allow statistics regarding its popularity.
 - [ ] Publisher could be able to examine the views and revenue per content over time in form of charts.
