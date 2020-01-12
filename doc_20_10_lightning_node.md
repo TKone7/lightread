@@ -45,10 +45,10 @@ In order to receive and send payments in the lightning network a node needs to b
 
 As administrators of our web application we want to see the current state of the connected lightning node and all its channels. We implemented a node overview which is only displayed to administrators. It can be seen here: <a href="https://lightread.ch/node" target="blank">https://lightread.ch/node</a> (only after logging in with administrator rights). Since this information is retrieved directly from our node, we see more information about local and remote channel balances and also offchain and onchain balances.
 
-## Connect node to web server
-The lightning node is running on a Raspberry Pi in one of our home networks. In order to be accessible from the web server a **permanent SSH connection** is opened by the lightning node and a SSH port tunneling is set up. The following command uses `autossh` to establish a stable connection from the Raspberry Pi to the web server (on 51.255.211.144) and forwards the remote port `10009` to the local port `10009`.
+## SSH port tunneling to web server
+The lightning node is running on a Raspberry Pi in one of our home networks. In order to be accessible from the web server, a **permanent SSH connection** is opened by the lightning node and a SSH port tunneling is set up. The following command uses `autossh` to establish a stable connection from the Raspberry Pi to the web server (on 51.255.211.144) and forwards the remote port `10009` to the local port `10009`.
 ```
 autossh -C -M 0 -v -N -o ServerAliveInterval=60 -R 10009:localhost:10009 root@51.255.211.144
 ```
-This connection allows us to connect from the web server to the Lightning Node as if it would run on local host. The followoing connection can be found in the database table `tbl_node`.
+This connection allows us to connect from the web server to the Lightning Node as if it would run on localhost. The following connection can be found in the database table `tbl_node`.
 ![Node Connection](resources/node.png)

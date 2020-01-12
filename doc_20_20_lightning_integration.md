@@ -63,14 +63,79 @@ protected function __construct($node)
 [A full documentation of the API can be found here.](https://api.lightning.community/#lnd-grpc-api-reference)
 
 ## Authentication
+LND has a special way to authenticate users to the node. Different files are being created on initial start up which grant the owner of the file different access rights. Per default there exist the following files:
+- `admin.macaroon`: Grants full read and write access to all gRPC commands. This is used by the lncli client.
+
+- `readonly.macaroon`: Grants read-only access to all gRPC commands. Could be given to a monitoring application for example.
+
+- `invoice.macaroon`: Grants read and write access to all invoice related gRPC commands (like generating an address or adding an invoice). Can be used for a web shop application for example. Paying an invoice is not possible, even if the name might suggest it. The permission offchain is needed to pay an invoice which is currently only granted in the admin macaroon.
+
+(source [https://github.com/lightningnetwork/lnd/tree/master/macaroons](https://github.com/lightningnetwork/lnd/tree/master/macaroons))
+
+Unfortunately, no option of the above is suited for our use case. Both `readonly.macaroon` and `invoice.macaroon` have not enough permission to make a lightning payment which is required to payout withdrawals to authors. Of course the `admin.macaroon` file could be used and stored on the web server. However this would give complete control over the whole node to whoever has access to the file. This would severely violate the **rule of least privileges**.
+
+Since version x LND allows to create macaroon files with custom permissions. This so called macaroon bakery is described in more detail [on LND's Github page](https://github.com/lightningnetwork/lnd/blob/master/macaroons/README.md#bakery).
+
+We used the following command to create our own macaroon file:
+```
+lncli bakemacaroon onchain:read offchain:read offchain:write info:read invoices:read invoices:write peers:read message:read address:read  --save_to=/path/to/webapp.macaroon
+```
+It gives **read** permissions to `onchain transactions`, `node information`, `peer information`, `messages` and `addresses` but **write** permissions to `invoices` and `offchain transactions`. This is exactly enough permissions to create invoices and pay offchain to other invoices (used for withdrawals).
+
+The content of the newly created macaroon file is stored in hexadecimal in the column `fld_node_macaroon` of the database table `tbl_node`. To obtain the hexadecimal representation, the following code can be executed once:
+```
+$f = file_get_contents('/path/to/webapp.macaroon');
+var_dump(bin2hex($f));
+```
 
 ## Invoice generation
+Whenever a payment is executed by a visitor of the website, either to read an article or to make a donation, a new unique invoices is created by the lightning node. The following code snippet is explained in more detail:
 
-## Check for payments
+```
+public function createPayment(Payment $payment) : Payment
+{
+    $client = RpcClient::connect();
+    $ln_inv = new Invoice();
+    $ln_inv->setMemo($payment->getMemo());
+    $ln_inv->setValue($payment->getValue());
+    list($reply, $status) = $client->AddInvoice($ln_inv)->wait();
+
+    // set payment request from AddInvoice Response
+    $payment->setPayReq($reply->getPaymentRequest());
+    $rhash_hex = bin2hex($reply->getRHash());
+    // set payment hash from AddInvoice Response
+    $payment->setRhash($rhash_hex);
+
+    // get additional information from generated invoice
+    $payment = $this->getUpdateFromNode($payment);
+
+    $pay_dao = new PaymentDAO();
+    $payment = $pay_dao->create($payment);
+    return $payment;
+}
+```
+The function `createPayment` takes a `domain\Payment` object in order to create an invoice on the lightning node and stores the object to the database.
+
+1. An instance of the RpcClient is obtained to communicate with the lightning node.
+2. A new empty `Lnrpc\Invoice` object is being created (`$ln_inv`)
+3. Populate **memo** field of `$ln_inv` (copied from `$payment`)
+4. Populate **value** field of `$ln_inv` (copied from `$payment`)
+5. Invoke the `AddInvoice` function of the RpcClient and pass the `Lnrpc\Invoice` object. The result will be stored in the variable `$reply`.
+6. Store the payment request from the `$reply` to the `$payment`.
+7. Store the payment hash from the `$reply` to the `$payment`.
+8. Store the payment to the database
+9. Return the `domain\Payment` object
 
 ## Withdrawal
+Content producers who publish and earn on the platform can gain control over their funds by withdrawing their balance to an external wallet. Since lightning payments are always bound to an invoice  that is created by the receiver, the user must first create an invoice in the wallet and provide it to the website to issue the payment.
 
-### via Invoice
+### via pasting an invoice
+This is the easiest way to issue a withdrawal payment. The user inputs an invoice into the text field and the payment is executed via the lightning node. The invoice contains all information in a special encoding.
 
+The `validator\WithdrawalValidator` checks if the invoice can be decoded and the user has enough funds.
+
+Then a `domain\Withdrawal` object is being created and populated with the information from the decoded invoice (`InvoiceServiceImpl->decodePayReq`).
+
+Eventually, the payment is sent out in the `InvoiceServiceImpl->payOut` function.
 ### via LNURL
 check compatible wallets
