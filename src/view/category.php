@@ -29,7 +29,7 @@ $cols = 2;
 
                             <div class="col-md-6 cms-boxes-outer">
                                 <a href="<?php echo $GLOBALS["ROOT_URL"] .'/'. Router::getInstance()->route('article_category', [$cat->getKey()]);?>">
-                                    <div class="cms-boxes-items cms-pink" style="background-image:url('assets/img/<?php echo $cat->getKey()?>.jpg');">
+                                    <div class="cms-boxes-items cms-pink" style="background-image:url('assets/img/<?php echo $cat->getKey().'_thumb'?>.jpg');">
                                         <div class="boxes-align">
                                             <div class="large-box">
                                                 <h3 style="color:#000000; background-color:rgba(255,255,255,0.26)"> <?php echo $cat->getName(); ?></h3>
@@ -49,6 +49,3 @@ $cols = 2;
         </div>
     </div>
 </div>
-
-
-
