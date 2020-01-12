@@ -105,11 +105,6 @@ This technique allows to search a subset of articles, for instance a clicket tag
 
 
 
-## Email Verification
-Lightread sends emails to users because of two reasons. One is the user verification which is mandatory in order to publish content. The other is the possibility to reset the password. The emails are sent via [SendGrid](https://sendgrid.com/docs/).
-
-
-
 ## Tokenization
 Tokens are issues either when an user logs in or someone pays an invoice without being logged in (anonymous user). A token objects holds a hash value, a selector, a type, and an expiration.
 
@@ -141,10 +136,6 @@ public function issueToken(AuthType $type, $email = null) {
 
 ## jQuery Polling
 After an lightning invoice was generated, the connected Lightning node must inform lightread about its status. This polling starts right after the invoice is displayed to the user repeats as long as this page is shown. Using jQuery, a `POST` with the corresponding invoice reference (pay_req) is sent to the route `checkinvoice`.
-
-
-TODO: add a GIF showing how lightning fast Lightning is :-)
-{: .label .label-red }
 
 
 ```php
@@ -195,6 +186,16 @@ public static function checkInvoice()
     }
 }
 ```
+
+This allowed us to implement a seamless user experience, as demonstrated below.
+
+![xxxxxx](resources/other_jqpolling.gif)
+
+Also on a mobile device.
+
+![xxxxxx](resources/other_jqpolling_mobile.gif)
+
+
 
 ## Views Registration
 When a content is shown, lighread registers a view. This data can later be used to inform user about their content's popularity or to optimize the search engine. Ideally, the viewer is logged in which allows unique identification. Otherwise, the viewer is identified by its combination of IP address, operating system, device type, and browser type. To avoid falsification in this data, recurring content views of the viewers is tried to be suppressed using a timeout of 20 minutes.
