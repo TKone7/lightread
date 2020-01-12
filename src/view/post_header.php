@@ -9,6 +9,7 @@
 use domain\Content;
 use domain\Status;
 use router\Router;
+use view\TemplateView;
 
 isset($this->content)?$content=$this->content:$content=new Content();
 

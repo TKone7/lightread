@@ -10,6 +10,7 @@
 use domain\Content;
 use domain\Keyword;
 use router\Router;
+use view\TemplateView;
 
 
 isset($this->body)?$body=$this->body:$body="Article not found";
@@ -50,7 +51,7 @@ isset($this->restricted)?$restricted=$this->restricted:$restricted=false;
             <div class="row">
                 <div class="col-md-10 col-lg-8 mx-auto">
                     <div>
-                    <p><?php echo TemplateView::noHTML($body); ?></p>
+                    <p><?php echo $body; ?></p>
                     <?php if($restricted): ?>
                         <div class="hiding"></div>
                     <?php endif; ?>
