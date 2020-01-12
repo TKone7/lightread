@@ -24,9 +24,6 @@ The business logic is incorporated in different services.
 
 
 
-TODO: Should the sections below be extended? Roman suggests not.
-{: .label .label-red }
-
 ## AuthServiceImpl
 Verifies user logins, issues and validates tokens.
 

@@ -60,6 +60,7 @@ The following lists show the requirement of this web project, grouped using the 
 - [x] Publishers should be able to tag an article using up to 6 keywords.
 - [x] Publishers should see the transaction history of all payments and donations.
 - [x] Publishers should not be able to change their (verified) email address while they have balance greater than zero or any published articles at the moment.
+- [x] Publishers should be able to withdraw their funds via scanning a QR code.
 - [ ] Publishers should be forced to withdraw revenues once they excited a certain balance.
 
 ### Could-haves
@@ -69,6 +70,7 @@ The following lists show the requirement of this web project, grouped using the 
 - [x] Content views could be registered in order to allow statistics regarding its popularity.
 - [ ] Publisher could be able to examine the views and revenue per content over time in form of charts.
 - [ ] Users could be able to set up their profile, including enter some descriptive text about themselves and upload a profile picture.
+- [ ] Consumers could have the ability to load their funds with a limited amount of Satoshis in order to speed up the purchasing process.
 - [ ] Admins could be able to manage user accounts via web interface.
 - [ ] Admins could be able to monitor all Lightning transactions happening on the platform via web interface.
 - [ ] The platform shall publicly show the information of the connected Lightning node in order to allow other Lightning node administrators to open channels with it.

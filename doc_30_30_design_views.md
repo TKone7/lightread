@@ -42,9 +42,7 @@ After clicking a category, all articles belonging to this category be listed. Us
 ## Article
 After clicking on a non-free article, only the first 300 characters are shown. After clicking the button underneath, a Lightning invoice is generated which allows the Consumer to pay the required fee in order to have unrestricted access to the content.
 
-TODO: replace with a GIF to visualize the invoice generation
-![xxxxxxxx](resources/view_post_topay.png)
-{: .label .label-red }
+![xxxxxxxx](resources/view_post_topay.gif)
 
 Already paid articles will remain accessible since each purchase is registered with the corresponding user account. If a purchase happens without being logged-in, the information is stored in the browser's cookies. In case of later registration or login, the purchases are transferred to the user account.
 
@@ -57,8 +55,8 @@ Lightread provides an editor which allows users to create new content. The edito
 
 The author may set an access fee for this article indicated in Satoshis. The equivalent value in USD is shown right next to it.
 
-TODO: add a GIF to visualize the price translation
-{: .label .label-red }
+![xxxxxxxx](resources/view_pricetrans.gif)
+
 
 
 We used [Amsify Suggestags](https://github.com/amsify42/jquery.amsify.suggestags) to implement the tagging option. Existing tags will be provided as suggestions. Duplicates and more than 6 tags are disallowed.
@@ -68,7 +66,4 @@ We used [Amsify Suggestags](https://github.com/amsify42/jquery.amsify.suggestags
 
 
 ## Profile
-Via the personal profile page, user can manage their information, create or modify articles, and monitor their balance (with detailed transaction history insights regarding all payments, donations, and withdrawals). When the balance is grater than zero, user may withdraw Satoshis to their own-controlled Lightning wallet.
-
-TODO: add a GIF to visualize the withdrawal process
-{: .label .label-red }
+Via the personal profile page, user can manage their information, create or modify articles, and monitor their balance (with detailed transaction history insights regarding all payments, donations, and withdrawals). When the balance is grater than zero, Publisher may withdraw Satoshis to their own-controlled Lightning wallet. This can either be done by pasting an invoice reference or scanning a QR code (lnurl).

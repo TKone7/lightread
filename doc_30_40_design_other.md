@@ -24,13 +24,27 @@ This chapter documents other important components implemented in lightread.
 
 
 ## XSS Prevention
+We prevent XSS by means of the PHP function `htmlentities` which disarms potential scripts within the static `TemplateView` function `noHTML`.
 
-TODO: we did not really prevent this, did we? I suggest not talking about it :-)
-{: .label .label-red }
+```php
+<?php echo TemplateView::noHTML($content->getTitle()); ?>
+<?php echo TemplateView::noHTML($content->getSubtitle()); ?>
+<?php echo TemplateView::noHTML($content->getAuthor()->getFullName()); ?>
+<?php echo TemplateView::noHTML($keyword->getName()); ?>
+```
 
-`<?php echo TemplateView::noHTML($customer->getName()) ?>`
+The content body, however, requires certain HTML taxonomy because of two reasons. First, the formatting defined by the markdown editor should apply. Second, some publishers may write about programming related subjects which requires them to include code snippets. [Parsedown](https://parsedown.org/) allows to respect these two requirements without a reduction of security.
 
-
+```php
+public function getHTMLBody()
+{
+    $Parsedown = new Parsedown();
+    $Parsedown->setSafeMode(true);
+    $body = $Parsedown->text($this->body);
+    $body = str_replace("<img ","<img style='width:100%' ",$body);
+    return $body;
+}
+```
 
 
 
@@ -41,6 +55,7 @@ In a later version, we implemented [TNTSearch](https://github.com/teamtnt/tntsea
 ![fuzzy search](resources/searcheng_fuzzy.png)
 
 The information to be searched is passed via a single SQL query. The created index can later be selectively manipulated in case of insertion or manipulation of articles.
+
 ```php
 private function initIndex(){
 
@@ -122,8 +137,6 @@ public function issueToken(AuthType $type, $email = null) {
 }
 ```
 
-TODO: Should this sections be extended?
-{: .label .label-red }
 
 
 ## jQuery Polling
@@ -186,5 +199,4 @@ public static function checkInvoice()
 ## Views Registration
 When a content is shown, lighread registers a view. This data can later be used to inform user about their content's popularity or to optimize the search engine. Ideally, the viewer is logged in which allows unique identification. Otherwise, the viewer is identified by its combination of IP address, operating system, device type, and browser type. To avoid falsification in this data, recurring content views of the viewers is tried to be suppressed using a timeout of 20 minutes.
 
-TODO: show screenshot of tbl_views
-{: .label .label-red }
+![xxxxxx](resources/other_viewlog.png)

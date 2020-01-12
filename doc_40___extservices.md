@@ -22,10 +22,5 @@ The market price is periodically polled from [CoinMarketCap](https://coinmarketc
 ![fuzzy search](resources/external_price.png)
 
 
-## ?'#!...
-
-TODO: are there any further?
-{: .label .label-red }
-
-Email service?
-{: .label .label-yellow }
+## Email Verification
+Lightread sends emails to users because of two reasons. One is the user verification which is mandatory in order to publish content. The other is the possibility to reset the password. The emails are sent via [SendGrid](https://sendgrid.com/docs/).
