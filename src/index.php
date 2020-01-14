@@ -106,6 +106,9 @@ $router->group(['before' => 'noauth'], function($router){
     $router->get(['/article/{slug}', 'article_slug'],function ($slug){
         ContentController::showContent($slug);
     });
+    $router->get('/article-not-found', function () {
+        LayoutRendering::headerLayout(new TemplateView("404.php"), "404", "page not found");
+    });
     $router->get(['/author/{author}', 'article_author'],function ($author){
         ContentController::showContentListByAuthor($author);
     });
