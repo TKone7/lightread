@@ -22,7 +22,7 @@ interface ContentService
 
     public function readContent($content_id);
 
-    public function readBySlug($slug) : Content;
+    public function readBySlug($slug); //: Content;
 
     public function getContentMgr($verified_only = false, array $keyword = NULL, array $category = NULL, array $author = NULL ) : ContentManager;
 

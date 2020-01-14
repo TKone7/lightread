@@ -9,6 +9,7 @@
 use domain\User;
 use view\TemplateView;
 isset($this->simple) ? $simple = $this->simple : true;
+isset($this->loggedin) ? $loggedin = $this->loggedin : false;
 isset($this->user) ? $user = $this->user : $user = new User();
 isset($this->allowSearch) ? $allowSearch = $this->allowSearch : False;
 isset($this->SearchPlaceholder) ? $SearchPlaceholder = $this->SearchPlaceholder : "search...";

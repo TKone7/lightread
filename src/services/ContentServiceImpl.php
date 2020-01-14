@@ -78,7 +78,7 @@ class ContentServiceImpl implements ContentService
         $content = $contdao->read($content_id);
         return $content;
     }
-    public function readBySlug($slug) : Content
+    public function readBySlug($slug) //: Content /*can also be Null*/
     {
         $contdao = new ContentDAO();
         $content = $contdao->findBySlug($slug);
