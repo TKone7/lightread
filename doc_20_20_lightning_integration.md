@@ -138,4 +138,78 @@ Then a `domain\Withdrawal` object is being created and populated with the inform
 
 Eventually, the payment is sent out in the `InvoiceServiceImpl->payOut` function.
 ### via LNURL
-check compatible wallets
+Often the user has its wallet on a different device (e.g. smartphone) than he or she is using for visiting the lightread platform (e.g. desktop). This makes the process of copy/paste a very long invoice (e.g. lnbc10u1p0p7vd4pp5kv64pwe4flefwsp2c4ztackg2w9l9ldwqg7gcdl2chpl0xhycvesdr8g3hkuct5d9hkugr0dcsxzun5d93kcef6yqn5zmneypfxzmnydakjq4rfw3kx2feqvfujqctwypskummw09kk7atnyp6hxetjyqaz62gcqzpgfs7fugnugxlunjdgmncra339x99r8a27evmjg3tgacuvt7t3a998te8sm5glmypy4zqq0wjr0xvkgadyktrkstntp2e8cw6xa7r759cqudz65f) very tedious. The **LNURL** protocol ([see specification](https://github.com/btcontract/lnurl-rfc/blob/master/spec.md#3-lnurl-withdraw)) provides a solution that simplifies the user experience of providing a invoice from a mobile wallet.
+
+#### LNURL quickly explained
+The goal of the protocol is to allow a end user to withdraw money from a desktop website to a mobile wallet. Instead of creating an invoice on a mobile and copy it to the website, the process is started by scanning a QR code from the website. Then the following steps are followed:
+
+**Wallet to service interaction flow:**
+
+`LN WALLET` is the users mobile Lightning wallet.
+
+`LN SERVICE` is the lightread webapp.
+
+1. User scans a LNURL QR code or accesses an `lightning:LNURL..` link with `LN WALLET` and `LN WALLET` decodes LNURL.
+2. `LN WALLET` makes an HTTPS GET request to `LN SERVICE` using the decoded LNURL. This GET request is handled by the following route:
+```
+$router->get('/lnurl/info_request', function () {
+    WithdrawalController::lnUrlInfoRequest();
+});
+```
+3. `LN WALLET` gets Json response from `LN SERVICE` of form:
+
+	```
+	{
+		callback: String, // the URL which LN SERVICE would accept a withdrawal Lightning invoice as query parameter
+		k1: String, // random or non-random string to identify the user's LN WALLET when using the callback URL
+		maxWithdrawable: MilliSatoshi, // max withdrawable amount for a given user on LN SERVICE
+		defaultDescription: String, // A default withdrawal invoice description
+		minWithdrawable: MilliSatoshi // An optional field, defaults to 1 MilliSatoshi if not present, can not be less than 1 or more than `maxWithdrawable`
+		tag: "withdrawRequest" // type of LNURL
+	}
+
+  // implementation in /src/WithdrawalController.php line 103 and following
+  $prc->callback = $GLOBALS["ROOT_URL"] . '/lnurl/withdraw';//string to send invoice to;
+  $prc->k1 = $secret;
+  $prc->maxWithdrawable = ($existing->getValue() *1000);//in msat
+  $prc->defaultDescription = $existing->getMemo();
+  $prc->minWithdrawable = 0;//in msat
+  $prc->tag = "withdrawRequest";
+  $myJSON = json_encode($prc);
+  echo $myJSON;
+  exit;
+	```
+	or
+
+	```
+	{"status":"ERROR", "reason":"error details..."}
+	```
+4. `LN WALLET` Displays a withdraw dialog where user can specify an exact sum to be withdrawn which would be bounded by:
+
+	```
+	max can receive = min(maxWithdrawable, local estimation of how much can be routed into wallet)
+	min can receive = max(minWithdrawable, local minimal value allowed by wallet)
+	```
+5. Once accepted by the user, `LN WALLET` sends an HTTPS GET to `LN SERVICE` in the form of
+
+	```
+	<callback>?k1=<k1>&pr=<lightning invoice, ...>
+	```
+
+	Note that user may send multiple invoices with a splitted total amount in a single request.
+
+  Handled by the following route:
+  ```
+  $router->get('/lnurl/withdraw', function () {
+      WithdrawalController::lnUrlPaymentRequest();
+  });
+  ```
+6. `LN SERVICE` sends a `{"status":"OK"}` or `{"status":"ERROR", "reason":"error details..."}` Json response.
+7. `LN WALLET` awaits for incoming payment if response was successful.
+
+Note that service will withdraw funds to anyone who can provide a valid ephemeral `k1`. In order to harden this a service may require autorization (LNURL-auth, email link etc.) before displaying a withdraw QR.
+
+
+(source [https://github.com/btcontract/lnurl-rfc/blob/master/spec.md](https://github.com/btcontract/lnurl-rfc/blob/master/spec.md))
+
+In order to use the LNURL withdrawal scheme it is required to use a compatible wallet. [Please check this page to find compatible wallets.](https://tkone7.github.io/lightread/doc_20_30_lightning_wallet.html)
