@@ -40,6 +40,7 @@ Between 7 am and 11 pm every 5 minutes the latest commit from the master branch 
 
 */5 7-23 * * * cd /var/www/lightread/ && git checkout master  && git pull
 ```
+To ensure stability during the evaluation of our project the automatic deployment was disabled **before submission**.
 
 ## Apache virtual host
 We run a virtual host who serves the website from the folder `/var/www/lightread/src/`.
