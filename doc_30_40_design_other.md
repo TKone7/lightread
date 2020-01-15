@@ -135,7 +135,7 @@ public function issueToken(AuthType $type, $email = null) {
 
 
 ## jQuery Polling
-After an lightning invoice was generated, the connected Lightning node must inform lightread about its status. This polling starts right after the invoice is displayed to the user repeats as long as this page is shown. Using jQuery, a `POST` with the corresponding invoice reference (pay_req) is sent to the route `checkinvoice`.
+After an lightning invoice was generated, the webpage starts polling the lightning node for any incoming payments. This polling starts right after the invoice is displayed to the user and repeats as long as this page is shown. Using jQuery, a `POST` with the corresponding invoice reference (pay_req) is sent to the route `checkinvoice`.
 
 
 ```php
@@ -163,7 +163,7 @@ After an lightning invoice was generated, the connected Lightning node must info
 ```
 
 
-For each `POST` to `\checkinvoice`, the `InvoiceController` enquires the latest status of the invoice reference from the Lightning node. After the invoice is deemed as paid, the client side polling will stop by following a callback function. In case of a purchase, the page is reload to give full access. In case of a donation, a banner is shown expressing thanks to the donor.  
+For each `POST` to `\checkinvoice`, the `InvoiceController` enquires the latest status of the invoice reference from the Lightning node. After the invoice is deemed as paid, the client side polling will stop by following a callback function. In case of a purchase, the page is reloaded to give full access. In case of a donation, a banner is shown expressing thanks to the donor.  
 
 ```php
 public static function checkInvoice()
