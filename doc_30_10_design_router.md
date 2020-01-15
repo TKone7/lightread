@@ -42,7 +42,7 @@ $router->group(['before' => 'auth'], function($router){
     //and so on ...
 });
 ```
-As you can see, there is an _before_ action defined called `auth`. This means that before the actual demanded route is traced,  `auth` is being executed. We defined `auth` in order to redirect the requested route to the login view if the user is not logged in yet. Such filters can also be applied as an _after_ action.
+There is a _before_ action defined called `auth`. This means that before the actual demanded route is traced,  `auth` is being executed. We defined `auth` in order to redirect the requested route to the login view if the user is not logged in yet. Such filters can also be applied as an _after_ action.
 ```php
 $router->filter('auth', function(){
     if (!AuthController::authenticate()) {
@@ -54,7 +54,7 @@ $router->filter('auth', function(){
 
 
 ## Reverse Routing
-Another handy feature of PHRoute is the reverse routing which allows to introduce dynamic URLs. To illustrate the benefit of this feature, imaging clicking on an article's tag.
+Another handy feature of PHRoute is the reverse routing which allows to introduce dynamic URLs. To illustrate the benefit of this feature, imagine clicking on an article's tag.
 
 ![Article's Tag](resources/router_1.png)
 

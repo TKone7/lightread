@@ -31,9 +31,9 @@ With help of a bit JavaScript, the view listens for the keypress of Enter which 
 
 
 ## Categories
-The categories are predefined by the administrators and publisher are forced to assign one to their article. Each category is associated with a theme picture, stored in `src/view/assets/img/`. The theme picture is prominently displayed in the header when reading an article.
+The categories are predefined by the administrators and publishers are forced to assign one to their article. Each category is associated with a theme picture, stored in `src/view/assets/img/`. The theme picture is prominently displayed in the header when reading an article.
 ![xxxxxxxx](resources/view_categories.png)
-After clicking a category, all articles belonging to this category be listed. Users can now search this subset of articles via the full text search.
+After clicking a category, all articles belonging to this category are listed. Users can now search this subset of articles via the full text search.
 ![xxxxxxxx](resources/view_categories_click.png)
 
 
@@ -66,4 +66,4 @@ We used [Amsify Suggestags](https://github.com/amsify42/jquery.amsify.suggestags
 
 
 ## Profile
-Via the personal profile page, user can manage their information, create or modify articles, and monitor their balance (with detailed transaction history insights regarding all payments, donations, and withdrawals). When the balance is grater than zero, Publisher may withdraw Satoshis to their own-controlled Lightning wallet. This can either be done by pasting an invoice reference or scanning a QR code (lnurl).
+Via the personal profile page, user can manage their information, create or modify articles, and monitor their balance (with detailed transaction history insights regarding all payments, donations, and withdrawals). When the balance is grater than zero, Publisher may [withdraw Satoshis](https://tkone7.github.io/lightread/doc_20_20_lightning_integration.html#withdrawal) to their own-controlled [Lightning wallet](https://tkone7.github.io/lightread/doc_20_30_lightning_wallet.html). This can either be done by pasting an invoice reference or scanning a QR code (lnurl).
