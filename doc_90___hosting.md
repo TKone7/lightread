@@ -102,3 +102,34 @@ export CMC_APIKEY=xxx-yyy-zzz
 export PRICETOLERANCE=15
 export SENDGRID_APIKEY=XX.abc.def-ghi
 ```
+
+## Composer
+We used composer to manage dependencies to other modules. The following dependencies are listed in our `composer.json` file:
+```
+{
+  "name": "Lightread Webapp",
+  "description": "Lightread Webapp",
+  "require": {
+    "ext-grpc": ">=0.1.0",
+    "grpc/grpc": "^v1.3.0",
+    "google/protobuf": "^v3.3.0",
+    "myclabs/php-enum": "^v1.7.2",
+    "tkijewski/php-lnurl": "^v0.0.1",
+    "phroute/phroute": "^2.1",
+    "teamtnt/tntsearch": "^2.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "": "src/"
+    }
+  },
+  "require-dev": {
+    "codeception/codeception": "^4.0",
+    "codeception/module-asserts": "^1.1",
+    "codeception/module-phpbrowser": "^1.0",
+    "codeception/module-webdriver": "^1.0",
+    "codeception/c3": "2.*",
+    "codeception/module-db": "^1.0"
+  }
+}
+```
