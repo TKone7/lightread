@@ -157,39 +157,35 @@ $router->get('/lnurl/info_request', function () {
 });
 ```
 3. `LN WALLET` gets Json response from `LN SERVICE` of form:
-
-	```
-	{
-		callback: String, // the URL which LN SERVICE would accept a withdrawal Lightning invoice as query parameter
-		k1: String, // random or non-random string to identify the user's LN WALLET when using the callback URL
-		maxWithdrawable: MilliSatoshi, // max withdrawable amount for a given user on LN SERVICE
-		defaultDescription: String, // A default withdrawal invoice description
-		minWithdrawable: MilliSatoshi // An optional field, defaults to 1 MilliSatoshi if not present, can not be less than 1 or more than `maxWithdrawable`
-		tag: "withdrawRequest" // type of LNURL
-	}
-
-  // implementation in /src/WithdrawalController.php line 103 and following
-  $prc->callback = $GLOBALS["ROOT_URL"] . '/lnurl/withdraw';//string to send invoice to;
-  $prc->k1 = $secret;
-  $prc->maxWithdrawable = ($existing->getValue() *1000);//in msat
-  $prc->defaultDescription = $existing->getMemo();
-  $prc->minWithdrawable = 0;//in msat
-  $prc->tag = "withdrawRequest";
-  $myJSON = json_encode($prc);
-  echo $myJSON;
-  exit;
-	```
-	or
-
-	```
-	{"status":"ERROR", "reason":"error details..."}
-	```
+```
+{
+	callback: String, // the URL which LN SERVICE would accept a withdrawal Lightning invoice as query parameter
+	k1: String, // random or non-random string to identify the user's LN WALLET when using the callback URL
+	maxWithdrawable: MilliSatoshi, // max withdrawable amount for a given user on LN SERVICE
+	defaultDescription: String, // A default withdrawal invoice description
+	minWithdrawable: MilliSatoshi // An optional field, defaults to 1 MilliSatoshi if not present, can not be less than 1 or more than `maxWithdrawable`
+	tag: "withdrawRequest" // type of LNURL
+}
+// implementation in /src/WithdrawalController.php line 103 and following
+$prc->callback = $GLOBALS["ROOT_URL"] . '/lnurl/withdraw';//string to send invoice to;
+$prc->k1 = $secret;
+$prc->maxWithdrawable = ($existing->getValue() *1000);//in msat
+$prc->defaultDescription = $existing->getMemo();
+$prc->minWithdrawable = 0;//in msat
+$prc->tag = "withdrawRequest";
+$myJSON = json_encode($prc);
+echo $myJSON;
+exit;
+```
+or
+```
+{"status":"ERROR", "reason":"error details..."}
+```
 4. `LN WALLET` Displays a withdraw dialog where user can specify an exact sum to be withdrawn which would be bounded by:
-
-	```
-	max can receive = min(maxWithdrawable, local estimation of how much can be routed into wallet)
-	min can receive = max(minWithdrawable, local minimal value allowed by wallet)
-	```
+```
+max can receive = min(maxWithdrawable, local estimation of how much can be routed into wallet)
+min can receive = max(minWithdrawable, local minimal value allowed by wallet)
+```
 5. Once accepted by the user, `LN WALLET` sends an HTTPS GET to `LN SERVICE` in the form of
 
 	```
