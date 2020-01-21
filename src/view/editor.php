@@ -36,6 +36,11 @@ $load = isset($this->content);
                             <strong>Warning!</strong> <?php echo $contentValidator->getCategorySetError() ?>
                         </div>
                     <?php endif; ?>
+                    <?php if($contentValidator->isUserNotAuthorError()): ?>
+                        <div class="alert alert-warning">
+                            <strong>Warning!</strong> <?php echo $contentValidator->getUserNotAuthorError() ?>
+                        </div>
+                    <?php endif; ?>
                     <form method="post" action="<?php echo $GLOBALS["ROOT_URL"]; ?>/publish">
                         <input type="hidden" name="id" value="<?php echo $load ? $content->getId() : ""; ?>">
 

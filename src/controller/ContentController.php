@@ -34,7 +34,15 @@ class ContentController
         $auth = AuthServiceImpl::getInstance();
         $cont = new Content();
         $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
-        $cont->setId($id);
+
+        // read content if id is given
+        if($id){
+            $cont = ContentServiceImpl::getInstance()->readContent($id);
+        }else{
+            $cont->setAuthor($auth->readUser());
+        }
+
+        //update values
         $cont->setTitle($_POST["title"]);
         $cont->setSubtitle($_POST["subtitle"]);
         $category_id = filter_input(INPUT_POST, 'category', FILTER_VALIDATE_INT);
@@ -47,7 +55,6 @@ class ContentController
         }
         $cont->setBody($_POST["editordata"]);
         $cont->setStatus($new_status);
-        $cont->setAuthor($auth->readUser());
         $sat = filter_input(INPUT_POST, 'price', FILTER_VALIDATE_INT);
         if($sat>0){
             $cont->setAccess(Access::PAID());
@@ -61,9 +68,8 @@ class ContentController
         $validator = new ContentValidator($cont);
         if ($validator->isValid()){
             $contsvc = ContentServiceImpl::getInstance();
-            if($id>0){
+            if($id){
                 // update
-                $cont->setId($id);
                 $res = $contsvc->updateContent($cont);
                 SearchServiceImpl::getInstance()->updateInIndex($res);
             }else{

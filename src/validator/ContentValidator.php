@@ -11,11 +11,13 @@ namespace validator;
 
 use domain\Content;
 use domain\Status;
+use services\AuthServiceImpl;
 
 class ContentValidator
 {
     private $valid = true;
     private $userValidatedError = null;
+    private $userNotAuthorError = null;
     private $categorySetError = null;
 
     public function __construct(Content $content = null)
@@ -35,6 +37,12 @@ class ContentValidator
             if (empty($content->getCategory())) {
                 $this->categorySetError = 'You must select a category from the dropdown.';
                 $this->valid = false;
+            }
+            if($content->getId()){
+                if(!($content->getAuthor()->getId()===AuthServiceImpl::getInstance()->getCurrentUserId())){
+                    $this->userNotAuthorError = 'You are not the author of the article you try to update.';
+                    $this->valid = false;
+                }
             }
 
         } else {
@@ -66,6 +74,15 @@ class ContentValidator
     public function getCategorySetError()
     {
         return $this->categorySetError;
+    }
+    public function isUserNotAuthorError()
+    {
+        return isset($this->userNotAuthorError);
+    }
+
+    public function getUserNotAuthorError()
+    {
+        return $this->userNotAuthorError;
     }
 
 
