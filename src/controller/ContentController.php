@@ -138,7 +138,7 @@ class ContentController
         $keywsvc = KeywordServiceImpl::getInstance();
         $editor->keywordvalues = $keywsvc->getValues($content);
         $editor->keywordsuggestions = $keywsvc->getSuggestions();
-        if(!empty($content)){
+        if(!empty($content) && $content->getAuthor()->getId() === AuthServiceImpl::getInstance()->getCurrentUserId()){
             $editor->content=$content;
         }else {
             Router::redirect("/article-not-found");
